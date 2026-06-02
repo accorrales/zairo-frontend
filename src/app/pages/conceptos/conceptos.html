@@ -1,0 +1,106 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <app-header
+      [title]="'Conceptos'"
+      [subtitle]="'Gestión de conceptos de pago y deducción'">
+    </app-header>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>{{ editando ? 'Editar concepto' : 'Nuevo concepto' }}</h2>
+      </div>
+
+      <div class="form-grid">
+        <input
+          type="text"
+          placeholder="Nombre"
+          [(ngModel)]="nuevoConcepto.nombre">
+
+        <select [(ngModel)]="nuevoConcepto.tipo">
+          <option value="PAGO">PAGO</option>
+          <option value="DEDUCCION">DEDUCCIÓN</option>
+        </select>
+
+        <input
+          type="text"
+          placeholder="Descripción"
+          [(ngModel)]="nuevoConcepto.descripcion">
+
+        <input
+          type="number"
+          placeholder="Porcentaje"
+          [(ngModel)]="nuevoConcepto.porcentaje">
+
+        <input
+          type="number"
+          placeholder="Monto fijo"
+          [(ngModel)]="nuevoConcepto.monto_fijo">
+
+        <div class="acciones-form">
+          <button class="btn-primary" (click)="guardarConcepto()">
+            {{ editando ? 'Actualizar' : 'Crear' }}
+          </button>
+
+          <button
+            *ngIf="editando"
+            class="btn-secondary"
+            (click)="resetFormulario()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>Listado de conceptos</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table *ngIf="conceptos.length > 0; else sinConceptos">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Descripción</th>
+              <th>Porcentaje</th>
+              <th>Monto fijo</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let c of conceptos">
+              <td>{{ c.id_concepto }}</td>
+              <td>{{ c.nombre }}</td>
+              <td>{{ c.tipo }}</td>
+              <td>{{ c.descripcion || '-' }}</td>
+              <td>{{ c.porcentaje || 0 }}%</td>
+              <td>{{ c.monto_fijo || 0 | number:'1.2-2' }}</td>
+              <td>{{ c.estado === false ? 'Inactivo' : 'Activo' }}</td>
+              <td class="acciones">
+                <button class="btn-warning" (click)="editarConcepto(c)">
+                  Editar
+                </button>
+
+                <button class="btn-danger" (click)="eliminarConcepto(c.id_concepto)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #sinConceptos>
+          <div class="estado-box">
+            No hay conceptos registrados.
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

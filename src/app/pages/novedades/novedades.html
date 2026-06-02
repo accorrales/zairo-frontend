@@ -1,0 +1,130 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <app-header
+      [title]="'Novedades'"
+      [subtitle]="'Gestión de ingresos y deducciones por empleado'">
+    </app-header>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>{{ editando ? 'Editar novedad' : 'Nueva novedad' }}</h2>
+      </div>
+
+      <div class="form-grid">
+        <select [(ngModel)]="nuevaNovedad.id_empleado">
+          <option [ngValue]="null">Seleccionar empleado</option>
+          <option *ngFor="let e of empleados" [ngValue]="e.id_empleado">
+            {{ e.nombre }} {{ e.apellido }}
+          </option>
+        </select>
+
+        <select [(ngModel)]="nuevaNovedad.id_planilla">
+          <option [ngValue]="null">Seleccionar planilla</option>
+          <option *ngFor="let p of planillas" [ngValue]="p.id_planilla">
+            {{ p.nombre_periodo }}
+          </option>
+        </select>
+
+        <select [(ngModel)]="nuevaNovedad.id_concepto">
+          <option [ngValue]="null">Seleccionar concepto</option>
+          <option *ngFor="let c of conceptos" [ngValue]="c.id_concepto">
+            {{ c.nombre }} - {{ c.tipo }}
+          </option>
+        </select>
+
+        <input
+          type="number"
+          placeholder="Cantidad"
+          [(ngModel)]="nuevaNovedad.cantidad">
+
+        <input
+          type="number"
+          placeholder="Monto"
+          [(ngModel)]="nuevaNovedad.monto">
+
+        <input
+          type="text"
+          placeholder="Observación"
+          [(ngModel)]="nuevaNovedad.observacion">
+
+        <div class="acciones-form">
+          <button class="btn-primary" (click)="guardarNovedad()">
+            {{ editando ? 'Actualizar' : 'Crear' }}
+          </button>
+
+          <button
+            *ngIf="editando"
+            class="btn-secondary"
+            (click)="resetFormulario()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>Listado de novedades</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table *ngIf="novedades.length > 0; else sinNovedades">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Empleado</th>
+              <th>Planilla</th>
+              <th>Concepto</th>
+              <th>Tipo</th>
+              <th>Cantidad</th>
+              <th>Monto</th>
+              <th>Observación</th>
+              <th>Fecha registro</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let n of novedades">
+              <td>{{ n.id_novedad }}</td>
+              <td>{{ n.empleado }}</td>
+              <td>{{ n.planilla }}</td>
+              <td>{{ n.concepto }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'badge-pago': n.tipo === 'PAGO',
+                    'badge-deduccion': n.tipo === 'DEDUCCION'
+                  }">
+                  {{ n.tipo }}
+                </span>
+              </td>
+              <td>{{ n.cantidad }}</td>
+              <td>{{ n.monto | number:'1.2-2' }}</td>
+              <td>{{ n.observacion || '-' }}</td>
+              <td>{{ n.fecha_registro | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="acciones">
+                <button class="btn-warning" (click)="editarNovedad(n)">
+                  Editar
+                </button>
+
+                <button class="btn-danger" (click)="eliminarNovedad(n.id_novedad)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #sinNovedades>
+          <div class="estado-box">
+            No hay novedades registradas.
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

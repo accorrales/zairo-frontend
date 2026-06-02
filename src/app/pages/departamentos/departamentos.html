@@ -1,0 +1,92 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <app-header
+      [title]="'Departamentos'"
+      [subtitle]="'Gestión de departamentos de la empresa'">
+    </app-header>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>{{ editando ? 'Editar departamento' : 'Nuevo departamento' }}</h2>
+      </div>
+
+      <div class="form-grid">
+        <input
+          type="text"
+          placeholder="Nombre del departamento"
+          [(ngModel)]="nuevoDepartamento.nombre">
+
+        <input
+          type="text"
+          placeholder="Descripción"
+          [(ngModel)]="nuevoDepartamento.descripcion">
+
+        <div class="acciones-form">
+          <button class="btn-primary" (click)="guardarDepartamento()">
+            {{ editando ? 'Actualizar' : 'Crear' }}
+          </button>
+
+          <button
+            *ngIf="editando"
+            class="btn-secondary"
+            (click)="resetFormulario()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>Listado de departamentos</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table *ngIf="departamentos.length > 0; else sinDepartamentos">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let d of departamentos">
+              <td>{{ d.id_departamento }}</td>
+              <td>{{ d.nombre }}</td>
+              <td>{{ d.descripcion || '-' }}</td>
+
+              <td class="acciones">
+                <button class="btn-warning" (click)="editarDepartamento(d)">
+                  Editar
+                </button>
+
+                <button class="btn-danger" (click)="eliminarDepartamento(d.id_departamento)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #sinDepartamentos>
+          <div class="estado-box">
+            No hay departamentos registrados.
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-confirm-dialog
+  [visible]="modalVisible"
+  [titulo]="tituloModal"
+  [mensaje]="mensajeModal"
+  (confirmar)="confirmarAccion()"
+  (cancelar)="cancelarAccion()">
+</app-confirm-dialog>

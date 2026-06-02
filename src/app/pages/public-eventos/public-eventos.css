@@ -1,0 +1,593 @@
+.zairo-home {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(255, 61, 154, .15), transparent 30%),
+    radial-gradient(circle at top right, rgba(123, 44, 255, .15), transparent 32%),
+    #050207;
+  color: white;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+}
+
+.navbar {
+  height: 82px;
+  padding: 0 6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(5, 2, 7, .84);
+  backdrop-filter: blur(18px);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 50;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+}
+
+.logo {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff3d9a, #7b2cff, #ff9d00);
+  display: grid;
+  place-items: center;
+  font-weight: 950;
+  box-shadow: 0 0 34px rgba(255, 61, 154, .65);
+}
+
+.brand h2 {
+  margin: 0;
+  letter-spacing: 3px;
+  font-size: 18px;
+}
+
+.brand span {
+  font-size: 11px;
+  color: #b9b0c9;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+nav {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.login-btn {
+  background: rgba(255,255,255,.12);
+  padding: 13px 22px;
+  border-radius: 30px;
+}
+
+.hero {
+  height: 94vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 82px;
+  overflow: hidden;
+}
+
+.hero-bg,
+.hero-bg img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-bg img {
+  object-fit: cover;
+  filter: brightness(.5) saturate(1.35) contrast(1.05);
+  animation: zoomHero 14s ease-in-out infinite alternate;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(5,2,7,.18), #050207 98%),
+    radial-gradient(circle at center, rgba(255,61,154,.24), transparent 34%),
+    radial-gradient(circle at 80% 30%, rgba(123,44,255,.25), transparent 32%);
+}
+
+.hero-glow {
+  position: absolute;
+  width: 540px;
+  height: 540px;
+  border-radius: 50%;
+  background: rgba(255,61,154,.22);
+  filter: blur(100px);
+  animation: floatGlow 8s ease-in-out infinite alternate;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1050px;
+  padding: 30px;
+  animation: fadeUp .9s ease forwards;
+}
+
+.eyebrow,
+.section-title span,
+.small-label,
+.final-cta span,
+.about-header span,
+.event-tag {
+  color: #ff8bd5;
+  font-weight: 950;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.hero h1 {
+  font-size: clamp(48px, 8vw, 118px);
+  line-height: .9;
+  margin: 18px 0;
+  letter-spacing: -5px;
+  text-shadow: 0 0 45px rgba(255,255,255,.24);
+}
+
+.hero h1 strong {
+  background: linear-gradient(135deg, #fff, #ff8bd5, #ff9d00);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.hero p {
+  font-size: 20px;
+  color: #e8e2ee;
+  max-width: 760px;
+  margin: 0 auto 32px;
+  line-height: 1.7;
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.primary-btn,
+.secondary-btn,
+.final-cta a,
+.hero-floating-card a,
+.buy-btn {
+  text-decoration: none;
+  padding: 16px 30px;
+  border-radius: 40px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.primary-btn,
+.buy-btn {
+  color: white;
+  background: linear-gradient(135deg, #ff3d9a, #7b2cff);
+  box-shadow: 0 0 35px rgba(255,61,154,.45);
+}
+
+.secondary-btn {
+  color: white;
+  border: 1px solid rgba(255,255,255,.42);
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(12px);
+}
+
+.hero-floating-card {
+  position: absolute;
+  right: 6%;
+  bottom: 70px;
+  z-index: 3;
+  width: 310px;
+  padding: 26px;
+  border-radius: 30px;
+  background: rgba(255,255,255,.11);
+  border: 1px solid rgba(255,255,255,.15);
+  backdrop-filter: blur(20px);
+  text-align: left;
+  box-shadow: 0 25px 80px rgba(0,0,0,.5);
+  animation: floatCard 4s ease-in-out infinite alternate;
+}
+
+.hero-floating-card span {
+  color: #ff9d00;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.hero-floating-card h3 {
+  margin: 12px 0;
+  font-size: 24px;
+}
+
+.hero-floating-card p {
+  font-size: 14px;
+  margin: 0 0 20px;
+  color: #d7ccdf;
+}
+
+.hero-floating-card a {
+  display: inline-block;
+  background: white;
+  color: #120516;
+  font-size: 12px;
+}
+
+.radio-bar {
+  margin: -42px auto 95px;
+  width: 88%;
+  position: relative;
+  z-index: 4;
+  padding: 30px 38px;
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255,61,154,.22), rgba(123,44,255,.16));
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 30px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 25px 80px rgba(0,0,0,.52);
+}
+
+.radio-bar h2 {
+  font-size: 36px;
+  margin: 4px 0 0;
+}
+
+.radio-bar p {
+  max-width: 560px;
+  color: #d7ccdf;
+  line-height: 1.6;
+}
+
+.experience-strip {
+  width: 88%;
+  margin: 0 auto 110px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.experience-item,
+.about-card,
+.event-card {
+  background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.04));
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 32px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.35);
+  transition: .35s ease;
+}
+
+.experience-item {
+  padding: 32px;
+}
+
+.experience-item:hover,
+.about-card:hover,
+.event-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255,61,154,.45);
+}
+
+.experience-item span {
+  color: #ff9d00;
+  font-weight: 950;
+}
+
+.experience-item h3 {
+  font-size: 30px;
+  margin: 18px 0 12px;
+}
+
+.experience-item p {
+  color: #cfc6d8;
+  line-height: 1.7;
+}
+
+.about-zairo {
+  width: 88%;
+  margin: 0 auto 115px;
+  padding: 85px 42px;
+  border-radius: 44px;
+  background:
+    radial-gradient(circle at top left, rgba(255,61,154,.2), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(123,44,255,.22), transparent 35%),
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 30px 90px rgba(0,0,0,.45);
+}
+
+.about-header {
+  text-align: center;
+  max-width: 920px;
+  margin: 0 auto 58px;
+}
+
+.about-header h2,
+.section-title h2 {
+  font-size: clamp(36px, 5vw, 72px);
+  line-height: .95;
+  margin: 18px 0;
+  letter-spacing: -3px;
+}
+
+.about-header p,
+.section-title p {
+  color: #d7ccdf;
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 22px;
+}
+
+.about-card {
+  min-height: 300px;
+  padding: 34px;
+  backdrop-filter: blur(16px);
+}
+
+.main-about {
+  background:
+    linear-gradient(rgba(0,0,0,.26), rgba(0,0,0,.78)),
+    url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3') center/cover;
+}
+
+.number {
+  color: #ff9d00;
+  font-weight: 950;
+  letter-spacing: 2px;
+}
+
+.about-card h3 {
+  font-size: 30px;
+  margin: 20px 0 14px;
+}
+
+.about-card p {
+  color: #d7ccdf;
+  line-height: 1.75;
+}
+
+.events-section {
+  width: 88%;
+  margin: 0 auto 115px;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 46px;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+}
+
+.event-card {
+  overflow: hidden;
+}
+
+.image-wrap {
+  height: 320px;
+  position: relative;
+  overflow: hidden;
+}
+
+.image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(.78) saturate(1.25);
+  transition: .55s ease;
+}
+
+.event-card:hover .image-wrap img {
+  transform: scale(1.09);
+}
+
+.date-badge {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  padding: 12px 17px;
+  border-radius: 30px;
+  background: rgba(5,2,7,.74);
+  border: 1px solid rgba(255,255,255,.18);
+  backdrop-filter: blur(14px);
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.event-info {
+  padding: 30px;
+}
+
+.event-info h3 {
+  font-size: 32px;
+  margin: 12px 0;
+}
+
+.event-info p {
+  color: #cfc6d8;
+  line-height: 1.7;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  color: #bdb3c9;
+  margin: 24px 0;
+}
+
+.buy-btn {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.final-cta {
+  width: 88%;
+  margin: 0 auto 80px;
+  min-height: 380px;
+  border-radius: 44px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 54px;
+  background:
+    linear-gradient(rgba(5,2,7,.35), rgba(5,2,7,.86)),
+    url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3') center/cover;
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 30px 90px rgba(0,0,0,.45);
+}
+
+.final-cta h2 {
+  max-width: 850px;
+  font-size: clamp(38px, 5vw, 76px);
+  line-height: .95;
+  margin: 18px 0 30px;
+}
+
+.final-cta a {
+  background: white;
+  color: #100514;
+}
+
+.estado {
+  min-height: 45vh;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 22px;
+  text-align: center;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoomHero {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes floatGlow {
+  from {
+    transform: translate(-80px, 20px);
+  }
+
+  to {
+    transform: translate(90px, -20px);
+  }
+}
+
+@keyframes floatCard {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-16px);
+  }
+}
+
+@media (max-width: 1000px) {
+  .hero-floating-card {
+    display: none;
+  }
+
+  .experience-strip,
+  .about-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .navbar {
+    padding: 0 22px;
+  }
+
+  nav {
+    gap: 14px;
+  }
+
+  nav a:not(.login-btn) {
+    display: none;
+  }
+
+  .hero {
+    height: 88vh;
+  }
+
+  .hero h1 {
+    letter-spacing: -2px;
+  }
+
+  .radio-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .radio-bar,
+  .experience-strip,
+  .about-zairo,
+  .events-section,
+  .final-cta {
+    width: 92%;
+  }
+
+  .about-zairo {
+    padding: 60px 22px;
+  }
+
+  .final-cta {
+    padding: 42px 24px;
+  }
+}

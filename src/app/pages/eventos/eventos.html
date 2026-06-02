@@ -1,0 +1,161 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <app-header
+      [title]="'Eventos'"
+      [subtitle]="'Administración de eventos ZAIRO'">
+    </app-header>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>{{ editando ? 'Editar evento' : 'Nuevo evento' }}</h2>
+      </div>
+
+      <div class="form-grid">
+        <input
+          type="text"
+          placeholder="Nombre del evento"
+          [(ngModel)]="nuevoEvento.nombre">
+
+        <input
+          type="text"
+          placeholder="Descripción"
+          [(ngModel)]="nuevoEvento.descripcion">
+
+        <input
+          type="datetime-local"
+          [(ngModel)]="nuevoEvento.fecha">
+
+        <input
+          type="text"
+          placeholder="Ubicación"
+          [(ngModel)]="nuevoEvento.ubicacion">
+
+        <input
+          type="number"
+          placeholder="Precio base"
+          [(ngModel)]="nuevoEvento.precio">
+
+        <input
+          type="text"
+          placeholder="URL de la imagen"
+          [(ngModel)]="nuevoEvento.imagen">
+
+        <select [(ngModel)]="nuevoEvento.estado">
+          <option [ngValue]="true">Activo</option>
+          <option [ngValue]="false">Inactivo</option>
+        </select>
+
+        <div class="acciones-form">
+          <button class="btn-primary" (click)="guardarEvento()">
+            {{ editando ? 'Actualizar evento' : 'Crear evento' }}
+          </button>
+
+          <button
+            *ngIf="editando"
+            class="btn-secondary"
+            (click)="resetFormulario()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>Listado de eventos</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table *ngIf="eventos.length > 0; else sinEventos">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Evento</th>
+              <th>Fecha</th>
+              <th>Ubicación</th>
+              <th>Precio base</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let e of eventos">
+              <td>{{ e.id_evento }}</td>
+
+              <td class="evento-card">
+                <img
+                  *ngIf="e.imagen"
+                  [src]="e.imagen"
+                  class="evento-img"
+                  alt="Imagen del evento">
+
+                <div>
+                  <strong>{{ e.nombre }}</strong><br>
+                  <small>{{ e.descripcion || '-' }}</small>
+                </div>
+              </td>
+
+              <td>{{ e.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ e.ubicacion || '-' }}</td>
+              <td>{{ formatearMoneda(e.precio) }}</td>
+
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'activo': e.estado === true,
+                    'inactivo': e.estado === false
+                  }">
+                  {{ e.estado ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+
+              <td class="acciones">
+                <a
+                  class="btn-info"
+                  [routerLink]="['/eventos', e.id_evento, 'tiers']">
+                  Tiers
+                </a>
+
+                <button class="btn-warning" (click)="editarEvento(e)">
+                  Editar
+                </button>
+
+                <button
+                  *ngIf="e.estado"
+                  class="btn-danger"
+                  (click)="desactivarEvento(e)">
+                  Desactivar
+                </button>
+
+                <button
+                  *ngIf="!e.estado"
+                  class="btn-success"
+                  (click)="reactivarEvento(e)">
+                  Reactivar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #sinEventos>
+          <div class="estado-box">
+            No hay eventos registrados.
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-confirm-dialog
+  [visible]="modalVisible"
+  [titulo]="tituloModal"
+  [mensaje]="mensajeModal"
+  (confirmar)="confirmarAccion()"
+  (cancelar)="cancelarAccion()">
+</app-confirm-dialog>

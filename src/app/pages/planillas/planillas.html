@@ -1,0 +1,128 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <app-header
+      [title]="'Planillas'"
+      [subtitle]="'Administración de planillas'">
+    </app-header>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>Nueva planilla</h2>
+      </div>
+
+      <div class="form-grid">
+        <input
+          type="text"
+          placeholder="Nombre del período"
+          [(ngModel)]="nuevaPlanilla.nombre_periodo">
+
+        <input
+          type="date"
+          [(ngModel)]="nuevaPlanilla.fecha_inicio">
+
+        <input
+          type="date"
+          [(ngModel)]="nuevaPlanilla.fecha_fin">
+
+        <div class="acciones-form">
+          <button class="btn-primary" (click)="crearPlanilla()">
+            Crear planilla
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>Listado de planillas</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table *ngIf="planillas.length > 0; else sinPlanillas">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Período</th>
+              <th>Fecha inicio</th>
+              <th>Fecha fin</th>
+              <th>Estado</th>
+              <th>Total bruto</th>
+              <th>Total deducciones</th>
+              <th>Total neto</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let p of planillas">
+              <td>{{ p.id_planilla }}</td>
+              <td>{{ p.nombre_periodo }}</td>
+              <td>{{ p.fecha_inicio | date:'dd/MM/yyyy' }}</td>
+              <td>{{ p.fecha_fin | date:'dd/MM/yyyy' }}</td>
+
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'pendiente': p.estado === 'PENDIENTE',
+                    'procesada': p.estado === 'PROCESADA',
+                    'confirmada': p.estado === 'CONFIRMADA'
+                  }">
+                  {{ p.estado }}
+                </span>
+              </td>
+
+              <td>{{ (p.total_bruto || 0) | number:'1.2-2' }}</td>
+              <td>{{ (p.total_deducciones || 0) | number:'1.2-2' }}</td>
+              <td>{{ (p.total_neto || 0) | number:'1.2-2' }}</td>
+
+              <td class="acciones">
+                <button
+                  class="btn-warning"
+                  (click)="procesar(p.id_planilla)"
+                  [disabled]="p.estado !== 'PENDIENTE'">
+                  Procesar
+                </button>
+
+                <button
+                  class="btn-success"
+                  (click)="confirmar(p.id_planilla)"
+                  [disabled]="p.estado !== 'PROCESADA'">
+                  Confirmar
+                </button>
+
+                <button
+                  class="btn-danger"
+                  (click)="eliminar(p.id_planilla)">
+                  Eliminar
+                </button>
+
+                <a
+                  class="btn-info"
+                  [routerLink]="['/planillas', p.id_planilla, 'detalle']">
+                  Ver detalle
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #sinPlanillas>
+          <div class="estado-box">
+            No hay planillas registradas.
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-confirm-dialog
+  [visible]="modalVisible"
+  [titulo]="tituloModal"
+  [mensaje]="mensajeModal"
+  (confirmar)="confirmarAccion()"
+  (cancelar)="cancelarAccion()">
+</app-confirm-dialog>

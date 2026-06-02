@@ -1,0 +1,58 @@
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background: #11111a;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.brand h2 {
+  margin: 0;
+  color: white;
+}
+
+.brand p {
+  margin: 2px 0 0;
+  color: #8a8a99;
+  font-size: 13px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu a {
+  color: #c6c6d1;
+  text-decoration: none;
+  padding: 12px 14px;
+  border-radius: 12px;
+  transition: 0.2s ease;
+}
+
+.menu a:hover,
+.menu a.active {
+  background: rgba(124, 58, 237, 0.15);
+  color: white;
+}

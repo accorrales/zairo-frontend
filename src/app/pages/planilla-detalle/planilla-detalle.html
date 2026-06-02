@@ -1,0 +1,112 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <app-header
+      [title]="'Detalle de Planilla'"
+      [subtitle]="'Resumen por empleado'">
+    </app-header>
+
+    <div *ngIf="cargando" class="estado-box">
+      Cargando detalle...
+    </div>
+
+    <div *ngIf="error" class="estado-box">
+      {{ error }}
+    </div>
+
+    <ng-container *ngIf="!cargando && !error && planilla">
+      <div class="panel">
+        <div class="panel-top">
+          <h2>Información de la planilla</h2>
+
+          <button class="btn-pdf" (click)="exportarPDF()">
+            Descargar PDF
+          </button>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <h3>ID</h3>
+            <p>{{ planilla.id_planilla }}</p>
+          </div>
+
+          <div class="card">
+            <h3>Período</h3>
+            <p>{{ planilla.nombre_periodo }}</p>
+          </div>
+
+          <div class="card">
+            <h3>Estado</h3>
+            <p>{{ planilla.estado }}</p>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <h3>Total bruto</h3>
+            <p>{{ getTotalBruto() | number:'1.2-2' }}</p>
+          </div>
+
+          <div class="card">
+            <h3>Total deducciones</h3>
+            <p>{{ getTotalDeducciones() | number:'1.2-2' }}</p>
+          </div>
+
+          <div class="card">
+            <h3>Total neto</h3>
+            <p>{{ getTotalNeto() | number:'1.2-2' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-top">
+          <h2>Detalle por empleado</h2>
+        </div>
+
+        <div class="table-wrapper">
+          <table *ngIf="detalle.length > 0; else sinDetalle">
+            <thead>
+              <tr>
+                <th>Cédula</th>
+                <th>Empleado</th>
+                <th>Puesto</th>
+                <th>Departamento</th>
+                <th>Salario base</th>
+                <th>Ingresos</th>
+                <th>Deducciones</th>
+                <th>Neto</th>
+                <th>Estado</th>
+                <th>Fecha cálculo</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let d of detalle">
+                <td>{{ d.cedula }}</td>
+                <td>{{ d.nombre }} {{ d.apellido }}</td>
+                <td>{{ d.puesto }}</td>
+                <td>{{ d.departamento }}</td>
+                <td>{{ d.salario_base | number:'1.2-2' }}</td>
+                <td>{{ d.total_ingresos | number:'1.2-2' }}</td>
+                <td>{{ d.total_deducciones | number:'1.2-2' }}</td>
+                <td>{{ d.salario_neto | number:'1.2-2' }}</td>
+                <td>{{ d.estado }}</td>
+                <td>{{ d.fecha_calculo | date:'dd/MM/yyyy HH:mm' }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <ng-template #sinDetalle>
+            <div class="estado-box">
+              No hay datos en esta planilla.
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <a routerLink="/planillas" class="btn-volver">← Volver a planillas</a>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,141 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <app-header
+      [title]="'Usuarios'"
+      [subtitle]="'Gestión de usuarios y roles del sistema'">
+    </app-header>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>{{ editando ? 'Editar usuario' : 'Nuevo usuario' }}</h2>
+      </div>
+
+      <div class="form-grid">
+        <input
+          type="text"
+          placeholder="Nombre"
+          [(ngModel)]="nuevoUsuario.nombre">
+
+        <input
+          type="email"
+          placeholder="Correo"
+          [(ngModel)]="nuevoUsuario.correo">
+
+        <input
+          *ngIf="!editando"
+          type="password"
+          placeholder="Contraseña"
+          [(ngModel)]="nuevoUsuario.password">
+
+        <select [(ngModel)]="nuevoUsuario.rol">
+          <option value="ADMIN">ADMIN</option>
+          <option value="RRHH">RRHH</option>
+          <option value="CONTABILIDAD">CONTABILIDAD</option>
+        </select>
+
+        <select *ngIf="editando" [(ngModel)]="nuevoUsuario.estado">
+          <option [ngValue]="true">Activo</option>
+          <option [ngValue]="false">Inactivo</option>
+        </select>
+
+        <div class="acciones-form">
+          <button class="btn-primary" (click)="guardarUsuario()">
+            {{ editando ? 'Actualizar' : 'Crear' }}
+          </button>
+
+          <button
+            *ngIf="editando"
+            class="btn-secondary"
+            (click)="resetFormulario()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>Listado de usuarios</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table *ngIf="usuarios.length > 0; else sinUsuarios">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Fecha creación</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let u of usuarios">
+              <td>{{ u.id_usuario }}</td>
+              <td>{{ u.nombre }}</td>
+              <td>{{ u.correo }}</td>
+              <td>
+                <span class="badge rol">{{ u.rol }}</span>
+              </td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'activo': u.estado === true,
+                    'inactivo': u.estado === false
+                  }">
+                  {{ u.estado ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>{{ u.fecha_creacion | date:'dd/MM/yyyy HH:mm' }}</td>
+
+              <td class="acciones">
+                <button class="btn-warning" (click)="editarUsuario(u)">
+                  Editar
+                </button>
+
+                <button class="btn-info" (click)="abrirModalPassword(u)">
+                  contraseña
+                </button>
+
+                <button class="btn-secondary" (click)="cambiarEstado(u)">
+                  {{ u.estado ? 'Inactivar' : 'Activar' }}
+                </button>
+
+                <button class="btn-danger" (click)="eliminarUsuario(u.id_usuario)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #sinUsuarios>
+          <div class="estado-box">
+            No hay usuarios registrados.
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-confirm-dialog
+  [visible]="modalVisible"
+  [titulo]="tituloModal"
+  [mensaje]="mensajeModal"
+  (confirmar)="confirmarAccion()"
+  (cancelar)="cancelarAccion()">
+</app-confirm-dialog>
+
+<app-password-dialog
+  [visible]="passwordModalVisible"
+  [usuarioNombre]="usuarioSeleccionado?.nombre"
+  (confirmar)="confirmarPassword($event)"
+  (cancelar)="cancelarPassword()">
+</app-password-dialog>

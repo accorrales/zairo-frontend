@@ -1,0 +1,187 @@
+<div class="zairo-home">
+
+  <header class="navbar">
+    <div class="brand" routerLink="/home">
+      <div class="logo">Z</div>
+      <div>
+        <h2>ZAIRO</h2>
+        <span>Events</span>
+      </div>
+    </div>
+
+    <nav>
+      <a href="#eventos">Eventos</a>
+      <a href="#experiencia">Experiencia</a>
+      <a href="#zairo">Quiénes somos</a>
+      <a routerLink="/login" class="login-btn">Mi cuenta</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-bg">
+      <img
+        [src]="eventos.length > 0 && eventos[0].imagen ? eventos[0].imagen : 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4'"
+        alt="ZAIRO Festival">
+    </div>
+
+    <div class="hero-overlay"></div>
+    <div class="hero-glow"></div>
+
+    <div class="hero-content">
+      <span class="eyebrow">ZAIRO PRESENTS</span>
+
+      <h1>
+        Eventos que se sienten
+        <strong>diferente.</strong>
+      </h1>
+
+      <p>
+        Música, producción visual, comunidad y experiencias diseñadas para vivir,
+        grabar y recordar. Comprá tu entrada por WhatsApp y recibí tu QR digital
+        al confirmar el pago.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#eventos" class="primary-btn">Ver eventos</a>
+        <a href="#zairo" class="secondary-btn">Conocer ZAIRO</a>
+      </div>
+    </div>
+
+    <div class="hero-floating-card" *ngIf="eventos.length > 0">
+      <span>Próxima experiencia</span>
+      <h3>{{ eventos[0].nombre }}</h3>
+      <p>📅 {{ formatearFecha(eventos[0].fecha) }}</p>
+      <a [routerLink]="['/evento', eventos[0].id_evento]">Ver entradas</a>
+    </div>
+  </section>
+
+  <section class="radio-bar">
+    <div>
+      <span class="small-label">ZAIRO EXPERIENCE</span>
+      <h2>Lejos de la ciudad</h2>
+    </div>
+
+    <p>
+      Una experiencia sunset to night con música, luces, energía premium y una
+      comunidad que crece evento tras evento.
+    </p>
+  </section>
+
+  <section class="experience-strip" id="experiencia">
+    <div class="experience-item">
+      <span>01</span>
+      <h3>Producción</h3>
+      <p>Luces, sonido, visuales y estética pensada para impactar.</p>
+    </div>
+
+    <div class="experience-item">
+      <span>02</span>
+      <h3>Música</h3>
+      <p>DJs, artistas invitados y una curaduría enfocada en energía real.</p>
+    </div>
+
+    <div class="experience-item">
+      <span>03</span>
+      <h3>Comunidad</h3>
+      <p>Más que asistentes: una comunidad que forma parte del movimiento.</p>
+    </div>
+  </section>
+
+  <section class="about-zairo" id="zairo">
+    <div class="about-header">
+      <span>Quiénes somos</span>
+      <h2>No somos solo un evento. Somos una experiencia.</h2>
+      <p>
+        ZAIRO nace en el Occidente de Costa Rica para crear eventos diferentes,
+        memorables y visualmente impactantes, donde la música, la producción y
+        la comunidad se unen en una misma energía.
+      </p>
+    </div>
+
+    <div class="about-content">
+      <article class="about-card main-about">
+        <span class="number">01</span>
+        <h3>Nuestra esencia</h3>
+        <p>
+          Creamos espacios donde las personas puedan desconectarse de la rutina
+          y vivir una experiencia premium con música, luces, ambiente y una vibra
+          única.
+        </p>
+      </article>
+
+      <article class="about-card">
+        <span class="number">02</span>
+        <h3>Nuestra visión</h3>
+        <p>
+          Llevar la escena del Occidente a otro nivel, impulsando talento nacional
+          y construyendo una marca reconocida por su calidad.
+        </p>
+      </article>
+
+      <article class="about-card">
+        <span class="number">03</span>
+        <h3>Nuestra comunidad</h3>
+        <p>
+          ZAIRO es una comunidad que busca algo más que una fiesta: busca
+          pertenecer a una experiencia.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section id="eventos" class="events-section">
+    <div class="section-title">
+      <span>Agenda oficial</span>
+      <h2>Próximos eventos</h2>
+      <p>Seleccioná un evento y revisá las entradas disponibles.</p>
+    </div>
+
+    <div *ngIf="cargando" class="estado">
+      Cargando eventos ZAIRO...
+    </div>
+
+    <div class="events-grid" *ngIf="!cargando && eventos.length > 0">
+      <article class="event-card" *ngFor="let e of eventos">
+        <div class="image-wrap">
+          <img
+            [src]="e.imagen || 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4'"
+            alt="Imagen del evento">
+
+          <div class="date-badge">
+            {{ formatearFecha(e.fecha) }}
+          </div>
+        </div>
+
+        <div class="event-info">
+          <span class="event-tag">ZAIRO EVENT</span>
+
+          <h3>{{ e.nombre }}</h3>
+
+          <p>
+            {{ e.descripcion || 'Experiencia ZAIRO con música, comunidad y producción premium.' }}
+          </p>
+
+          <div class="meta">
+            <span>📍 {{ e.ubicacion || 'Ubicación por anunciar' }}</span>
+            <span>🎟️ Desde {{ formatearMoneda(e.precio) }}</span>
+          </div>
+
+          <a class="buy-btn" [routerLink]="['/evento', e.id_evento]">
+            Ver entradas
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <div *ngIf="!cargando && eventos.length === 0" class="estado">
+      No hay eventos activos por el momento.
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <span>ZAIRO EVENTS</span>
+    <h2>La próxima historia empieza aquí.</h2>
+    <a href="#eventos">Explorar eventos</a>
+  </section>
+
+</div>

@@ -1,0 +1,92 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <app-header
+      [title]="'Dashboard'"
+      [subtitle]="'Resumen general del sistema de planilla'">
+    </app-header>
+
+    <div *ngIf="cargando" class="estado-box">
+      Cargando dashboard...
+    </div>
+
+    <div *ngIf="error" class="estado-box error">
+      {{ error }}
+    </div>
+
+    <ng-container *ngIf="!cargando && !error">
+      <div class="cards">
+        <div class="card">
+          <h3>Total de empleados</h3>
+          <p>{{ resumen.totalEmpleados }}</p>
+        </div>
+
+        <div class="card">
+          <h3>Empleados activos</h3>
+          <p>{{ resumen.empleadosActivos }}</p>
+        </div>
+
+        <div class="card">
+          <h3>Departamentos</h3>
+          <p>{{ resumen.totalDepartamentos }}</p>
+        </div>
+
+        <div class="card">
+          <h3>Promedio salarial</h3>
+          <p>₡{{ resumen.promedioSalario | number:'1.0-2' }}</p>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="panel">
+          <div class="panel-top">
+            <h2>Últimos empleados ingresados</h2>
+          </div>
+
+          <div class="table-wrapper">
+            <table *ngIf="ultimosEmpleados.length > 0; else sinUltimos">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Puesto</th>
+                  <th>Departamento</th>
+                  <th>Fecha ingreso</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let empleado of ultimosEmpleados">
+                  <td>{{ empleado.nombre }} {{ empleado.apellido }}</td>
+                  <td>{{ empleado.puesto }}</td>
+                  <td>{{ empleado.departamento }}</td>
+                  <td>{{ empleado.fecha_ingreso | date:'dd/MM/yyyy' }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <ng-template #sinUltimos>
+              <div class="estado-box">
+                No hay empleados registrados.
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-top">
+            <h2>Empleados por departamento</h2>
+          </div>
+
+          <div class="departamentos-list">
+            <div class="departamento-item" *ngFor="let item of empleadosPorDepartamento">
+              <div>
+                <strong>{{ item.nombre }}</strong>
+              </div>
+              <span class="badge">{{ item.cantidad }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

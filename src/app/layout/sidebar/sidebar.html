@@ -1,0 +1,63 @@
+<aside class="sidebar">
+  <div class="brand">
+    <div class="logo">Z</div>
+    <div>
+      <h2>ZAIRO</h2>
+      <p>Payroll</p>
+    </div>
+  </div>
+
+  <nav class="menu">
+    <a routerLink="/dashboard" routerLinkActive="active">
+      Dashboard
+    </a>
+
+    <a *ngIf="tienePermiso(['admin'])"
+      routerLink="/usuarios"
+      routerLinkActive="active">
+      Usuarios
+    </a>
+
+    <a *ngIf="tienePermiso(['admin','rrhh'])"
+       routerLink="/empleados"
+       routerLinkActive="active">
+      Empleados
+    </a>
+
+    <a *ngIf="tienePermiso(['admin','rrhh'])"
+       routerLink="/conceptos"
+       routerLinkActive="active">
+      Conceptos
+    </a>
+
+    <a *ngIf="tienePermiso(['admin','rrhh'])"
+       routerLink="/novedades"
+       routerLinkActive="active">
+      Novedades
+    </a>
+
+    <a *ngIf="tienePermiso(['admin','rrhh','contabilidad'])"
+       routerLink="/planillas"
+       routerLinkActive="active">
+      Planillas
+    </a>
+
+    <a *ngIf="tienePermiso(['admin','rrhh','contabilidad','visor'])"
+       routerLink="/reportes"
+       routerLinkActive="active">
+      Reportes
+    </a>
+
+    <a *ngIf="tienePermiso(['admin'])"
+       routerLink="/eventos"
+       routerLinkActive="active">
+      Eventos
+    </a>
+
+    <a *ngIf="tienePermiso(['admin','rrhh'])"
+      routerLink="/departamentos"
+      routerLinkActive="active">
+      Departamentos
+    </a>
+  </nav>
+</aside>

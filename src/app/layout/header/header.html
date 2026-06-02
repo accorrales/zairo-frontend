@@ -1,0 +1,25 @@
+<div class="header">
+  <div class="header-left">
+    <h1>{{ title }}</h1>
+    <p>{{ subtitle }}</p>
+  </div>
+
+  <div class="header-right">
+    <div class="user-box" *ngIf="usuario">
+      <span class="user-name">{{ usuario.nombre || usuario.correo }}</span>
+      <span class="user-role">{{ usuario.rol }}</span>
+    </div>
+
+    <button class="btn-logout" (click)="abrirLogout()">
+      Cerrar sesión
+    </button>
+  </div>
+</div>
+
+<app-confirm-dialog
+  [visible]="modalVisible"
+  [titulo]="'Cerrar sesión'"
+  [mensaje]="'¿Deseas cerrar la sesión actual?'"
+  (confirmar)="confirmarLogout()"
+  (cancelar)="cancelarLogout()">
+</app-confirm-dialog>

@@ -1,0 +1,102 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <app-header
+      [title]="'Reportes'"
+      [subtitle]="'Análisis general de planillas'">
+    </app-header>
+
+    <!-- 🔥 FILTRO -->
+    <div class="panel">
+      <div class="panel-top">
+        <h2>Filtros</h2>
+      </div>
+
+      <select [(ngModel)]="filtroEstado" (change)="aplicarFiltro()">
+        <option value="">Todos</option>
+        <option value="PENDIENTE">Pendiente</option>
+        <option value="PROCESADA">Procesada</option>
+        <option value="CONFIRMADA">Confirmada</option>
+      </select>
+    </div>
+
+    <!-- 📊 CARDS -->
+    <div class="cards">
+      <div class="card">
+        <h3>Total bruto</h3>
+        <p>{{ getTotalBruto() | number:'1.2-2' }}</p>
+      </div>
+
+      <div class="card">
+        <h3>Total deducciones</h3>
+        <p>{{ getTotalDeducciones() | number:'1.2-2' }}</p>
+      </div>
+
+      <div class="card">
+        <h3>Total neto</h3>
+        <p>{{ getTotalNeto() | number:'1.2-2' }}</p>
+      </div>
+    </div>
+
+    <!-- 📋 TABLA -->
+    <div class="panel">
+      <div class="panel-top">
+        <h2>Reporte de planillas</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table *ngIf="planillasFiltradas.length > 0; else sinDatos">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Período</th>
+              <th>Estado</th>
+              <th>Total bruto</th>
+              <th>Deducciones</th>
+              <th>Neto</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let p of planillasFiltradas">
+              <td>{{ p.id_planilla }}</td>
+              <td>{{ p.nombre_periodo }}</td>
+
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'pendiente': p.estado === 'PENDIENTE',
+                    'procesada': p.estado === 'PROCESADA',
+                    'confirmada': p.estado === 'CONFIRMADA'
+                  }">
+                  {{ p.estado }}
+                </span>
+              </td>
+
+              <td>{{ p.total_bruto | number:'1.2-2' }}</td>
+              <td>{{ p.total_deducciones | number:'1.2-2' }}</td>
+              <td>{{ p.total_neto | number:'1.2-2' }}</td>
+
+              <td>
+                <a
+                  class="btn-info"
+                  [routerLink]="['/planillas', p.id_planilla, 'detalle']">
+                  Ver detalle
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #sinDatos>
+          <div class="estado-box">
+            No hay datos disponibles.
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

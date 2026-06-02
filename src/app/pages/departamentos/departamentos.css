@@ -1,0 +1,115 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+app-sidebar,
+.sidebar {
+  width: 260px;
+  min-width: 260px;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background: #111827;
+}
+
+.panel {
+  background: #1f2235;
+  border-radius: 14px;
+  padding: 20px;
+  margin: 20px 0;
+  color: white;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+}
+
+.panel-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.form-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.form-grid input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #3a3f5c;
+  background: #2a2f45;
+  color: white;
+  min-width: 220px;
+}
+
+.form-grid input::placeholder {
+  color: #cbd5e1;
+}
+
+.acciones-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: white;
+}
+
+th,
+td {
+  padding: 12px;
+  border-bottom: 1px solid #333a55;
+  text-align: left;
+}
+
+.estado-box {
+  padding: 16px;
+  border-radius: 10px;
+  background: #2a2f45;
+  color: white;
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-warning,
+.btn-danger {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: #3b82f6;
+}
+
+.btn-secondary {
+  background: #6b7280;
+}
+
+.btn-warning {
+  background: #f59e0b;
+}
+
+.btn-danger {
+  background: #ef4444;
+}

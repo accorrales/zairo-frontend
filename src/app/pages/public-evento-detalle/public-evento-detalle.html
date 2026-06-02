@@ -1,0 +1,188 @@
+<div class="zairo-home">
+
+  <header class="navbar">
+    <div class="brand" routerLink="/home">
+      <div class="logo">Z</div>
+      <div>
+        <h2>ZAIRO</h2>
+        <span>Lost Trip</span>
+      </div>
+    </div>
+
+    <nav>
+      <a href="#eventos">Evento</a>
+      <a href="#entradas">Entradas</a>
+      <a href="#zairo">Quiénes somos</a>
+      <a routerLink="/login" class="login-btn">Mi cuenta</a>
+    </nav>
+  </header>
+
+  <div *ngIf="cargando" class="estado">
+    Cargando experiencia ZAIRO...
+  </div>
+
+  <ng-container *ngIf="!cargando && evento">
+
+    <section class="hero" id="eventos">
+      <div class="hero-bg">
+        <img
+          [src]="evento.imagen || 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4'"
+          alt="ZAIRO Event">
+      </div>
+
+      <div class="hero-overlay"></div>
+
+      <div class="hero-content">
+        <span class="eyebrow">ZAIRO PRESENTS</span>
+        <h1>{{ evento.nombre }}</h1>
+        <p>{{ evento.descripcion }}</p>
+
+        <div class="hero-meta">
+          <span>📅 {{ formatearFecha(evento.fecha) }}</span>
+          <span>📍 {{ evento.ubicacion || 'Ubicación por anunciar' }}</span>
+        </div>
+
+        <div class="hero-actions">
+          <a href="#entradas" class="primary-btn">Comprar entradas</a>
+          <a href="#zairo" class="secondary-btn">Conocer ZAIRO</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="radio-bar">
+      <div>
+        <span class="small-label">ZAIRO EXPERIENCE</span>
+        <h2>Lejos de la ciudad</h2>
+      </div>
+      <p>Una experiencia sunset to night con música, luces, comunidad y energía premium.</p>
+    </section>
+
+    <section class="info-grid" id="zairo">
+      <article class="info-card large">
+        <span>01</span>
+        <h3>¿Qué es ZAIRO?</h3>
+        <p>
+          ZAIRO es una marca de eventos creada para elevar la escena del Occidente de Costa Rica,
+          mezclando música, producción visual, comunidad y experiencias memorables.
+        </p>
+      </article>
+
+      <article class="info-card">
+        <span>02</span>
+        <h3>Concepto</h3>
+        <p>
+          Eventos con estética moderna, ambiente premium y una narrativa visual pensada para vivir,
+          grabar y recordar.
+        </p>
+      </article>
+
+      <article class="info-card">
+        <span>03</span>
+        <h3>Experiencia</h3>
+        <p>
+          DJs, artistas invitados, luces, sonido profesional, zonas especiales y una comunidad que
+          crece evento tras evento.
+        </p>
+      </article>
+    </section>
+
+    <section class="carousel-section">
+      <div class="section-title">
+        <span>Momentos</span>
+        <h2>Una vibra que se vive desde antes de entrar</h2>
+      </div>
+
+      <div class="carousel">
+        <div class="slide">
+          <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30" alt="">
+          <div>
+            <h3>Festival energy</h3>
+            <p>Luces, música y conexión real con la comunidad.</p>
+          </div>
+        </div>
+
+        <div class="slide">
+          <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063" alt="">
+          <div>
+            <h3>Sunset to night</h3>
+            <p>De la tarde chill a una noche intensa.</p>
+          </div>
+        </div>
+
+        <div class="slide">
+          <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819" alt="">
+          <div>
+            <h3>ZAIRO Pass</h3>
+            <p>Acceso especial para quienes quieren vivir más de cerca la experiencia.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tickets-section" id="entradas">
+      <div class="section-title">
+        <span>Tickets</span>
+        <h2>Seleccioná tu entrada</h2>
+        <p>Los precios se activan automáticamente según la fecha establecida.</p>
+      </div>
+
+      <div class="tickets-grid" *ngIf="tiers.length > 0; else sinTiers">
+        <article class="ticket-card" *ngFor="let t of tiers">
+          <div class="ticket-top">
+            <div>
+              <h3>{{ t.nombre }}</h3>
+              <p>{{ t.descripcion || 'Entrada oficial para vivir la experiencia ZAIRO.' }}</p>
+            </div>
+
+            <span
+              class="badge"
+              [ngClass]="{
+                'disponible': t.disponibilidad === 'DISPONIBLE',
+                'proximamente': t.disponibilidad === 'PROXIMAMENTE',
+                'cerrado': t.disponibilidad === 'CERRADO',
+                'agotado': t.disponibilidad === 'AGOTADO',
+                'desactivado': t.disponibilidad === 'DESACTIVADO'
+              }">
+              {{ t.disponibilidad }}
+            </span>
+          </div>
+
+          <div class="price">
+            {{ formatearMoneda(t.precio) }}
+          </div>
+
+          <div class="ticket-meta">
+            <span>
+              Cupo:
+              {{ t.cantidad_disponible === null ? 'Ilimitado' : t.cantidad_disponible }}
+            </span>
+
+            <span *ngIf="t.fecha_fin">
+              Hasta: {{ t.fecha_fin | date:'dd/MM/yyyy HH:mm' }}
+            </span>
+          </div>
+
+          <button
+            class="buy-btn"
+            [disabled]="t.disponibilidad !== 'DISPONIBLE'"
+            (click)="comprarWhatsapp(t)">
+            {{ t.disponibilidad === 'DISPONIBLE' ? 'Comprar por WhatsApp' : 'No disponible' }}
+          </button>
+        </article>
+      </div>
+
+      <ng-template #sinTiers>
+        <div class="estado">
+          Este evento todavía no tiene entradas disponibles.
+        </div>
+      </ng-template>
+    </section>
+
+    <section class="final-cta">
+      <span>ZAIRO LOST TRIP</span>
+      <h2>La próxima historia empieza lejos de la ciudad.</h2>
+      <a href="#entradas">Ver entradas</a>
+    </section>
+
+  </ng-container>
+</div>

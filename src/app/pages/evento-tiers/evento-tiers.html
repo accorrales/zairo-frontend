@@ -1,0 +1,155 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <app-header
+      [title]="'Tiers de Entrada'"
+      [subtitle]="'Administración de precios por evento'">
+    </app-header>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>{{ editando ? 'Editar tier' : 'Nuevo tier' }}</h2>
+
+        <a routerLink="/eventos" class="btn-info">
+          Volver a eventos
+        </a>
+      </div>
+
+      <div class="form-grid">
+        <input
+          type="text"
+          placeholder="Nombre del tier"
+          [(ngModel)]="nuevoTier.nombre">
+
+        <input
+          type="text"
+          placeholder="Descripción"
+          [(ngModel)]="nuevoTier.descripcion">
+
+        <input
+          type="number"
+          placeholder="Precio"
+          [(ngModel)]="nuevoTier.precio">
+
+        <input
+          type="datetime-local"
+          [(ngModel)]="nuevoTier.fecha_inicio">
+
+        <input
+          type="datetime-local"
+          [(ngModel)]="nuevoTier.fecha_fin">
+
+        <input
+          type="number"
+          placeholder="Cantidad disponible"
+          [(ngModel)]="nuevoTier.cantidad_disponible">
+
+        <select [(ngModel)]="nuevoTier.estado">
+          <option [ngValue]="true">Activo</option>
+          <option [ngValue]="false">Inactivo</option>
+        </select>
+
+        <div class="acciones-form">
+          <button class="btn-primary" (click)="guardarTier()">
+            {{ editando ? 'Actualizar' : 'Crear' }}
+          </button>
+
+          <button
+            *ngIf="editando"
+            class="btn-secondary"
+            (click)="resetFormulario()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>Listado de tiers</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table *ngIf="tiers.length > 0; else sinTiers">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Inicio</th>
+              <th>Fin</th>
+              <th>Cupo</th>
+              <th>Disponibilidad</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let t of tiers">
+              <td>{{ t.id_tier }}</td>
+              <td>
+                <strong>{{ t.nombre }}</strong><br>
+                <small>{{ t.descripcion || '-' }}</small>
+              </td>
+              <td>{{ formatearMoneda(t.precio) }}</td>
+              <td>{{ t.fecha_inicio ? (t.fecha_inicio | date:'dd/MM/yyyy HH:mm') : 'Sin inicio' }}</td>
+              <td>{{ t.fecha_fin ? (t.fecha_fin | date:'dd/MM/yyyy HH:mm') : 'Sin fin' }}</td>
+              <td>{{ t.cantidad_disponible === null ? 'Ilimitado' : t.cantidad_disponible }}</td>
+
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'disponible': t.disponibilidad === 'DISPONIBLE',
+                    'proximamente': t.disponibilidad === 'PROXIMAMENTE',
+                    'cerrado': t.disponibilidad === 'CERRADO',
+                    'agotado': t.disponibilidad === 'AGOTADO',
+                    'desactivado': t.disponibilidad === 'DESACTIVADO'
+                  }">
+                  {{ t.disponibilidad }}
+                </span>
+              </td>
+
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'disponible': t.estado === true,
+                    'desactivado': t.estado === false
+                  }">
+                  {{ t.estado ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+
+              <td class="acciones">
+                <button class="btn-warning" (click)="editarTier(t)">
+                  Editar
+                </button>
+
+                <button class="btn-danger" (click)="eliminarTier(t.id_tier)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #sinTiers>
+          <div class="estado-box">
+            No hay tiers registrados para este evento.
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-confirm-dialog
+  [visible]="modalVisible"
+  [titulo]="tituloModal"
+  [mensaje]="mensajeModal"
+  (confirmar)="confirmarAccion()"
+  (cancelar)="cancelarAccion()">
+</app-confirm-dialog>
