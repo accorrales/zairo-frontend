@@ -68,7 +68,8 @@ export class AdminKiosk implements OnInit, OnDestroy {
         try {
 
           const qrData = result.getText();
-
+            alert(qrData);
+            
           const response: any = await this.http.post(
             `${environment.apiUrl}/compras-entradas/validar-qr`,
             {
