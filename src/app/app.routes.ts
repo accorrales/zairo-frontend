@@ -14,6 +14,7 @@ import { EventoTiers } from './pages/evento-tiers/evento-tiers';
 import { PublicEventos } from './pages/public-eventos/public-eventos';
 import { PublicEventoDetalle } from './pages/public-evento-detalle/public-evento-detalle';
 import { AdminCompras } from './pages/admin-compras/admin-compras';
+import { AdminKiosk } from './pages/admin-kiosk/admin-kiosk'; 
 
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
@@ -108,6 +109,10 @@ export const routes: Routes = [
   {
     path: 'admin/compras',
     component: AdminCompras
+  },
+  {
+    path: 'admin/kiosk',
+    component: AdminKiosk
   },
     
   { path: '', redirectTo: 'home', pathMatch: 'full' },
