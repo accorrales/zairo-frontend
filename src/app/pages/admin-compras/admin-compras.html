@@ -1,0 +1,124 @@
+<div class="admin-compras-page">
+
+  <div class="admin-header">
+    <div>
+      <span>ZAIRO ADMIN</span>
+      <h1>Compras pendientes</h1>
+      <p>Revisá los pagos recibidos por WhatsApp y confirmá las entradas.</p>
+    </div>
+
+    <button (click)="cargarPendientes()">
+      Refrescar
+    </button>
+  </div>
+
+  <div class="mensaje" *ngIf="mensaje">
+    {{ mensaje }}
+  </div>
+
+  <div class="estado" *ngIf="cargando">
+    Cargando compras pendientes...
+  </div>
+
+  <div class="compras-grid" *ngIf="!cargando && compras.length > 0">
+
+    <article
+      class="compra-card"
+      *ngFor="let c of compras">
+
+      <div class="compra-top">
+        <div>
+          <span>Compra #{{ c.id_compra }}</span>
+          <h3>{{ c.evento }}</h3>
+        </div>
+
+        <strong>{{ c.estado }}</strong>
+      </div>
+
+      <div class="compra-info">
+        <p><b>Entrada:</b> {{ c.entrada }}</p>
+        <p><b>Correo:</b> {{ c.correo_comprador }}</p>
+        <p><b>Teléfono:</b> {{ c.telefono_comprador }}</p>
+        <p><b>Cantidad:</b> {{ c.cantidad }}</p>
+        <p><b>Total:</b> {{ formatearMoneda(c.total) }}</p>
+        <p><b>Fecha:</b> {{ formatearFecha(c.fecha_creacion) }}</p>
+      </div>
+
+      <div class="acciones">
+        <button class="btn-detalle" (click)="verDetalle(c.id_compra)">
+          Ver detalle
+        </button>
+
+        <button class="btn-confirmar" (click)="confirmar(c.id_compra)">
+          Confirmar pago
+        </button>
+
+        <button class="btn-rechazar" (click)="rechazar(c.id_compra)">
+          Rechazar
+        </button>
+      </div>
+
+    </article>
+
+  </div>
+
+  <div class="estado" *ngIf="!cargando && compras.length === 0">
+    No hay compras pendientes.
+  </div>
+
+  <div class="modal-backdrop" *ngIf="compraSeleccionada">
+    <div class="modal-compra">
+
+      <div class="modal-header">
+        <div>
+          <span>Detalle de compra</span>
+          <h2>Compra #{{ compraSeleccionada.compra.id_compra }}</h2>
+        </div>
+
+        <button (click)="cerrarDetalle()">✕</button>
+      </div>
+
+      <div class="modal-info">
+        <p><b>Evento:</b> {{ compraSeleccionada.compra.evento }}</p>
+        <p><b>Entrada:</b> {{ compraSeleccionada.compra.entrada }}</p>
+        <p><b>Correo:</b> {{ compraSeleccionada.compra.correo_comprador }}</p>
+        <p><b>Teléfono:</b> {{ compraSeleccionada.compra.telefono_comprador }}</p>
+        <p><b>Total:</b> {{ formatearMoneda(compraSeleccionada.compra.total) }}</p>
+      </div>
+
+      <h3>Personas registradas</h3>
+
+      <div class="personas-list">
+        <div
+          class="persona-row"
+          *ngFor="let p of compraSeleccionada.personas; let i = index">
+
+          <span>{{ i + 1 }}</span>
+
+          <div>
+            <strong>{{ p.nombre_completo }}</strong>
+            <p>Nacimiento: {{ p.fecha_nacimiento | date:'dd/MM/yyyy' }}</p>
+            <p>Estado: {{ p.estado }}</p>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button
+          class="btn-confirmar"
+          (click)="confirmar(compraSeleccionada.compra.id_compra)">
+          Confirmar pago
+        </button>
+
+        <button
+          class="btn-rechazar"
+          (click)="rechazar(compraSeleccionada.compra.id_compra)">
+          Rechazar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

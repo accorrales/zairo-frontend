@@ -165,10 +165,121 @@
           <button
             class="buy-btn"
             [disabled]="t.disponibilidad !== 'DISPONIBLE'"
-            (click)="comprarWhatsapp(t)">
-            {{ t.disponibilidad === 'DISPONIBLE' ? 'Comprar por WhatsApp' : 'No disponible' }}
+            (click)="seleccionarTier(t)">
+            {{ tierSeleccionado?.id_tier === t.id_tier ? 'Seleccionado' : 'Seleccionar entrada' }}
           </button>
         </article>
+      </div>
+
+      <div class="checkout-box" *ngIf="tierSeleccionado">
+
+        <div class="checkout-header">
+          <h2>Completar compra</h2>
+          <p>
+            Entrada seleccionada:
+            <strong>{{ tierSeleccionado.nombre }}</strong>
+          </p>
+
+          <div class="age-rule">
+            Ingreso permitido para personas que tengan 17 años cumplidos para la fecha del evento.
+            Se solicitará identificación en la entrada.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Cantidad de entradas</label>
+
+          <input
+            type="number"
+            min="1"
+            [(ngModel)]="cantidad"
+            (ngModelChange)="actualizarPersonas()">
+        </div>
+
+        <div class="form-group">
+          <label>Correo electrónico</label>
+
+          <input
+            type="email"
+            [(ngModel)]="correoComprador"
+            placeholder="correo@gmail.com">
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono</label>
+
+          <input
+            type="text"
+            [(ngModel)]="telefonoComprador"
+            placeholder="88888888">
+        </div>
+
+        <div class="personas-container">
+
+          <div
+            class="persona-card"
+            *ngFor="let persona of personas; let i = index">
+
+            <h3>Persona {{ i + 1 }}</h3>
+
+            <div class="form-group">
+              <label>Nombre completo</label>
+
+              <input
+                type="text"
+                [(ngModel)]="persona.nombre_completo"
+                placeholder="Nombre completo">
+            </div>
+
+            <div class="form-group">
+              <label>Fecha de nacimiento</label>
+
+              <div class="date-picker-card">
+                <span>📅</span>
+
+                <input
+                  type="date"
+                  [(ngModel)]="persona.fecha_nacimiento">
+              </div>
+            </div>
+
+            <div
+              class="edad-warning"
+              *ngIf="persona.fecha_nacimiento && !cumpleEdadMinima(persona.fecha_nacimiento)">
+              Esta persona debe tener 17 años cumplidos para la fecha del evento.
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="checkout-total">
+          <span>Total:</span>
+
+          <strong>
+            {{ formatearMoneda(calcularTotal()) }}
+          </strong>
+        </div>
+
+        <div
+          class="mensaje-compra"
+          *ngIf="mensajeCompra">
+          {{ mensajeCompra }}
+        </div>
+
+        <button
+          class="confirm-btn"
+          [disabled]="procesandoCompra"
+          (click)="crearCompraPendiente()">
+
+          {{
+            procesandoCompra
+              ? 'Procesando...'
+              : 'Continuar por WhatsApp'
+          }}
+
+        </button>
+
       </div>
 
       <ng-template #sinTiers>
