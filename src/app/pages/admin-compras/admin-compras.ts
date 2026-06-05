@@ -51,22 +51,30 @@ export class AdminCompras implements OnInit {
   }
 
   confirmar(id: number): void {
-    const confirmar = window.confirm('¿Confirmar esta compra como pagada?');
+  const confirmar = window.confirm('¿Confirmar esta compra como pagada?');
 
-    if (!confirmar) return;
+  if (!confirmar) return;
 
-    this.comprasService.confirmarCompra(id).subscribe({
-      next: () => {
-        this.mensaje = 'Compra confirmada correctamente.';
-        this.compraSeleccionada = null;
-        this.cargarPendientes();
-      },
-      error: (err) => {
-        console.error('Error confirmando compra', err);
-        this.mensaje = 'Error confirmando compra.';
-      }
-    });
-  }
+  this.mensaje = 'Confirmando compra...';
+
+  this.comprasService.confirmarCompra(id).subscribe({
+    next: () => {
+      this.mensaje = 'Compra confirmada correctamente.';
+      this.compraSeleccionada = null;
+      this.cargarPendientes();
+    },
+    error: (err) => {
+      console.error('Error confirmando compra', err);
+
+      const detalle =
+        err.error?.error ||
+        err.error?.message ||
+        'Error confirmando compra.';
+
+      this.mensaje = detalle;
+    }
+  });
+}
 
   rechazar(id: number): void {
     const confirmar = window.confirm('¿Rechazar esta compra?');

@@ -23,9 +23,9 @@ export class ComprasEntradasService {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
-  confirmarCompra(id: number): Observable<any> {
+    confirmarCompra(id: number): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/${id}/confirmar`, {});
-  }
+    }
 
   rechazarCompra(id: number): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/${id}/rechazar`, {});
