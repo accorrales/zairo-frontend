@@ -1,15 +1,13 @@
 import {
   Component,
-  ElementRef,
   OnDestroy,
   OnInit,
-  ViewChild,
   inject
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-import { BrowserMultiFormatReader } from '@zxing/browser';
 import { HttpClient } from '@angular/common/http';
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { environment } from '../../../environments/environment';
 
 type EstadoScanner = 'idle' | 'validating' | 'success' | 'error';
@@ -24,25 +22,24 @@ type EstadoScanner = 'idle' | 'validating' | 'success' | 'error';
 export class AdminKiosk implements OnInit, OnDestroy {
   private http = inject(HttpClient);
 
-  @ViewChild('video', { static: true })
-  videoRef!: ElementRef<HTMLVideoElement>;
-
-  scanner = new BrowserMultiFormatReader();
+  scanner: Html5Qrcode | null = null;
 
   estado: EstadoScanner = 'idle';
   mensaje = 'Esperando QR...';
   entrada: any = null;
-  procesando = false;
 
+  procesando = false;
   ultimoQr = '';
   ultimoEscaneo = 0;
 
   async ngOnInit(): Promise<void> {
-    await this.iniciarScanner();
+    setTimeout(() => {
+      this.iniciarScanner();
+    }, 300);
   }
 
-  ngOnDestroy(): void {
-    this.detenerCamara();
+  async ngOnDestroy(): Promise<void> {
+    await this.detenerScanner();
   }
 
   async iniciarScanner(): Promise<void> {
@@ -50,41 +47,49 @@ export class AdminKiosk implements OnInit, OnDestroy {
       this.estado = 'idle';
       this.mensaje = 'Iniciando cámara...';
 
-      const video = this.videoRef.nativeElement;
+      await this.detenerScanner();
 
-      const constraints: MediaStreamConstraints = {
-        video: {
-          facingMode: { ideal: 'environment' },
-          width: { ideal: 1920 },
-          height: { ideal: 1080 }
+      this.scanner = new Html5Qrcode('qr-reader', {
+        formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+        verbose: false
+      });
+
+      const config = {
+        fps: 12,
+        qrbox: (viewfinderWidth: number, viewfinderHeight: number) => {
+          const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+          const boxSize = Math.floor(minEdge * 0.72);
+
+          return {
+            width: boxSize,
+            height: boxSize
+          };
         },
-        audio: false
+        aspectRatio: 1.0,
+        disableFlip: true,
+        experimentalFeatures: {
+          useBarCodeDetectorIfSupported: true
+        }
       };
 
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-
-      video.srcObject = stream;
-      video.setAttribute('playsinline', 'true');
-      video.muted = true;
-
-      await video.play();
-
-      this.mensaje = 'Esperando QR...';
-
-      this.scanner.decodeFromVideoElement(
-        video,
-        async (result) => {
-          if (!result) return;
-
-          const qrData = result.getText();
-          await this.procesarQr(qrData);
+      await this.scanner.start(
+        { facingMode: 'environment' },
+        config,
+        async (decodedText: string) => {
+          await this.procesarQr(decodedText);
+        },
+        () => {
+          // Ignoramos errores normales de lectura mientras busca QR.
         }
       );
 
+      this.mensaje = 'Esperando QR...';
+
     } catch (error) {
-      console.error('Error iniciando cámara:', error);
+      console.error('Error iniciando scanner:', error);
+
       this.estado = 'error';
-      this.mensaje = 'No se pudo iniciar la cámara. Revisá permisos.';
+      this.mensaje = 'No se pudo iniciar la cámara. Revisá permisos o reiniciá.';
     }
   }
 
@@ -93,7 +98,7 @@ export class AdminKiosk implements OnInit, OnDestroy {
 
     if (this.procesando) return;
 
-    if (qrData === this.ultimoQr && ahora - this.ultimoEscaneo < 7000) {
+    if (qrData === this.ultimoQr && ahora - this.ultimoEscaneo < 8000) {
       return;
     }
 
@@ -106,6 +111,8 @@ export class AdminKiosk implements OnInit, OnDestroy {
     this.entrada = null;
 
     try {
+      this.scanner?.pause(true);
+
       const response: any = await this.http.post(
         `${environment.apiUrl}/compras-entradas/validar-qr`,
         { qr_data: qrData }
@@ -135,27 +142,46 @@ export class AdminKiosk implements OnInit, OnDestroy {
       this.mensaje = 'Esperando QR...';
       this.entrada = null;
       this.procesando = false;
+
+      try {
+        this.scanner?.resume();
+      } catch {}
     }, 4500);
   }
 
-  detenerCamara(): void {
-    try {
-      const video = this.videoRef?.nativeElement;
+  async reiniciarScanner(): Promise<void> {
+    this.estado = 'idle';
+    this.mensaje = 'Reiniciando cámara...';
+    this.entrada = null;
+    this.procesando = false;
+    this.ultimoQr = '';
+    this.ultimoEscaneo = 0;
 
-      if (video?.srcObject) {
-        const stream = video.srcObject as MediaStream;
-        stream.getTracks().forEach(track => track.stop());
-        video.srcObject = null;
+    await this.detenerScanner();
+
+    setTimeout(() => {
+      this.iniciarScanner();
+    }, 500);
+  }
+
+  async detenerScanner(): Promise<void> {
+    try {
+      if (this.scanner?.isScanning) {
+        await this.scanner.stop();
       }
+
+      await this.scanner?.clear();
+      this.scanner = null;
     } catch (error) {
-      console.error('Error deteniendo cámara:', error);
+      console.warn('Scanner ya detenido o no inicializado:', error);
+      this.scanner = null;
     }
   }
 
   playSuccess(): void {
     try {
       const audio = new Audio('/sounds/success.mp3');
-      audio.volume = 0.8;
+      audio.volume = 0.9;
       audio.play();
     } catch {}
   }
@@ -163,7 +189,7 @@ export class AdminKiosk implements OnInit, OnDestroy {
   playError(): void {
     try {
       const audio = new Audio('/sounds/error.mp3');
-      audio.volume = 0.8;
+      audio.volume = 0.9;
       audio.play();
     } catch {}
   }

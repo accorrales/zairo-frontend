@@ -1,5 +1,4 @@
 <div class="kiosk-page" [ngClass]="estado">
-
   <div class="kiosk-bg"></div>
 
   <header class="kiosk-header">
@@ -17,41 +16,32 @@
   </header>
 
   <main class="kiosk-content">
-
     <section class="scanner-panel">
-      <div class="scanner-frame">
-        <video #video autoplay muted playsinline></video>
 
-        <div class="scan-line"></div>
-        <div class="corner top-left"></div>
-        <div class="corner top-right"></div>
-        <div class="corner bottom-left"></div>
-        <div class="corner bottom-right"></div>
+      <div class="scanner-frame">
+        <div id="qr-reader"></div>
+        <div class="scan-box"></div>
       </div>
 
       <p class="scanner-hint">
-        Escaneá el código QR de la entrada frente a la cámara.
+        Colocá el QR dentro del cuadro. Mantenelo a 20–30 cm del iPhone y con buen brillo.
       </p>
+
+      <button class="restart-btn" (click)="reiniciarScanner()">
+        Reiniciar cámara
+      </button>
+
     </section>
 
     <section class="result-panel">
-
-      <div class="result-icon" *ngIf="estado === 'idle'">
-        ⏳
-      </div>
-
-      <div class="result-icon success-icon" *ngIf="estado === 'success'">
-        ✅
-      </div>
-
-      <div class="result-icon error-icon" *ngIf="estado === 'error'">
-        ❌
-      </div>
+      <div class="result-icon" *ngIf="estado === 'idle'">⏳</div>
+      <div class="result-icon" *ngIf="estado === 'validating'">🔎</div>
+      <div class="result-icon success-icon" *ngIf="estado === 'success'">✅</div>
+      <div class="result-icon error-icon" *ngIf="estado === 'error'">❌</div>
 
       <h2>{{ mensaje }}</h2>
 
       <div class="entrada-info" *ngIf="entrada">
-
         <div class="info-row">
           <span>Nombre</span>
           <strong>{{ entrada.nombre_completo }}</strong>
@@ -71,7 +61,6 @@
           <span>Estado</span>
           <strong>{{ entrada.estado }}</strong>
         </div>
-
       </div>
 
       <div class="idle-copy" *ngIf="!entrada">
@@ -80,9 +69,6 @@
           está confirmada y no ha sido utilizada anteriormente.
         </p>
       </div>
-
     </section>
-
   </main>
-
 </div>
