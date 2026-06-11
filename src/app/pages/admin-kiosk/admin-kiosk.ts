@@ -140,6 +140,7 @@ console.log('ENVIANDO AL BACKEND:', {
 
     } catch (error: any) {
       console.error('Error validando QR:', error);
+      console.log('MENSAJE BACKEND:', error?.error);
 
       this.estado = 'error';
       this.mensaje =
