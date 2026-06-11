@@ -9,10 +9,10 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { BrowserMultiFormatReader } from '@zxing/browser';
-
 import { HttpClient } from '@angular/common/http';
-
 import { environment } from '../../../environments/environment';
+
+type EstadoScanner = 'idle' | 'validating' | 'success' | 'error';
 
 @Component({
   selector: 'app-admin-kiosk',
@@ -22,7 +22,6 @@ import { environment } from '../../../environments/environment';
   styleUrl: './admin-kiosk.css'
 })
 export class AdminKiosk implements OnInit, OnDestroy {
-
   private http = inject(HttpClient);
 
   @ViewChild('video', { static: true })
@@ -30,95 +29,142 @@ export class AdminKiosk implements OnInit, OnDestroy {
 
   scanner = new BrowserMultiFormatReader();
 
-  estado: 'idle' | 'success' | 'error' = 'idle';
-
+  estado: EstadoScanner = 'idle';
   mensaje = 'Esperando QR...';
-
   entrada: any = null;
-
   procesando = false;
 
-  ngOnInit(): void {
-    this.iniciarScanner();
+  ultimoQr = '';
+  ultimoEscaneo = 0;
+
+  async ngOnInit(): Promise<void> {
+    await this.iniciarScanner();
   }
 
   ngOnDestroy(): void {
+    this.detenerCamara();
+  }
+
+  async iniciarScanner(): Promise<void> {
+    try {
+      this.estado = 'idle';
+      this.mensaje = 'Iniciando cámara...';
+
+      const video = this.videoRef.nativeElement;
+
+      const constraints: MediaStreamConstraints = {
+        video: {
+          facingMode: { ideal: 'environment' },
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
+        },
+        audio: false
+      };
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+      video.srcObject = stream;
+      video.setAttribute('playsinline', 'true');
+      video.muted = true;
+
+      await video.play();
+
+      this.mensaje = 'Esperando QR...';
+
+      this.scanner.decodeFromVideoElement(
+        video,
+        async (result) => {
+          if (!result) return;
+
+          const qrData = result.getText();
+          await this.procesarQr(qrData);
+        }
+      );
+
+    } catch (error) {
+      console.error('Error iniciando cámara:', error);
+      this.estado = 'error';
+      this.mensaje = 'No se pudo iniciar la cámara. Revisá permisos.';
     }
+  }
 
-  async iniciarScanner() {
+  async procesarQr(qrData: string): Promise<void> {
+    const ahora = Date.now();
 
-    const video = this.videoRef.nativeElement;
+    if (this.procesando) return;
 
-    const devices = await BrowserMultiFormatReader.listVideoInputDevices();
-
-    if (!devices.length) {
-      this.mensaje = 'No se encontró cámara.';
+    if (qrData === this.ultimoQr && ahora - this.ultimoEscaneo < 7000) {
       return;
     }
 
-    this.scanner.decodeFromVideoDevice(
-      devices[0].deviceId,
-      video,
-      async (result) => {
+    this.procesando = true;
+    this.ultimoQr = qrData;
+    this.ultimoEscaneo = ahora;
 
-        if (!result || this.procesando) return;
+    this.estado = 'validating';
+    this.mensaje = 'Validando entrada...';
+    this.entrada = null;
 
-        this.procesando = true;
+    try {
+      const response: any = await this.http.post(
+        `${environment.apiUrl}/compras-entradas/validar-qr`,
+        { qr_data: qrData }
+      ).toPromise();
 
-        try {
+      this.estado = 'success';
+      this.mensaje = response.message || 'Entrada válida';
+      this.entrada = response.entrada;
 
-          const qrData = result.getText();
-            alert(qrData);
-            
-          const response: any = await this.http.post(
-            `${environment.apiUrl}/compras-entradas/validar-qr`,
-            {
-              qr_data: qrData
-            }
-          ).toPromise();
+      this.playSuccess();
 
-          this.estado = 'success';
+    } catch (error: any) {
+      console.error('Error validando QR:', error);
 
-          this.mensaje = response.message;
+      this.estado = 'error';
+      this.mensaje =
+        error?.error?.message ||
+        'QR inválido';
 
-          this.entrada = response.entrada;
+      this.entrada = error?.error?.entrada || null;
 
-          this.playSuccess();
+      this.playError();
+    }
 
-        } catch (error: any) {
+    setTimeout(() => {
+      this.estado = 'idle';
+      this.mensaje = 'Esperando QR...';
+      this.entrada = null;
+      this.procesando = false;
+    }, 4500);
+  }
 
-          this.estado = 'error';
+  detenerCamara(): void {
+    try {
+      const video = this.videoRef?.nativeElement;
 
-          this.mensaje =
-            error?.error?.message ||
-            'QR inválido';
-
-          this.entrada = null;
-
-          this.playError();
-
-        }
-
-        setTimeout(() => {
-          this.estado = 'idle';
-          this.mensaje = 'Esperando QR...';
-          this.entrada = null;
-          this.procesando = false;
-        }, 4000);
-
+      if (video?.srcObject) {
+        const stream = video.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
       }
-    );
-
+    } catch (error) {
+      console.error('Error deteniendo cámara:', error);
+    }
   }
 
-  playSuccess() {
-    const audio = new Audio('/sounds/success.mp3');
-    audio.play();
+  playSuccess(): void {
+    try {
+      const audio = new Audio('/sounds/success.mp3');
+      audio.volume = 0.8;
+      audio.play();
+    } catch {}
   }
 
-  playError() {
-    const audio = new Audio('/sounds/error.mp3');
-    audio.play();
+  playError(): void {
+    try {
+      const audio = new Audio('/sounds/error.mp3');
+      audio.volume = 0.8;
+      audio.play();
+    } catch {}
   }
-
 }
