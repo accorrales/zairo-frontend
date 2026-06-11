@@ -101,6 +101,9 @@ export class AdminKiosk implements OnInit, OnDestroy {
   }
 
   async procesarQr(qrData: string): Promise<void> {
+    console.log('======================');
+  console.log('QR LEIDO:', qrData);
+  console.log('======================');
     const ahora = Date.now();
 
     if (this.procesando) return;
@@ -119,7 +122,9 @@ export class AdminKiosk implements OnInit, OnDestroy {
 
     try {
       this.scanner?.pause(true);
-
+console.log('ENVIANDO AL BACKEND:', {
+  qr_data: qrData
+});
       const response: any = await this.http.post(
         `${environment.apiUrl}/compras-entradas/validar-qr`,
         { qr_data: qrData }
