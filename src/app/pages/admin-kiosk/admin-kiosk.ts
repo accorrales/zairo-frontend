@@ -32,6 +32,11 @@ export class AdminKiosk implements OnInit, OnDestroy {
   ultimoQr = '';
   ultimoEscaneo = 0;
 
+  historial: any[] = [];
+
+  flashDisponible = false;
+  flashActivo = false;
+
   async ngOnInit(): Promise<void> {
     setTimeout(() => {
       this.iniciarScanner();
@@ -46,6 +51,7 @@ export class AdminKiosk implements OnInit, OnDestroy {
     try {
       this.estado = 'idle';
       this.mensaje = 'Iniciando cámara...';
+      this.entrada = null;
 
       await this.detenerScanner();
 
@@ -55,10 +61,10 @@ export class AdminKiosk implements OnInit, OnDestroy {
       });
 
       const config = {
-        fps: 12,
+        fps: 15,
         qrbox: (viewfinderWidth: number, viewfinderHeight: number) => {
           const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-          const boxSize = Math.floor(minEdge * 0.72);
+          const boxSize = Math.floor(minEdge * 0.68);
 
           return {
             width: boxSize,
@@ -78,16 +84,17 @@ export class AdminKiosk implements OnInit, OnDestroy {
         async (decodedText: string) => {
           await this.procesarQr(decodedText);
         },
-        () => {
-          // Ignoramos errores normales de lectura mientras busca QR.
-        }
+        () => {}
       );
 
       this.mensaje = 'Esperando QR...';
 
+      setTimeout(() => {
+        this.detectarFlash();
+      }, 800);
+
     } catch (error) {
       console.error('Error iniciando scanner:', error);
-
       this.estado = 'error';
       this.mensaje = 'No se pudo iniciar la cámara. Revisá permisos o reiniciá.';
     }
@@ -98,7 +105,7 @@ export class AdminKiosk implements OnInit, OnDestroy {
 
     if (this.procesando) return;
 
-    if (qrData === this.ultimoQr && ahora - this.ultimoEscaneo < 8000) {
+    if (qrData === this.ultimoQr && ahora - this.ultimoEscaneo < 9000) {
       return;
     }
 
@@ -122,6 +129,8 @@ export class AdminKiosk implements OnInit, OnDestroy {
       this.mensaje = response.message || 'Entrada válida';
       this.entrada = response.entrada;
 
+      this.agregarHistorial('success', this.mensaje, this.entrada);
+      this.vibrar([120]);
       this.playSuccess();
 
     } catch (error: any) {
@@ -134,6 +143,8 @@ export class AdminKiosk implements OnInit, OnDestroy {
 
       this.entrada = error?.error?.entrada || null;
 
+      this.agregarHistorial('error', this.mensaje, this.entrada);
+      this.vibrar([250, 100, 250]);
       this.playError();
     }
 
@@ -156,6 +167,8 @@ export class AdminKiosk implements OnInit, OnDestroy {
     this.procesando = false;
     this.ultimoQr = '';
     this.ultimoEscaneo = 0;
+    this.flashActivo = false;
+    this.flashDisponible = false;
 
     await this.detenerScanner();
 
@@ -172,16 +185,79 @@ export class AdminKiosk implements OnInit, OnDestroy {
 
       await this.scanner?.clear();
       this.scanner = null;
-    } catch (error) {
-      console.warn('Scanner ya detenido o no inicializado:', error);
+    } catch {
       this.scanner = null;
     }
+  }
+
+  async detectarFlash(): Promise<void> {
+    try {
+      const video = document.querySelector('#qr-reader video') as HTMLVideoElement;
+
+      const stream = video?.srcObject as MediaStream;
+      const track = stream?.getVideoTracks?.()[0];
+
+      if (!track) {
+        this.flashDisponible = false;
+        return;
+      }
+
+      const capabilities: any = track.getCapabilities?.();
+
+      this.flashDisponible = !!capabilities?.torch;
+
+    } catch {
+      this.flashDisponible = false;
+    }
+  }
+
+  async toggleFlash(): Promise<void> {
+    try {
+      const video = document.querySelector('#qr-reader video') as HTMLVideoElement;
+
+      const stream = video?.srcObject as MediaStream;
+      const track = stream?.getVideoTracks?.()[0];
+
+      if (!track) return;
+
+      this.flashActivo = !this.flashActivo;
+
+      await track.applyConstraints({
+        advanced: [
+          {
+            torch: this.flashActivo
+          } as any
+        ]
+      });
+
+    } catch (error) {
+      console.warn('Flash no disponible en este dispositivo:', error);
+      this.flashDisponible = false;
+      this.flashActivo = false;
+    }
+  }
+
+  agregarHistorial(tipo: 'success' | 'error', mensaje: string, entrada: any): void {
+    this.historial.unshift({
+      tipo,
+      mensaje,
+      entrada,
+      hora: new Date()
+    });
+
+    this.historial = this.historial.slice(0, 6);
+  }
+
+  vibrar(pattern: number[]): void {
+    try {
+      navigator.vibrate?.(pattern);
+    } catch {}
   }
 
   playSuccess(): void {
     try {
       const audio = new Audio('/sounds/success.mp3');
-      audio.volume = 0.9;
+      audio.volume = 1;
       audio.play();
     } catch {}
   }
@@ -189,7 +265,7 @@ export class AdminKiosk implements OnInit, OnDestroy {
   playError(): void {
     try {
       const audio = new Audio('/sounds/error.mp3');
-      audio.volume = 0.9;
+      audio.volume = 1;
       audio.play();
     } catch {}
   }

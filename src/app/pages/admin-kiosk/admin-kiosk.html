@@ -18,18 +18,24 @@
   <main class="kiosk-content">
     <section class="scanner-panel">
 
+      <div class="scanner-toolbar">
+        <button class="tool-btn" (click)="reiniciarScanner()">
+          Reiniciar cámara
+        </button>
+
+        <button class="tool-btn" (click)="toggleFlash()" [disabled]="!flashDisponible">
+          {{ flashActivo ? 'Apagar flash' : 'Encender flash' }}
+        </button>
+      </div>
+
       <div class="scanner-frame">
         <div id="qr-reader"></div>
         <div class="scan-box"></div>
       </div>
 
       <p class="scanner-hint">
-        Colocá el QR dentro del cuadro. Mantenelo a 20–30 cm del iPhone y con buen brillo.
+        Colocá el QR dentro del cuadro. Mantenelo a 20–30 cm del iPhone, con buen brillo y sin moverlo.
       </p>
-
-      <button class="restart-btn" (click)="reiniciarScanner()">
-        Reiniciar cámara
-      </button>
 
     </section>
 
@@ -61,6 +67,11 @@
           <span>Estado</span>
           <strong>{{ entrada.estado }}</strong>
         </div>
+
+        <div class="info-row" *ngIf="entrada.fecha_ingreso">
+          <span>Ingreso</span>
+          <strong>{{ entrada.fecha_ingreso | date:'dd/MM/yyyy HH:mm:ss' }}</strong>
+        </div>
       </div>
 
       <div class="idle-copy" *ngIf="!entrada">
@@ -68,6 +79,20 @@
           El sistema validará automáticamente si la entrada es oficial,
           está confirmada y no ha sido utilizada anteriormente.
         </p>
+      </div>
+
+      <div class="historial" *ngIf="historial.length">
+        <h3>Últimos escaneos</h3>
+
+        <div
+          class="historial-item"
+          *ngFor="let h of historial"
+          [ngClass]="h.tipo">
+
+          <strong>{{ h.tipo === 'success' ? 'VÁLIDA' : 'RECHAZADA' }}</strong>
+          <span>{{ h.mensaje }}</span>
+          <small>{{ h.hora | date:'HH:mm:ss' }}</small>
+        </div>
       </div>
     </section>
   </main>
