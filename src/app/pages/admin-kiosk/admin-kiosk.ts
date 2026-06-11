@@ -2,6 +2,7 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  NgZone,
   inject
 } from '@angular/core';
 
@@ -21,6 +22,7 @@ type EstadoScanner = 'idle' | 'validating' | 'success' | 'error';
 })
 export class AdminKiosk implements OnInit, OnDestroy {
   private http = inject(HttpClient);
+  private zone = inject(NgZone);
 
   scanner: Html5Qrcode | null = null;
 
@@ -87,6 +89,11 @@ export class AdminKiosk implements OnInit, OnDestroy {
         () => {}
       );
 
+      this.zone.run(() => {
+        this.mensaje = 'Esperando QR...';
+        this.estado = 'idle';
+      });
+
       this.mensaje = 'Esperando QR...';
 
       setTimeout(() => {
@@ -116,9 +123,11 @@ export class AdminKiosk implements OnInit, OnDestroy {
     this.ultimoQr = qrData;
     this.ultimoEscaneo = ahora;
 
-    this.estado = 'validating';
-    this.mensaje = 'Validando entrada...';
-    this.entrada = null;
+    this.zone.run(() => {
+      this.estado = 'validating';
+      this.mensaje = 'Validando entrada...';
+      this.entrada = null;
+    });
 
     try {
       this.scanner?.pause(true);
@@ -130,11 +139,12 @@ console.log('ENVIANDO AL BACKEND:', {
         { qr_data: qrData }
       ).toPromise();
 
-      this.estado = 'success';
-      this.mensaje = response.message || 'Entrada válida';
-      this.entrada = response.entrada;
-
-      this.agregarHistorial('success', this.mensaje, this.entrada);
+      this.zone.run(() => {
+        this.estado = 'success';
+        this.mensaje = response.message || 'Entrada válida';
+        this.entrada = response.entrada;
+        this.agregarHistorial('success', this.mensaje, this.entrada);
+      });
       this.vibrar([120]);
       this.playSuccess();
 
@@ -142,23 +152,23 @@ console.log('ENVIANDO AL BACKEND:', {
       console.error('Error validando QR:', error);
       console.log('MENSAJE BACKEND:', error?.error);
 
-      this.estado = 'error';
-      this.mensaje =
-        error?.error?.message ||
-        'QR inválido';
-
-      this.entrada = error?.error?.entrada || null;
-
-      this.agregarHistorial('error', this.mensaje, this.entrada);
+      this.zone.run(() => {
+        this.estado = 'error';
+        this.mensaje = error?.error?.message || 'QR inválido';
+        this.entrada = error?.error?.entrada || null;
+        this.agregarHistorial('error', this.mensaje, this.entrada);
+      });
       this.vibrar([250, 100, 250]);
       this.playError();
     }
 
     setTimeout(() => {
-      this.estado = 'idle';
-      this.mensaje = 'Esperando QR...';
-      this.entrada = null;
-      this.procesando = false;
+      this.zone.run(() => {
+        this.estado = 'idle';
+        this.mensaje = 'Esperando QR...';
+        this.entrada = null;
+        this.procesando = false;
+      });
 
       try {
         this.scanner?.resume();

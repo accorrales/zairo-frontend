@@ -271,6 +271,10 @@
   box-shadow: 0 0 90px rgba(239,68,68,.35);
 }
 
+#qr-reader__scan_region img {
+  display: none !important;
+}
+
 @media (max-width: 950px) {
   .kiosk-content {
     grid-template-columns: 1fr;
