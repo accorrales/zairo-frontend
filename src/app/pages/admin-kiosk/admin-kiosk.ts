@@ -12,6 +12,7 @@ import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { environment } from '../../../environments/environment';
 
 type EstadoScanner = 'idle' | 'validating' | 'success' | 'error';
+type TipoHistorial = 'success' | 'error';
 
 @Component({
   selector: 'app-admin-kiosk',
@@ -51,9 +52,11 @@ export class AdminKiosk implements OnInit, OnDestroy {
 
   async iniciarScanner(): Promise<void> {
     try {
-      this.estado = 'idle';
-      this.mensaje = 'Iniciando cámara...';
-      this.entrada = null;
+      this.zone.run(() => {
+        this.estado = 'idle';
+        this.mensaje = 'Iniciando cámara...';
+        this.entrada = null;
+      });
 
       await this.detenerScanner();
 
@@ -90,11 +93,9 @@ export class AdminKiosk implements OnInit, OnDestroy {
       );
 
       this.zone.run(() => {
-        this.mensaje = 'Esperando QR...';
         this.estado = 'idle';
+        this.mensaje = 'Esperando QR...';
       });
-
-      this.mensaje = 'Esperando QR...';
 
       setTimeout(() => {
         this.detectarFlash();
@@ -102,17 +103,18 @@ export class AdminKiosk implements OnInit, OnDestroy {
 
     } catch (error) {
       console.error('Error iniciando scanner:', error);
-      this.estado = 'error';
-      this.mensaje = 'No se pudo iniciar la cámara. Revisá permisos o reiniciá.';
+
+      this.zone.run(() => {
+        this.estado = 'error';
+        this.mensaje = 'No se pudo iniciar la cámara. Revisá permisos o reiniciá.';
+      });
     }
   }
 
   async procesarQr(qrData: string): Promise<void> {
-    console.log('======================');
-  console.log('QR LEIDO:', qrData);
-  console.log('======================');
     const ahora = Date.now();
 
+    if (!qrData) return;
     if (this.procesando) return;
 
     if (qrData === this.ultimoQr && ahora - this.ultimoEscaneo < 9000) {
@@ -131,9 +133,7 @@ export class AdminKiosk implements OnInit, OnDestroy {
 
     try {
       this.scanner?.pause(true);
-console.log('ENVIANDO AL BACKEND:', {
-  qr_data: qrData
-});
+
       const response: any = await this.http.post(
         `${environment.apiUrl}/compras-entradas/validar-qr`,
         { qr_data: qrData }
@@ -141,23 +141,37 @@ console.log('ENVIANDO AL BACKEND:', {
 
       this.zone.run(() => {
         this.estado = 'success';
-        this.mensaje = response.message || 'Entrada válida';
-        this.entrada = response.entrada;
-        this.agregarHistorial('success', this.mensaje, this.entrada);
+        this.mensaje = response.message || 'Entrada válida. Acceso permitido.';
+        this.entrada = response.entrada || null;
+
+        this.agregarHistorial(
+          'success',
+          this.mensaje,
+          this.entrada
+        );
       });
+
       this.vibrar([120]);
       this.playSuccess();
 
     } catch (error: any) {
+      const mensajeError = error?.error?.message || 'QR inválido o entrada rechazada';
+      const entradaError = error?.error?.entrada || null;
+
       console.error('Error validando QR:', error);
-      console.log('MENSAJE BACKEND:', error?.error);
 
       this.zone.run(() => {
         this.estado = 'error';
-        this.mensaje = error?.error?.message || 'QR inválido';
-        this.entrada = error?.error?.entrada || null;
-        this.agregarHistorial('error', this.mensaje, this.entrada);
+        this.mensaje = mensajeError;
+        this.entrada = entradaError;
+
+        this.agregarHistorial(
+          'error',
+          mensajeError,
+          entradaError
+        );
       });
+
       this.vibrar([250, 100, 250]);
       this.playError();
     }
@@ -177,14 +191,16 @@ console.log('ENVIANDO AL BACKEND:', {
   }
 
   async reiniciarScanner(): Promise<void> {
-    this.estado = 'idle';
-    this.mensaje = 'Reiniciando cámara...';
-    this.entrada = null;
-    this.procesando = false;
-    this.ultimoQr = '';
-    this.ultimoEscaneo = 0;
-    this.flashActivo = false;
-    this.flashDisponible = false;
+    this.zone.run(() => {
+      this.estado = 'idle';
+      this.mensaje = 'Reiniciando cámara...';
+      this.entrada = null;
+      this.procesando = false;
+      this.ultimoQr = '';
+      this.ultimoEscaneo = 0;
+      this.flashActivo = false;
+      this.flashDisponible = false;
+    });
 
     await this.detenerScanner();
 
@@ -209,28 +225,32 @@ console.log('ENVIANDO AL BACKEND:', {
   async detectarFlash(): Promise<void> {
     try {
       const video = document.querySelector('#qr-reader video') as HTMLVideoElement;
-
       const stream = video?.srcObject as MediaStream;
       const track = stream?.getVideoTracks?.()[0];
 
       if (!track) {
-        this.flashDisponible = false;
+        this.zone.run(() => {
+          this.flashDisponible = false;
+        });
         return;
       }
 
       const capabilities: any = track.getCapabilities?.();
 
-      this.flashDisponible = !!capabilities?.torch;
+      this.zone.run(() => {
+        this.flashDisponible = !!capabilities?.torch;
+      });
 
     } catch {
-      this.flashDisponible = false;
+      this.zone.run(() => {
+        this.flashDisponible = false;
+      });
     }
   }
 
   async toggleFlash(): Promise<void> {
     try {
       const video = document.querySelector('#qr-reader video') as HTMLVideoElement;
-
       const stream = video?.srcObject as MediaStream;
       const track = stream?.getVideoTracks?.()[0];
 
@@ -248,12 +268,15 @@ console.log('ENVIANDO AL BACKEND:', {
 
     } catch (error) {
       console.warn('Flash no disponible en este dispositivo:', error);
-      this.flashDisponible = false;
-      this.flashActivo = false;
+
+      this.zone.run(() => {
+        this.flashDisponible = false;
+        this.flashActivo = false;
+      });
     }
   }
 
-  agregarHistorial(tipo: 'success' | 'error', mensaje: string, entrada: any): void {
+  agregarHistorial(tipo: TipoHistorial, mensaje: string, entrada: any): void {
     this.historial.unshift({
       tipo,
       mensaje,
@@ -272,17 +295,17 @@ console.log('ENVIANDO AL BACKEND:', {
 
   playSuccess(): void {
     try {
-      const audio = new Audio('/sounds/success.mp3');
+      const audio = new Audio('/assets/sounds/success.mp3');
       audio.volume = 1;
-      audio.play();
+      audio.play().catch(() => {});
     } catch {}
   }
 
   playError(): void {
     try {
-      const audio = new Audio('/sounds/error.mp3');
+      const audio = new Audio('/assets/sounds/error.mp3');
       audio.volume = 1;
-      audio.play();
+      audio.play().catch(() => {});
     } catch {}
   }
 }

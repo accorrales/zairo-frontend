@@ -6,94 +6,141 @@
       <div class="logo">Z</div>
       <div>
         <h1>ZAIRO KIOSK</h1>
-        <span>Control de acceso</span>
+        <span>Control de acceso profesional</span>
       </div>
     </div>
 
     <div class="status-pill">
+      <span class="status-dot"></span>
       {{ mensaje }}
     </div>
   </header>
 
   <main class="kiosk-content">
+
     <section class="scanner-panel">
+      <div class="scanner-top">
+        <div>
+          <h2>Escáner QR</h2>
+          <p>Validación en tiempo real</p>
+        </div>
 
-      <div class="scanner-toolbar">
-        <button class="tool-btn" (click)="reiniciarScanner()">
-          Reiniciar cámara
-        </button>
+        <div class="scanner-toolbar">
+          <button class="tool-btn" (click)="reiniciarScanner()">
+            Reiniciar
+          </button>
 
-        <button class="tool-btn" (click)="toggleFlash()" [disabled]="!flashDisponible">
-          {{ flashActivo ? 'Apagar flash' : 'Encender flash' }}
-        </button>
+          <button
+            class="tool-btn"
+            (click)="toggleFlash()"
+            [disabled]="!flashDisponible">
+            {{ flashActivo ? 'Flash ON' : 'Flash' }}
+          </button>
+        </div>
       </div>
 
       <div class="scanner-frame">
         <div id="qr-reader"></div>
-        <div class="scan-box"></div>
+
+        <div class="scan-overlay">
+          <div class="scan-box">
+            <span class="corner top-left"></span>
+            <span class="corner top-right"></span>
+            <span class="corner bottom-left"></span>
+            <span class="corner bottom-right"></span>
+            <div class="scan-line"></div>
+          </div>
+        </div>
+
+        <div class="camera-state" *ngIf="estado === 'validating'">
+          <div class="loader"></div>
+          <strong>Validando entrada...</strong>
+        </div>
       </div>
 
       <p class="scanner-hint">
-        Colocá el QR dentro del cuadro. Mantenelo a 20–30 cm del iPhone, con buen brillo y sin moverlo.
+        Colocá el QR dentro del cuadro. Mantenelo a 20–30 cm del iPhone,
+        con buen brillo y sin moverlo.
       </p>
-
     </section>
 
     <section class="result-panel">
-      <div class="result-icon" *ngIf="estado === 'idle'">⏳</div>
-      <div class="result-icon" *ngIf="estado === 'validating'">🔎</div>
-      <div class="result-icon success-icon" *ngIf="estado === 'success'">✅</div>
-      <div class="result-icon error-icon" *ngIf="estado === 'error'">❌</div>
+      <div class="result-card">
 
-      <h2>{{ mensaje }}</h2>
+        <div class="result-icon idle-icon" *ngIf="estado === 'idle'">⌁</div>
+        <div class="result-icon validating-icon" *ngIf="estado === 'validating'">🔎</div>
+        <div class="result-icon success-icon" *ngIf="estado === 'success'">✅</div>
+        <div class="result-icon error-icon" *ngIf="estado === 'error'">❌</div>
 
-      <div class="entrada-info" *ngIf="entrada">
-        <div class="info-row">
-          <span>Nombre</span>
-          <strong>{{ entrada.nombre_completo }}</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Evento</span>
-          <strong>{{ entrada.evento }}</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Entrada</span>
-          <strong>{{ entrada.entrada }}</strong>
-        </div>
-
-        <div class="info-row">
-          <span>Estado</span>
-          <strong>{{ entrada.estado }}</strong>
-        </div>
-
-        <div class="info-row" *ngIf="entrada.fecha_ingreso">
-          <span>Ingreso</span>
-          <strong>{{ entrada.fecha_ingreso | date:'dd/MM/yyyy HH:mm:ss' }}</strong>
-        </div>
-      </div>
-
-      <div class="idle-copy" *ngIf="!entrada">
-        <p>
-          El sistema validará automáticamente si la entrada es oficial,
-          está confirmada y no ha sido utilizada anteriormente.
+        <p class="result-label">
+          {{ estado === 'success' ? 'ACCESO APROBADO' :
+             estado === 'error' ? 'ACCESO RECHAZADO' :
+             estado === 'validating' ? 'VERIFICANDO' :
+             'LISTO PARA ESCANEAR' }}
         </p>
+
+        <h2>{{ mensaje }}</h2>
+
+        <div class="entrada-info" *ngIf="entrada">
+          <div class="info-row">
+            <span>Nombre</span>
+            <strong>{{ entrada.nombre_completo }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Evento</span>
+            <strong>{{ entrada.evento }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Entrada</span>
+            <strong>{{ entrada.entrada }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Estado</span>
+            <strong>{{ entrada.estado }}</strong>
+          </div>
+
+          <div class="info-row" *ngIf="entrada.fecha_ingreso">
+            <span>Ingreso</span>
+            <strong>{{ entrada.fecha_ingreso | date:'dd/MM/yyyy HH:mm:ss' }}</strong>
+          </div>
+        </div>
+
+        <div class="idle-copy" *ngIf="!entrada">
+          <p>
+            El sistema validará automáticamente si la entrada es oficial,
+            está confirmada y no fue utilizada anteriormente.
+          </p>
+        </div>
+
       </div>
 
-      <div class="historial" *ngIf="historial.length">
-        <h3>Últimos escaneos</h3>
+      <div class="historial">
+        <div class="historial-header">
+          <h3>Últimos escaneos</h3>
+          <span>{{ historial.length }}/6</span>
+        </div>
 
         <div
           class="historial-item"
           *ngFor="let h of historial"
           [ngClass]="h.tipo">
 
-          <strong>{{ h.tipo === 'success' ? 'VÁLIDA' : 'RECHAZADA' }}</strong>
-          <span>{{ h.mensaje }}</span>
+          <div>
+            <strong>{{ h.tipo === 'success' ? 'VÁLIDA' : 'RECHAZADA' }}</strong>
+            <span>{{ h.entrada?.nombre_completo || h.mensaje }}</span>
+          </div>
+
           <small>{{ h.hora | date:'HH:mm:ss' }}</small>
         </div>
+
+        <p class="empty-history" *ngIf="!historial.length">
+          Todavía no hay escaneos registrados.
+        </p>
       </div>
     </section>
+
   </main>
 </div>
