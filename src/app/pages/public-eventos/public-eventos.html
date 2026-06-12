@@ -1,3 +1,10 @@
+<div class="intro-loader" *ngIf="loadingIntro">
+  <div class="intro-logo">Z</div>
+  <h2>Inicializando Lost Trip</h2>
+  <p>Conectando con la jungla...</p>
+  <span>ACCESS GRANTED</span>
+</div>
+
 <div class="zairo-home">
 
   <header class="navbar">
@@ -12,7 +19,7 @@
     <nav>
       <a href="#historia">El viaje</a>
       <a href="#ai-pass">AI Pass</a>
-      <a href="#ubicacion">Ubicación</a>
+      <a href="#lineup">Lineup</a>
       <a href="#eventos">Entradas</a>
       <a routerLink="/login" class="login-btn">Mi cuenta</a>
     </nav>
@@ -22,7 +29,7 @@
     <div class="hero-bg">
       <img
         [src]="proximoEvento?.imagen || 'https://images.unsplash.com/photo-1511497584788-876760111969'"
-        alt="Lost Trip Welcome to the Jungle">
+        alt="Lost Trip">
     </div>
 
     <div class="hero-video-fake"></div>
@@ -36,7 +43,7 @@
     <div class="jungle-fog fog-two"></div>
     <div class="particles"></div>
 
-    <div class="hero-content">
+    <div class="hero-content reveal">
       <span class="eyebrow">ZAIRO PRESENTS</span>
 
       <h1>
@@ -46,7 +53,7 @@
 
       <p>
         Una experiencia inmersiva entre música, luces, niebla, energía salvaje
-        y acceso digital. La jungla abre sus puertas solo para los viajeros autorizados.
+        y acceso digital. La jungla abre sus puertas solo para viajeros autorizados.
       </p>
 
       <div class="hero-actions">
@@ -55,26 +62,20 @@
       </div>
 
       <div class="countdown" *ngIf="proximoEvento">
-        <div>
-          <strong>{{ countdown.dias }}</strong>
-          <span>Días</span>
-        </div>
-        <div>
-          <strong>{{ countdown.horas }}</strong>
-          <span>Horas</span>
-        </div>
-        <div>
-          <strong>{{ countdown.minutos }}</strong>
-          <span>Min</span>
-        </div>
-        <div>
-          <strong>{{ countdown.segundos }}</strong>
-          <span>Seg</span>
-        </div>
+        <div><strong>{{ countdown.dias }}</strong><span>Días</span></div>
+        <div><strong>{{ countdown.horas }}</strong><span>Horas</span></div>
+        <div><strong>{{ countdown.minutos }}</strong><span>Min</span></div>
+        <div><strong>{{ countdown.segundos }}</strong><span>Seg</span></div>
       </div>
     </div>
 
-    <div class="ticket-3d" *ngIf="proximoEvento">
+    <div
+      class="ticket-3d"
+      *ngIf="proximoEvento"
+      [style.transform]="ticketTransform"
+      (mousemove)="moverTicket($event)"
+      (mouseleave)="resetTicket()">
+
       <div class="ticket-top">
         <span>AI PASS</span>
         <small>ZAIRO ACCESS</small>
@@ -84,9 +85,7 @@
       <p>Welcome to the Jungle</p>
 
       <div class="ticket-qr">
-        <span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span>
+        <span *ngFor="let x of [1,2,3,4,5,6,7,8,9,10,11,12]"></span>
       </div>
 
       <div class="ticket-meta">
@@ -98,15 +97,13 @@
     </div>
   </section>
 
-  <section class="trip-alert">
+  <section class="trip-alert reveal">
     <span>TRANSMISIÓN ACTIVA</span>
-    <p>
-      El viaje ha comenzado. La ubicación se revela cuando la energía llama.
-    </p>
+    <p>El viaje ha comenzado. La ubicación se revela cuando la energía llama.</p>
   </section>
 
   <section class="story-section" id="historia">
-    <article class="story-card large">
+    <article class="story-card large reveal">
       <span>01 / EL LLAMADO</span>
       <h2>Dicen que existe un lugar escondido.</h2>
       <p>
@@ -115,46 +112,40 @@
       </p>
     </article>
 
-    <article class="story-card">
+    <article class="story-card reveal">
       <span>02 / LA ENTRADA</span>
       <h3>No todos reciben acceso.</h3>
-      <p>
-        Cada viajero entra con un pase digital único. Sin copias. Sin caos.
-        Solo acceso confirmado.
-      </p>
+      <p>Cada viajero entra con un pase digital único. Sin copias. Sin caos.</p>
     </article>
 
-    <article class="story-card">
+    <article class="story-card reveal">
       <span>03 / LA JUNGLA</span>
       <h3>Cuando las luces bajan, el viaje comienza.</h3>
-      <p>
-        Sonido, visuales, comunidad y una atmósfera diseñada para sentirse
-        diferente desde el primer minuto.
-      </p>
+      <p>Sonido, visuales, comunidad y atmósfera diseñada para sentirse diferente.</p>
     </article>
   </section>
 
   <section class="experience-strip">
-    <article class="experience-item">
+    <article class="experience-item reveal">
       <span>01</span>
       <h3>Jungle Visuals</h3>
       <p>Sombras, neón, humo y luces diseñadas para una atmósfera cinematográfica.</p>
     </article>
 
-    <article class="experience-item">
+    <article class="experience-item reveal">
       <span>02</span>
       <h3>Sound Trip</h3>
       <p>Una curaduría musical para pasar de sunset vibes a noche intensa.</p>
     </article>
 
-    <article class="experience-item">
+    <article class="experience-item reveal">
       <span>03</span>
       <h3>Secret Energy</h3>
       <p>Una experiencia con ubicación, acceso y comunidad al estilo ZAIRO.</p>
     </article>
   </section>
 
-  <section class="ai-pass" id="ai-pass">
+  <section class="ai-pass reveal" id="ai-pass">
     <div class="ai-copy">
       <span>ZAIRO AI ACCESS</span>
       <h2>Tu entrada no es solo un QR. Es tu pase al viaje.</h2>
@@ -182,7 +173,35 @@
     </div>
   </section>
 
-  <section class="secret-location" id="ubicacion">
+  <section class="lineup-section reveal" id="lineup">
+    <div class="section-title">
+      <span>JUNGLE FREQUENCIES</span>
+      <h2>Lineup Experience</h2>
+      <p>La música guía el viaje. La jungla decide el ritmo.</p>
+    </div>
+
+    <div class="lineup-grid">
+      <article>
+        <span>DJ SET</span>
+        <h3>ZAIRO Residents</h3>
+        <p>Reggaetón · Afro · House · Dembow</p>
+      </article>
+
+      <article>
+        <span>SPECIAL GUEST</span>
+        <h3>Próximamente</h3>
+        <p>Invitado sorpresa revelado antes del evento.</p>
+      </article>
+
+      <article>
+        <span>FINAL HOUR</span>
+        <h3>Jungle Closing</h3>
+        <p>La última hora del viaje. Energía máxima.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="secret-location reveal" id="ubicacion">
     <div class="map-card">
       <div class="map-grid"></div>
       <div class="map-pulse"></div>
@@ -204,8 +223,35 @@
     </div>
   </section>
 
-  <section id="eventos" class="events-section">
+  <section class="ticket-types reveal">
     <div class="section-title">
+      <span>ACCESS LEVELS</span>
+      <h2>Tipos de entrada</h2>
+    </div>
+
+    <div class="ticket-types-grid">
+      <article>
+        <span>GENERAL</span>
+        <h3>Jungle Pass</h3>
+        <p>Acceso oficial al viaje.</p>
+      </article>
+
+      <article class="featured">
+        <span>RECOMMENDED</span>
+        <h3>Lost Pass</h3>
+        <p>Para quienes quieren vivir la experiencia completa.</p>
+      </article>
+
+      <article>
+        <span>LIMITED</span>
+        <h3>Tribe Pass</h3>
+        <p>Cupo limitado para grupos y comunidad ZAIRO.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="eventos" class="events-section">
+    <div class="section-title reveal">
       <span>ENTRADAS OFICIALES</span>
       <h2>Elegí tu pase al Lost Trip</h2>
       <p>Seleccioná el evento y comprá tu entrada digital con QR oficial ZAIRO.</p>
@@ -216,20 +262,17 @@
     </div>
 
     <div class="events-grid" *ngIf="!cargando && eventos.length > 0">
-      <article class="event-card" *ngFor="let e of eventos">
+      <article class="event-card reveal" *ngFor="let e of eventos">
         <div class="image-wrap">
           <img
             [src]="e.imagen || 'https://images.unsplash.com/photo-1511497584788-876760111969'"
             alt="Imagen del evento">
 
-          <div class="date-badge">
-            {{ formatearFecha(e.fecha) }}
-          </div>
+          <div class="date-badge">{{ formatearFecha(e.fecha) }}</div>
         </div>
 
         <div class="event-info">
           <span class="event-tag">LOST TRIP</span>
-
           <h3>{{ e.nombre }}</h3>
 
           <p>
@@ -253,10 +296,18 @@
     </div>
   </section>
 
-  <section class="final-cta">
+  <section class="final-cta reveal">
     <span>WELCOME TO THE JUNGLE</span>
     <h2>El próximo viaje empieza con tu entrada.</h2>
     <a href="#eventos">Comprar ahora</a>
   </section>
+
+  <a class="whatsapp-float" [href]="whatsappUrl" target="_blank">
+    WhatsApp
+  </a>
+
+  <a class="mobile-buy-bar" href="#eventos">
+    Comprar entrada
+  </a>
 
 </div>

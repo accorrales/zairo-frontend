@@ -10,6 +10,49 @@
   overflow-x: hidden;
 }
 
+.intro-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background:
+    radial-gradient(circle at center, rgba(25,255,136,.16), transparent 34%),
+    #020503;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  color: white;
+  animation: introOut .5s ease 1.9s forwards;
+}
+
+.intro-logo {
+  width: 82px;
+  height: 82px;
+  margin: 0 auto 22px;
+  border-radius: 28px;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+  font-weight: 950;
+  background: linear-gradient(135deg, #19ff88, #7c3aed, #ffb84d);
+  box-shadow: 0 0 50px rgba(25,255,136,.5);
+}
+
+.intro-loader h2 {
+  margin: 0;
+  font-size: 34px;
+}
+
+.intro-loader p {
+  color: #d8eadf;
+}
+
+.intro-loader span {
+  color: #19ff88;
+  font-weight: 950;
+  letter-spacing: 4px;
+  font-size: 12px;
+}
+
 .navbar {
   height: 82px;
   padding: 0 6%;
@@ -58,7 +101,7 @@
 
 nav {
   display: flex;
-  gap: 28px;
+  gap: 26px;
   align-items: center;
 }
 
@@ -107,13 +150,7 @@ nav a {
   inset: 0;
   background:
     linear-gradient(115deg, transparent 0%, rgba(25,255,136,.08) 30%, transparent 48%),
-    repeating-linear-gradient(
-      90deg,
-      rgba(255,255,255,.018) 0,
-      rgba(255,255,255,.018) 1px,
-      transparent 1px,
-      transparent 8px
-    );
+    repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0, rgba(255,255,255,.018) 1px, transparent 1px, transparent 8px);
   mix-blend-mode: screen;
   opacity: .7;
   animation: videoSweep 8s linear infinite;
@@ -170,20 +207,8 @@ nav a {
   height: 360px;
   background: linear-gradient(135deg, rgba(25,255,136,.16), rgba(25,255,136,.02));
   clip-path: ellipse(38% 50% at 50% 50%);
-  filter: blur(.3px);
   opacity: .5;
   z-index: 1;
-}
-
-.leaf::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 8%;
-  width: 2px;
-  height: 84%;
-  background: rgba(255,255,255,.18);
-  transform: translateX(-50%);
 }
 
 .leaf-1 {
@@ -215,7 +240,6 @@ nav a {
   z-index: 3;
   max-width: 1080px;
   padding: 34px;
-  animation: fadeUp .9s ease both;
 }
 
 .eyebrow,
@@ -225,7 +249,9 @@ nav a {
 .ai-copy span,
 .final-cta span,
 .event-tag,
-.location-copy span {
+.location-copy span,
+.lineup-section article span,
+.ticket-types article span {
   color: #19ff88;
   font-weight: 950;
   letter-spacing: 4px;
@@ -314,7 +340,6 @@ nav a {
 .countdown strong {
   display: block;
   font-size: 34px;
-  line-height: 1;
 }
 
 .countdown span {
@@ -340,8 +365,7 @@ nav a {
   backdrop-filter: blur(24px);
   text-align: left;
   box-shadow: 0 30px 90px rgba(0,0,0,.55);
-  animation: ticketFloat 4s ease-in-out infinite alternate;
-  transform: perspective(900px) rotateX(6deg) rotateY(-10deg);
+  transition: transform .12s ease;
 }
 
 .ticket-3d::before {
@@ -350,7 +374,6 @@ nav a {
   inset: 12px;
   border-radius: 28px;
   border: 1px dashed rgba(255,255,255,.22);
-  pointer-events: none;
 }
 
 .ticket-top,
@@ -376,7 +399,6 @@ nav a {
 }
 
 .ticket-3d p {
-  margin: 0 0 22px;
   color: #d8eadf;
 }
 
@@ -390,7 +412,6 @@ nav a {
   padding: 14px;
   background: white;
   border-radius: 24px;
-  box-shadow: 0 0 34px rgba(255,255,255,.22);
 }
 
 .ticket-qr span {
@@ -413,7 +434,9 @@ nav a {
 .ai-pass,
 .secret-location,
 .events-section,
-.final-cta {
+.final-cta,
+.lineup-section,
+.ticket-types {
   width: 88%;
   margin-left: auto;
   margin-right: auto;
@@ -442,21 +465,39 @@ nav a {
   margin: 0;
 }
 
-.story-section {
+.story-section,
+.experience-strip,
+.lineup-grid,
+.ticket-types-grid {
   margin-bottom: 110px;
   display: grid;
-  grid-template-columns: 1.3fr .85fr .85fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 22px;
 }
 
-.story-card {
-  min-height: 330px;
-  padding: 36px;
-  border-radius: 36px;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.105), rgba(255,255,255,.035));
+.story-section {
+  grid-template-columns: 1.3fr .85fr .85fr;
+}
+
+.story-card,
+.experience-item,
+.event-card,
+.ai-pass,
+.final-cta,
+.secret-location,
+.lineup-section article,
+.ticket-types article {
+  background: linear-gradient(180deg, rgba(255,255,255,.105), rgba(255,255,255,.035));
   border: 1px solid rgba(255,255,255,.12);
   box-shadow: 0 24px 70px rgba(0,0,0,.38);
+}
+
+.story-card,
+.experience-item,
+.lineup-section article,
+.ticket-types article {
+  padding: 34px;
+  border-radius: 34px;
   transition: .35s ease;
 }
 
@@ -466,73 +507,39 @@ nav a {
     url('https://images.unsplash.com/photo-1511497584788-876760111969') center/cover;
 }
 
-.story-card:hover {
+.story-card:hover,
+.experience-item:hover,
+.event-card:hover,
+.lineup-section article:hover,
+.ticket-types article:hover {
   transform: translateY(-8px);
   border-color: rgba(25,255,136,.42);
-}
-
-.story-card h2,
-.story-card h3 {
-  margin: 22px 0 16px;
-  line-height: .95;
-  letter-spacing: -2px;
 }
 
 .story-card h2 {
   font-size: clamp(38px, 5vw, 72px);
+  line-height: .95;
+  letter-spacing: -2px;
 }
 
-.story-card h3 {
-  font-size: 34px;
+.story-card h3,
+.experience-item h3,
+.lineup-section article h3,
+.ticket-types article h3 {
+  font-size: 32px;
+  margin: 18px 0 12px;
 }
 
-.story-card p {
+.story-card p,
+.experience-item p,
+.lineup-section article p,
+.ticket-types article p {
   color: #d8eadf;
-  line-height: 1.8;
-}
-
-.experience-strip {
-  margin-bottom: 110px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-}
-
-.experience-item,
-.event-card,
-.ai-pass,
-.final-cta,
-.secret-location {
-  background: linear-gradient(180deg, rgba(255,255,255,.105), rgba(255,255,255,.035));
-  border: 1px solid rgba(255,255,255,.12);
-  box-shadow: 0 24px 70px rgba(0,0,0,.38);
-}
-
-.experience-item {
-  padding: 34px;
-  border-radius: 34px;
-  transition: .35s ease;
-}
-
-.experience-item:hover,
-.event-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(25,255,136,.42);
+  line-height: 1.75;
 }
 
 .experience-item span {
   color: #ffb84d;
-  font-weight: 950;
-}
-
-.experience-item h3 {
-  font-size: 31px;
-  margin: 18px 0 12px;
-}
-
-.experience-item p {
-  color: #cfe3d6;
-  line-height: 1.75;
 }
 
 .ai-pass {
@@ -574,7 +581,6 @@ nav a {
   border-radius: 32px;
   background: rgba(0,0,0,.48);
   border: 1px solid rgba(25,255,136,.26);
-  box-shadow: inset 0 0 45px rgba(25,255,136,.07);
 }
 
 .terminal-header {
@@ -617,7 +623,6 @@ nav a {
   color: #d8eadf;
   font-size: 17px;
   margin: 18px 0;
-  animation: terminalBlink 2.4s infinite alternate;
 }
 
 .terminal-lines b {
@@ -634,6 +639,23 @@ nav a {
   bottom: -80px;
 }
 
+.lineup-section,
+.ticket-types {
+  margin-bottom: 115px;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 46px;
+}
+
+.ticket-types article.featured {
+  border-color: rgba(25,255,136,.48);
+  background:
+    radial-gradient(circle at top, rgba(25,255,136,.15), transparent 36%),
+    linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.04));
+}
+
 .secret-location {
   margin-bottom: 115px;
   border-radius: 44px;
@@ -642,9 +664,6 @@ nav a {
   grid-template-columns: .95fr 1.05fr;
   gap: 34px;
   align-items: center;
-  background:
-    radial-gradient(circle at center left, rgba(25,255,136,.13), transparent 36%),
-    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
 }
 
 .map-card {
@@ -675,10 +694,6 @@ nav a {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  box-shadow:
-    0 0 0 18px rgba(25,255,136,.12),
-    0 0 0 42px rgba(25,255,136,.07),
-    0 0 70px rgba(25,255,136,.65);
   animation: pulse 1.8s infinite ease-out;
 }
 
@@ -712,11 +727,6 @@ nav a {
 
 .events-section {
   margin-bottom: 115px;
-}
-
-.section-title {
-  text-align: center;
-  margin-bottom: 46px;
 }
 
 .events-grid {
@@ -807,6 +817,10 @@ nav a {
 .final-cta a {
   background: white;
   color: #061008;
+  text-decoration: none;
+  padding: 16px 30px;
+  border-radius: 999px;
+  font-weight: 950;
 }
 
 .estado {
@@ -818,9 +832,40 @@ nav a {
   text-align: center;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(28px); }
-  to { opacity: 1; transform: translateY(0); }
+.whatsapp-float {
+  position: fixed;
+  right: 22px;
+  bottom: 24px;
+  z-index: 80;
+  text-decoration: none;
+  color: #021007;
+  background: linear-gradient(135deg, #19ff88, #ffb84d);
+  padding: 15px 22px;
+  border-radius: 999px;
+  font-weight: 950;
+  box-shadow: 0 0 34px rgba(25,255,136,.35);
+}
+
+.mobile-buy-bar {
+  display: none;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(34px);
+  transition: .8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes introOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 
 @keyframes zoomHero {
@@ -831,11 +876,6 @@ nav a {
 @keyframes floatFog {
   from { transform: translate(-70px, 20px); }
   to { transform: translate(80px, -24px); }
-}
-
-@keyframes ticketFloat {
-  from { transform: perspective(900px) rotateX(6deg) rotateY(-10deg) translateY(0); }
-  to { transform: perspective(900px) rotateX(4deg) rotateY(-6deg) translateY(-18px); }
 }
 
 @keyframes particlesMove {
@@ -851,11 +891,6 @@ nav a {
 @keyframes videoSweep {
   from { background-position: -200px 0, 0 0; }
   to { background-position: 900px 0, 120px 0; }
-}
-
-@keyframes terminalBlink {
-  from { opacity: .72; }
-  to { opacity: 1; }
 }
 
 @keyframes pulse {
@@ -881,7 +916,9 @@ nav a {
   .story-section,
   .experience-strip,
   .ai-pass,
-  .secret-location {
+  .secret-location,
+  .lineup-grid,
+  .ticket-types-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -891,16 +928,8 @@ nav a {
     padding: 0 22px;
   }
 
-  nav {
-    gap: 14px;
-  }
-
   nav a:not(.login-btn) {
     display: none;
-  }
-
-  .hero h1 {
-    letter-spacing: -2px;
   }
 
   .trip-alert {
@@ -914,17 +943,15 @@ nav a {
   .ai-pass,
   .secret-location,
   .events-section,
-  .final-cta {
+  .final-cta,
+  .lineup-section,
+  .ticket-types {
     width: 92%;
   }
 
   .ai-pass,
   .secret-location {
     padding: 56px 22px;
-  }
-
-  .final-cta {
-    padding: 42px 24px;
   }
 }
 
@@ -935,6 +962,7 @@ nav a {
 
   .hero h1 {
     font-size: 56px;
+    letter-spacing: -2px;
   }
 
   .hero h1 strong {
@@ -961,11 +989,38 @@ nav a {
   }
 
   .story-card,
-  .experience-item {
+  .experience-item,
+  .lineup-section article,
+  .ticket-types article {
     padding: 26px;
   }
 
   .map-card {
     min-height: 330px;
+  }
+
+  .whatsapp-float {
+    display: none;
+  }
+
+  .mobile-buy-bar {
+    display: block;
+    position: fixed;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    z-index: 90;
+    text-align: center;
+    text-decoration: none;
+    color: #021007;
+    background: linear-gradient(135deg, #19ff88, #ffb84d);
+    padding: 16px;
+    border-radius: 999px;
+    font-weight: 950;
+    box-shadow: 0 0 34px rgba(25,255,136,.35);
+  }
+
+  .final-cta {
+    margin-bottom: 100px;
   }
 }
