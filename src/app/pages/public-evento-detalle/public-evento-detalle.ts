@@ -65,6 +65,22 @@ export class PublicEventoDetalle implements OnInit {
     });
   }
 
+  irAEntradas(): void {
+    const section = document.getElementById('entradas');
+
+    if (!section) return;
+
+    const y =
+      section.getBoundingClientRect().top +
+      window.pageYOffset -
+      100;
+
+    window.scrollTo({
+      top: y,
+      behavior: 'smooth'
+    });
+  }
+    
   cargarTiers(): void {
     this.tiersService.obtenerTiersPorEvento(this.idEvento).subscribe({
       next: (data) => {
