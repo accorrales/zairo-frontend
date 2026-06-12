@@ -59,17 +59,25 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
 
         this.cargando = false;
         this.iniciarCountdown();
+
+        setTimeout(() => {
+          this.iniciarScrollReveal();
+        }, 300);
       },
       error: (error) => {
         console.error('ERROR CARGANDO EVENTOS:', error);
         this.eventos = [];
         this.cargando = false;
+
+        setTimeout(() => {
+          this.iniciarScrollReveal();
+        }, 300);
       }
     });
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.iniciarScrollReveal(), 300);
+    setTimeout(() => this.iniciarScrollReveal(), 600);
   }
 
   ngOnDestroy(): void {
@@ -89,6 +97,8 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
   }
 
   iniciarCountdown(): void {
+    clearInterval(this.timer);
+
     this.actualizarCountdown();
     this.timer = setInterval(() => this.actualizarCountdown(), 1000);
   }
@@ -101,7 +111,12 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
     const diferencia = fechaEvento - ahora;
 
     if (diferencia <= 0) {
-      this.countdown = { dias: '00', horas: '00', minutos: '00', segundos: '00' };
+      this.countdown = {
+        dias: '00',
+        horas: '00',
+        minutos: '00',
+        segundos: '00'
+      };
       return;
     }
 
@@ -119,6 +134,8 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
   }
 
   iniciarScrollReveal(): void {
+    this.observer?.disconnect();
+
     const elementos = document.querySelectorAll('.reveal');
 
     this.observer = new IntersectionObserver(
@@ -129,10 +146,12 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.12 }
     );
 
-    elementos.forEach((el) => this.observer?.observe(el));
+    elementos.forEach((el) => {
+      this.observer?.observe(el);
+    });
   }
 
   moverTicket(event: MouseEvent): void {
