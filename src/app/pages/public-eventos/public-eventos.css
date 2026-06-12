@@ -75,15 +75,21 @@
   cursor: pointer;
 }
 
-.logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #19ff88, #7c3aed, #ffb84d);
-  display: grid;
-  place-items: center;
-  font-weight: 950;
-  box-shadow: 0 0 34px rgba(25, 255, 136, .5);
+.logo-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid rgba(134, 239, 172, .22);
+  box-shadow: 0 0 34px rgba(34, 197, 94, .32);
+  flex-shrink: 0;
+}
+
+.logo-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .brand h2 {
