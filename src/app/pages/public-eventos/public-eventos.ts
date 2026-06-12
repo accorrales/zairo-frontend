@@ -44,12 +44,25 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
     }, 2300);
 
     this.eventosService.obtenerEventosActivos().subscribe({
-      next: (data) => {
-        this.eventos = data || [];
+      next: (data: any) => {
+        console.log('EVENTOS RECIBIDOS:', data);
+
+        if (Array.isArray(data)) {
+          this.eventos = data;
+        } else if (Array.isArray(data?.eventos)) {
+          this.eventos = data.eventos;
+        } else if (Array.isArray(data?.data)) {
+          this.eventos = data.data;
+        } else {
+          this.eventos = [];
+        }
+
         this.cargando = false;
         this.iniciarCountdown();
       },
-      error: () => {
+      error: (error) => {
+        console.error('ERROR CARGANDO EVENTOS:', error);
+        this.eventos = [];
         this.cargando = false;
       }
     });
