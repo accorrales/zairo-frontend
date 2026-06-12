@@ -10,9 +10,10 @@
     </div>
 
     <nav>
-      <a href="#eventos">Entradas</a>
-      <a href="#experiencia">Experiencia</a>
+      <a href="#historia">El viaje</a>
       <a href="#ai-pass">AI Pass</a>
+      <a href="#ubicacion">Ubicación</a>
+      <a href="#eventos">Entradas</a>
       <a routerLink="/login" class="login-btn">Mi cuenta</a>
     </nav>
   </header>
@@ -24,9 +25,16 @@
         alt="Lost Trip Welcome to the Jungle">
     </div>
 
+    <div class="hero-video-fake"></div>
     <div class="hero-shade"></div>
+
+    <div class="leaf leaf-1"></div>
+    <div class="leaf leaf-2"></div>
+    <div class="leaf leaf-3"></div>
+
     <div class="jungle-fog fog-one"></div>
     <div class="jungle-fog fog-two"></div>
+    <div class="particles"></div>
 
     <div class="hero-content">
       <span class="eyebrow">ZAIRO PRESENTS</span>
@@ -37,13 +45,13 @@
       </h1>
 
       <p>
-        Una experiencia inmersiva entre música, luces, energía salvaje y acceso digital.
-        La jungla abre sus puertas solo para quienes tienen su pase.
+        Una experiencia inmersiva entre música, luces, niebla, energía salvaje
+        y acceso digital. La jungla abre sus puertas solo para los viajeros autorizados.
       </p>
 
       <div class="hero-actions">
         <a href="#eventos" class="primary-btn">Comprar entrada</a>
-        <a href="#experiencia" class="secondary-btn">Explorar experiencia</a>
+        <a href="#historia" class="secondary-btn">Entrar al viaje</a>
       </div>
 
       <div class="countdown" *ngIf="proximoEvento">
@@ -66,32 +74,71 @@
       </div>
     </div>
 
-    <div class="hero-pass" *ngIf="proximoEvento">
-      <span>Next Trip</span>
+    <div class="ticket-3d" *ngIf="proximoEvento">
+      <div class="ticket-top">
+        <span>AI PASS</span>
+        <small>ZAIRO ACCESS</small>
+      </div>
+
       <h3>{{ proximoEvento.nombre }}</h3>
-      <p>📅 {{ formatearFecha(proximoEvento.fecha) }}</p>
-      <p>📍 {{ proximoEvento.ubicacion || 'Ubicación secreta' }}</p>
+      <p>Welcome to the Jungle</p>
+
+      <div class="ticket-qr">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+
+      <div class="ticket-meta">
+        <small>{{ formatearFecha(proximoEvento.fecha) }}</small>
+        <small>{{ proximoEvento.ubicacion || 'Secret Location' }}</small>
+      </div>
+
       <a [routerLink]="['/evento', proximoEvento.id_evento]">Ver entradas</a>
     </div>
   </section>
 
-  <section class="trip-bar">
-    <div>
-      <span>JUNGLE MODE</span>
-      <h2>No es una fiesta. Es un viaje.</h2>
-    </div>
-
+  <section class="trip-alert">
+    <span>TRANSMISIÓN ACTIVA</span>
     <p>
-      Lost Trip mezcla tecnología, producción visual, sonido y una estética selvática
-      para crear una experiencia diferente desde que comprás tu entrada.
+      El viaje ha comenzado. La ubicación se revela cuando la energía llama.
     </p>
   </section>
 
-  <section class="experience-strip" id="experiencia">
+  <section class="story-section" id="historia">
+    <article class="story-card large">
+      <span>01 / EL LLAMADO</span>
+      <h2>Dicen que existe un lugar escondido.</h2>
+      <p>
+        Una noche fuera de la rutina. Un ambiente cubierto por niebla,
+        luces entre árboles y música guiando el camino.
+      </p>
+    </article>
+
+    <article class="story-card">
+      <span>02 / LA ENTRADA</span>
+      <h3>No todos reciben acceso.</h3>
+      <p>
+        Cada viajero entra con un pase digital único. Sin copias. Sin caos.
+        Solo acceso confirmado.
+      </p>
+    </article>
+
+    <article class="story-card">
+      <span>03 / LA JUNGLA</span>
+      <h3>Cuando las luces bajan, el viaje comienza.</h3>
+      <p>
+        Sonido, visuales, comunidad y una atmósfera diseñada para sentirse
+        diferente desde el primer minuto.
+      </p>
+    </article>
+  </section>
+
+  <section class="experience-strip">
     <article class="experience-item">
       <span>01</span>
       <h3>Jungle Visuals</h3>
-      <p>Sombras, neón, niebla, luces y una atmósfera diseñada para sentirse cinematográfica.</p>
+      <p>Sombras, neón, humo y luces diseñadas para una atmósfera cinematográfica.</p>
     </article>
 
     <article class="experience-item">
@@ -117,13 +164,43 @@
       </p>
     </div>
 
-    <div class="ai-card">
-      <div class="qr-chip">AI PASS</div>
-      <div class="fake-qr">
-        <span></span><span></span><span></span><span></span>
+    <div class="terminal-card">
+      <div class="terminal-header">
+        <span></span><span></span><span></span>
+        <strong>ZAIRO SYSTEM</strong>
       </div>
-      <h3>Lost Trip Access</h3>
-      <p>QR inteligente · Validación en vivo · Anti duplicado</p>
+
+      <div class="terminal-lines">
+        <p><b>✓</b> Ticket generado</p>
+        <p><b>✓</b> QR protegido</p>
+        <p><b>✓</b> Validación en vivo</p>
+        <p><b>✓</b> Anti duplicado activo</p>
+        <p><b>✓</b> Acceso autorizado</p>
+      </div>
+
+      <div class="terminal-glow"></div>
+    </div>
+  </section>
+
+  <section class="secret-location" id="ubicacion">
+    <div class="map-card">
+      <div class="map-grid"></div>
+      <div class="map-pulse"></div>
+
+      <div class="coordinates">
+        <span>COORDINATES LOCKED</span>
+        <h2>Ubicación secreta</h2>
+        <p>9.864° N · 84.243° W</p>
+      </div>
+    </div>
+
+    <div class="location-copy">
+      <span>SECRET DROP</span>
+      <h2>La ubicación exacta será revelada a los viajeros autorizados.</h2>
+      <p>
+        Lost Trip no empieza cuando llegás. Empieza desde el momento en que tu pase
+        queda confirmado.
+      </p>
     </div>
   </section>
 
