@@ -1,12 +1,12 @@
-<div class="event-detail">
+<div class="lost-detail">
 
   <div *ngIf="cargando" class="loading">
-    Cargando experiencia ZAIRO...
+    Cargando Lost Trip...
   </div>
 
   <ng-container *ngIf="!cargando && evento">
 
-    <header class="detail-nav">
+    <header class="lost-nav">
       <div class="brand" routerLink="/home">
         <div class="logo">Z</div>
         <div>
@@ -15,101 +15,97 @@
         </div>
       </div>
 
-      <a routerLink="/home" class="back-link">Volver</a>
+      <a routerLink="/home" class="nav-btn">Volver</a>
     </header>
 
-    <section class="detail-hero">
+    <section class="hero">
 
-      <div class="hero-image">
+      <div class="hero-bg">
         <img
-          [src]="evento.imagen || 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4'"
-          alt="Evento ZAIRO">
+          [src]="evento.imagen || 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3'"
+          alt="Lost Trip">
       </div>
 
-      <div class="hero-gradient"></div>
+      <div class="jungle-overlay"></div>
 
       <div class="hero-content">
-        <span class="eyebrow">ZAIRO PRESENTS</span>
+        <span class="tag">ZAIRO PRESENTS</span>
+
+        <div class="jungle-badge">
+          🌴 WELCOME TO THE JUNGLE
+        </div>
 
         <h1>{{ evento.nombre }}</h1>
 
         <p>
-          {{ evento.descripcion || 'Una experiencia premium lejos de la ciudad, diseñada para vivir música, luces, comunidad y energía ZAIRO.' }}
+          {{ evento.descripcion || 'Una experiencia premium lejos de la ciudad, entre naturaleza, música, luces y energía salvaje.' }}
         </p>
 
-        <div class="event-pills">
+        <div class="hero-info">
           <span>📅 {{ formatearFecha(evento.fecha) }}</span>
           <span>📍 {{ evento.ubicacion || 'Ubicación por anunciar' }}</span>
           <span>🎟️ Cupo limitado</span>
         </div>
 
-        <a href="#entradas" class="main-cta">
+        <a href="#entradas" class="primary-btn">
           Comprar entrada
         </a>
       </div>
 
     </section>
 
-    <section class="experience-strip">
+    <section class="experience-card">
       <div>
-        <span>Evento oficial</span>
-        <h2>Lost Trip Experience</h2>
+        <span>LOST TRIP EXPERIENCE</span>
+        <h2>Una noche fuera de la ciudad.</h2>
       </div>
 
       <p>
-        Acceso digital, lista oficial, validación en entrada y confirmación por WhatsApp.
+        Música, ambiente jungle, producción visual, acceso digital y confirmación oficial por WhatsApp.
       </p>
     </section>
 
-    <section class="detail-grid">
+    <section class="features">
 
-      <article class="glass-card">
+      <article>
         <span>01</span>
-        <h3>Acceso digital</h3>
-        <p>
-          Tu compra queda registrada oficialmente en ZAIRO para validar el ingreso el día del evento.
-        </p>
+        <h3>Jungle Stage</h3>
+        <p>Una atmósfera tropical, oscura y elegante para vivir la fiesta desde otra vibra.</p>
       </article>
 
-      <article class="glass-card">
+      <article>
         <span>02</span>
-        <h3>Confirmación segura</h3>
-        <p>
-          Después de crear la compra, continuás por WhatsApp para enviar el comprobante SINPE.
-        </p>
+        <h3>Acceso digital</h3>
+        <p>Tu compra queda registrada en ZAIRO para validar el ingreso el día del evento.</p>
       </article>
 
-      <article class="glass-card">
+      <article>
         <span>03</span>
-        <h3>Edad mínima</h3>
-        <p>
-          El ingreso es permitido para personas con 17 años cumplidos para la fecha del evento.
-        </p>
+        <h3>Confirmación segura</h3>
+        <p>Después de crear la compra, continuás por WhatsApp para enviar el comprobante SINPE.</p>
       </article>
 
     </section>
 
-    <section class="tickets-section" id="entradas">
+    <section class="tickets" id="entradas">
 
-      <div class="section-heading">
-        <span>Tickets</span>
+      <div class="section-title">
+        <span>TICKETS</span>
         <h2>Seleccioná tu entrada</h2>
-        <p>
-          Elegí el tipo de entrada disponible y completá los datos para continuar por WhatsApp.
-        </p>
+        <p>Elegí tu entrada, completá tus datos y continuá por WhatsApp.</p>
       </div>
 
       <div class="tickets-grid" *ngIf="tiers.length > 0; else sinTiers">
 
         <article
-          class="ticket-card"
+          class="ticket"
           *ngFor="let t of tiers"
           [class.selected]="tierSeleccionado?.id_tier === t.id_tier">
 
-          <div class="ticket-header">
+          <div class="ticket-head">
             <div>
               <h3>{{ t.nombre }}</h3>
-              <p>{{ t.descripcion || 'Entrada oficial para vivir la experiencia ZAIRO.' }}</p>
+              <p>{{ t.descripcion || 'Entrada oficial para Lost Trip by ZAIRO.' }}</p>
             </div>
 
             <span
@@ -125,11 +121,11 @@
             </span>
           </div>
 
-          <div class="ticket-price">
+          <div class="price">
             {{ formatearMoneda(t.precio) }}
           </div>
 
-          <div class="ticket-info">
+          <div class="ticket-meta">
             <span>
               Cupo:
               {{ t.cantidad_disponible === null ? 'Ilimitado' : t.cantidad_disponible }}
@@ -144,7 +140,7 @@
             class="select-btn"
             [disabled]="t.disponibilidad !== 'DISPONIBLE'"
             (click)="seleccionarTier(t)">
-            {{ tierSeleccionado?.id_tier === t.id_tier ? 'Entrada seleccionada' : 'Seleccionar entrada' }}
+            {{ tierSeleccionado?.id_tier === t.id_tier ? 'Seleccionada' : 'Seleccionar entrada' }}
           </button>
 
         </article>
@@ -152,15 +148,15 @@
       </div>
 
       <ng-template #sinTiers>
-        <div class="empty-state">
+        <div class="empty">
           Este evento todavía no tiene entradas disponibles.
         </div>
       </ng-template>
 
-      <div class="checkout-box" *ngIf="tierSeleccionado">
+      <div class="checkout" *ngIf="tierSeleccionado">
 
         <div class="checkout-title">
-          <span>Checkout</span>
+          <span>CHECKOUT</span>
           <h2>Completar compra</h2>
           <p>
             Entrada seleccionada:
@@ -173,7 +169,7 @@
           Se solicitará identificación en la entrada.
         </div>
 
-        <div class="checkout-grid">
+        <div class="form-grid">
 
           <div class="form-group">
             <label>Cantidad de entradas</label>
@@ -202,10 +198,10 @@
 
         </div>
 
-        <div class="people-list">
+        <div class="people">
 
           <div
-            class="person-card"
+            class="person"
             *ngFor="let persona of personas; let i = index">
 
             <h3>Persona {{ i + 1 }}</h3>
@@ -239,12 +235,12 @@
 
         </div>
 
-        <div class="total-box">
-          <span>Total a pagar</span>
+        <div class="total">
+          <span>Total</span>
           <strong>{{ formatearMoneda(calcularTotal()) }}</strong>
         </div>
 
-        <div class="mensaje-compra" *ngIf="mensajeCompra">
+        <div class="mensaje" *ngIf="mensajeCompra">
           {{ mensajeCompra }}
         </div>
 
