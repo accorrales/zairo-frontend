@@ -5,14 +5,14 @@
       <div class="logo">Z</div>
       <div>
         <h2>ZAIRO</h2>
-        <span>Events</span>
+        <span>Lost Trip</span>
       </div>
     </div>
 
     <nav>
-      <a href="#eventos">Eventos</a>
+      <a href="#eventos">Entradas</a>
       <a href="#experiencia">Experiencia</a>
-      <a href="#zairo">Quiénes somos</a>
+      <a href="#ai-pass">AI Pass</a>
       <a routerLink="/login" class="login-btn">Mi cuenta</a>
     </nav>
   </header>
@@ -20,131 +20,129 @@
   <section class="hero">
     <div class="hero-bg">
       <img
-        [src]="eventos.length > 0 && eventos[0].imagen ? eventos[0].imagen : 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4'"
-        alt="ZAIRO Festival">
+        [src]="proximoEvento?.imagen || 'https://images.unsplash.com/photo-1511497584788-876760111969'"
+        alt="Lost Trip Welcome to the Jungle">
     </div>
 
-    <div class="hero-overlay"></div>
-    <div class="hero-glow"></div>
+    <div class="hero-shade"></div>
+    <div class="jungle-fog fog-one"></div>
+    <div class="jungle-fog fog-two"></div>
 
     <div class="hero-content">
       <span class="eyebrow">ZAIRO PRESENTS</span>
 
       <h1>
-        Eventos que se sienten
-        <strong>diferente.</strong>
+        LOST TRIP
+        <strong>Welcome to the Jungle</strong>
       </h1>
 
       <p>
-        Música, producción visual, comunidad y experiencias diseñadas para vivir,
-        grabar y recordar. Comprá tu entrada por WhatsApp y recibí tu QR digital
-        al confirmar el pago.
+        Una experiencia inmersiva entre música, luces, energía salvaje y acceso digital.
+        La jungla abre sus puertas solo para quienes tienen su pase.
       </p>
 
       <div class="hero-actions">
-        <a href="#eventos" class="primary-btn">Ver eventos</a>
-        <a href="#zairo" class="secondary-btn">Conocer ZAIRO</a>
+        <a href="#eventos" class="primary-btn">Comprar entrada</a>
+        <a href="#experiencia" class="secondary-btn">Explorar experiencia</a>
+      </div>
+
+      <div class="countdown" *ngIf="proximoEvento">
+        <div>
+          <strong>{{ countdown.dias }}</strong>
+          <span>Días</span>
+        </div>
+        <div>
+          <strong>{{ countdown.horas }}</strong>
+          <span>Horas</span>
+        </div>
+        <div>
+          <strong>{{ countdown.minutos }}</strong>
+          <span>Min</span>
+        </div>
+        <div>
+          <strong>{{ countdown.segundos }}</strong>
+          <span>Seg</span>
+        </div>
       </div>
     </div>
 
-    <div class="hero-floating-card" *ngIf="eventos.length > 0">
-      <span>Próxima experiencia</span>
-      <h3>{{ eventos[0].nombre }}</h3>
-      <p>📅 {{ formatearFecha(eventos[0].fecha) }}</p>
-      <a [routerLink]="['/evento', eventos[0].id_evento]">Ver entradas</a>
+    <div class="hero-pass" *ngIf="proximoEvento">
+      <span>Next Trip</span>
+      <h3>{{ proximoEvento.nombre }}</h3>
+      <p>📅 {{ formatearFecha(proximoEvento.fecha) }}</p>
+      <p>📍 {{ proximoEvento.ubicacion || 'Ubicación secreta' }}</p>
+      <a [routerLink]="['/evento', proximoEvento.id_evento]">Ver entradas</a>
     </div>
   </section>
 
-  <section class="radio-bar">
+  <section class="trip-bar">
     <div>
-      <span class="small-label">ZAIRO EXPERIENCE</span>
-      <h2>Lejos de la ciudad</h2>
+      <span>JUNGLE MODE</span>
+      <h2>No es una fiesta. Es un viaje.</h2>
     </div>
 
     <p>
-      Una experiencia sunset to night con música, luces, energía premium y una
-      comunidad que crece evento tras evento.
+      Lost Trip mezcla tecnología, producción visual, sonido y una estética selvática
+      para crear una experiencia diferente desde que comprás tu entrada.
     </p>
   </section>
 
   <section class="experience-strip" id="experiencia">
-    <div class="experience-item">
+    <article class="experience-item">
       <span>01</span>
-      <h3>Producción</h3>
-      <p>Luces, sonido, visuales y estética pensada para impactar.</p>
-    </div>
+      <h3>Jungle Visuals</h3>
+      <p>Sombras, neón, niebla, luces y una atmósfera diseñada para sentirse cinematográfica.</p>
+    </article>
 
-    <div class="experience-item">
+    <article class="experience-item">
       <span>02</span>
-      <h3>Música</h3>
-      <p>DJs, artistas invitados y una curaduría enfocada en energía real.</p>
-    </div>
+      <h3>Sound Trip</h3>
+      <p>Una curaduría musical para pasar de sunset vibes a noche intensa.</p>
+    </article>
 
-    <div class="experience-item">
+    <article class="experience-item">
       <span>03</span>
-      <h3>Comunidad</h3>
-      <p>Más que asistentes: una comunidad que forma parte del movimiento.</p>
-    </div>
+      <h3>Secret Energy</h3>
+      <p>Una experiencia con ubicación, acceso y comunidad al estilo ZAIRO.</p>
+    </article>
   </section>
 
-  <section class="about-zairo" id="zairo">
-    <div class="about-header">
-      <span>Quiénes somos</span>
-      <h2>No somos solo un evento. Somos una experiencia.</h2>
+  <section class="ai-pass" id="ai-pass">
+    <div class="ai-copy">
+      <span>ZAIRO AI ACCESS</span>
+      <h2>Tu entrada no es solo un QR. Es tu pase al viaje.</h2>
       <p>
-        ZAIRO nace en el Occidente de Costa Rica para crear eventos diferentes,
-        memorables y visualmente impactantes, donde la música, la producción y
-        la comunidad se unen en una misma energía.
+        Cada entrada genera un acceso único, seguro e irrepetible. El sistema valida
+        en tiempo real si el pase es oficial, está confirmado y no fue utilizado antes.
       </p>
     </div>
 
-    <div class="about-content">
-      <article class="about-card main-about">
-        <span class="number">01</span>
-        <h3>Nuestra esencia</h3>
-        <p>
-          Creamos espacios donde las personas puedan desconectarse de la rutina
-          y vivir una experiencia premium con música, luces, ambiente y una vibra
-          única.
-        </p>
-      </article>
-
-      <article class="about-card">
-        <span class="number">02</span>
-        <h3>Nuestra visión</h3>
-        <p>
-          Llevar la escena del Occidente a otro nivel, impulsando talento nacional
-          y construyendo una marca reconocida por su calidad.
-        </p>
-      </article>
-
-      <article class="about-card">
-        <span class="number">03</span>
-        <h3>Nuestra comunidad</h3>
-        <p>
-          ZAIRO es una comunidad que busca algo más que una fiesta: busca
-          pertenecer a una experiencia.
-        </p>
-      </article>
+    <div class="ai-card">
+      <div class="qr-chip">AI PASS</div>
+      <div class="fake-qr">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <h3>Lost Trip Access</h3>
+      <p>QR inteligente · Validación en vivo · Anti duplicado</p>
     </div>
   </section>
 
   <section id="eventos" class="events-section">
     <div class="section-title">
-      <span>Agenda oficial</span>
-      <h2>Próximos eventos</h2>
-      <p>Seleccioná un evento y revisá las entradas disponibles.</p>
+      <span>ENTRADAS OFICIALES</span>
+      <h2>Elegí tu pase al Lost Trip</h2>
+      <p>Seleccioná el evento y comprá tu entrada digital con QR oficial ZAIRO.</p>
     </div>
 
     <div *ngIf="cargando" class="estado">
-      Cargando eventos ZAIRO...
+      Cargando experiencias ZAIRO...
     </div>
 
     <div class="events-grid" *ngIf="!cargando && eventos.length > 0">
       <article class="event-card" *ngFor="let e of eventos">
         <div class="image-wrap">
           <img
-            [src]="e.imagen || 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4'"
+            [src]="e.imagen || 'https://images.unsplash.com/photo-1511497584788-876760111969'"
             alt="Imagen del evento">
 
           <div class="date-badge">
@@ -153,12 +151,12 @@
         </div>
 
         <div class="event-info">
-          <span class="event-tag">ZAIRO EVENT</span>
+          <span class="event-tag">LOST TRIP</span>
 
           <h3>{{ e.nombre }}</h3>
 
           <p>
-            {{ e.descripcion || 'Experiencia ZAIRO con música, comunidad y producción premium.' }}
+            {{ e.descripcion || 'Welcome to the Jungle: una experiencia ZAIRO con música, comunidad y acceso digital.' }}
           </p>
 
           <div class="meta">
@@ -179,9 +177,9 @@
   </section>
 
   <section class="final-cta">
-    <span>ZAIRO EVENTS</span>
-    <h2>La próxima historia empieza aquí.</h2>
-    <a href="#eventos">Explorar eventos</a>
+    <span>WELCOME TO THE JUNGLE</span>
+    <h2>El próximo viaje empieza con tu entrada.</h2>
+    <a href="#eventos">Comprar ahora</a>
   </section>
 
 </div>
