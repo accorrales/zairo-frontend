@@ -26,6 +26,7 @@
       <a href="#ai-pass">AI Pass</a>
       <a href="#lineup">Lineup</a>
       <a href="#eventos">Entradas</a>
+      <a href="#eventos" class="nav-buy">Comprar</a>
       <a routerLink="/login" class="login-btn">Mi cuenta</a>
     </nav>
   </header>
@@ -100,15 +101,22 @@
 
       <a [routerLink]="['/evento', proximoEvento.id_evento]">Ver entradas</a>
     </div>
+
+    <a href="#portal" class="scroll-cue" aria-label="Entrar al portal">
+      <span class="mouse"></span>
+      Entrar al portal
+    </a>
   </section>
 
-  <section class="scroll-sequence" #scrollSequence>
+  <section class="scroll-sequence" id="portal" #scrollSequence>
     <div class="scroll-sequence-sticky">
+      <div class="scroll-sequence-fallback"></div>
       <canvas #sequenceCanvas></canvas>
 
       <div class="scroll-sequence-copy">
         <span>ENTRANDO A LA JUNGLA</span>
         <h2>El portal se abre con cada scroll.</h2>
+        <a href="#eventos" class="scroll-sequence-cta">Explorar el evento →</a>
       </div>
     </div>
   </section>
