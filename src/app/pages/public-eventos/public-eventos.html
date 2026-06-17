@@ -7,15 +7,6 @@
 
 <div class="zairo-home">
 
-  <div class="jungle-decor" aria-hidden="true">
-    <span class="jungle-leaf jl-1"></span>
-    <span class="jungle-leaf jl-2"></span>
-    <span class="jungle-leaf jl-3"></span>
-    <span class="jungle-leaf jl-4"></span>
-    <span class="jungle-leaf jl-5"></span>
-    <span class="jungle-leaf jl-6"></span>
-  </div>
-
   <header class="navbar">
     <div class="brand" routerLink="/home">
   <div class="logo-img">
@@ -35,7 +26,6 @@
       <a href="#ai-pass">AI Pass</a>
       <a href="#lineup">Lineup</a>
       <a href="#eventos">Entradas</a>
-      <a href="#eventos" class="nav-buy">Comprar</a>
       <a routerLink="/login" class="login-btn">Mi cuenta</a>
     </nav>
   </header>
@@ -110,22 +100,15 @@
 
       <a [routerLink]="['/evento', proximoEvento.id_evento]">Ver entradas</a>
     </div>
-
-    <a href="#portal" class="scroll-cue" aria-label="Entrar al portal">
-      <span class="mouse"></span>
-      Entrar al portal
-    </a>
   </section>
 
-  <section class="scroll-sequence" id="portal" #scrollSequence>
+  <section class="scroll-sequence" #scrollSequence>
     <div class="scroll-sequence-sticky">
-      <div class="scroll-sequence-fallback"></div>
       <canvas #sequenceCanvas></canvas>
 
       <div class="scroll-sequence-copy">
         <span>ENTRANDO A LA JUNGLA</span>
         <h2>El portal se abre con cada scroll.</h2>
-        <a href="#eventos" class="scroll-sequence-cta">Explorar el evento →</a>
       </div>
     </div>
   </section>
@@ -214,62 +197,45 @@
     </div>
 
     <div class="lineup-grid">
-      <article class="reveal">
-        <div class="lineup-poster">
-          <span class="lineup-tag">DJ SET</span>
-        </div>
+      <article>
+        <span>DJ SET</span>
         <h3>ZAIRO Residents</h3>
         <p>Reggaetón · Afro · House · Dembow</p>
       </article>
 
-      <article class="reveal">
-        <div class="lineup-poster locked">
-          <span class="lineup-tag">SPECIAL GUEST</span>
-        </div>
+      <article>
+        <span>SPECIAL GUEST</span>
         <h3>Próximamente</h3>
         <p>Invitado sorpresa revelado antes del evento.</p>
       </article>
 
-      <article class="reveal">
-        <div class="lineup-poster">
-          <span class="lineup-tag">FINAL HOUR</span>
-        </div>
+      <article>
+        <span>FINAL HOUR</span>
         <h3>Jungle Closing</h3>
         <p>La última hora del viaje. Energía máxima.</p>
       </article>
     </div>
   </section>
 
-  <section class="why-go reveal">
-    <div class="section-title">
-      <span>WHY LOST TRIP</span>
-      <h2>Por qué no te lo podés perder</h2>
+  <section class="secret-location reveal" id="ubicacion">
+    <div class="map-card">
+      <div class="map-grid"></div>
+      <div class="map-pulse"></div>
+
+      <div class="coordinates">
+        <span>COORDINATES LOCKED</span>
+        <h2>Ubicación secreta</h2>
+        <p>9.864° N · 84.243° W</p>
+      </div>
     </div>
 
-    <div class="why-grid">
-      <article class="why-card reveal">
-        <div class="why-icon">🌿</div>
-        <h3>Ambiente jungla real</h3>
-        <p>Niebla, neón y luces entre la vegetación. Una atmósfera para sentirla, no solo verla.</p>
-      </article>
-
-      <article class="why-card reveal">
-        <div class="why-icon">🔊</div>
-        <h3>Sonido de festival</h3>
-        <p>Curaduría musical pensada para que el viaje no baje de energía en toda la noche.</p>
-      </article>
-
-      <article class="why-card reveal">
-        <div class="why-icon">🎟️</div>
-        <h3>Acceso digital seguro</h3>
-        <p>Tu pase ZAIRO con QR único, validado en vivo. Sin filas eternas, sin caos.</p>
-      </article>
-
-      <article class="why-card reveal">
-        <div class="why-icon">📍</div>
-        <h3>Ubicación secreta</h3>
-        <p>Solo los viajeros autorizados reciben el drop. La jungla no es para todos.</p>
-      </article>
+    <div class="location-copy">
+      <span>SECRET DROP</span>
+      <h2>La ubicación exacta será revelada a los viajeros autorizados.</h2>
+      <p>
+        Lost Trip no empieza cuando llegás. Empieza desde el momento en que tu pase
+        queda confirmado.
+      </p>
     </div>
   </section>
 
@@ -343,28 +309,6 @@
 
     <div *ngIf="!cargando && eventos.length === 0" class="estado">
       No hay eventos activos por el momento.
-    </div>
-  </section>
-
-  <section class="secret-location reveal" id="ubicacion">
-    <div class="map-card">
-      <div class="map-grid"></div>
-      <div class="map-pulse"></div>
-
-      <div class="coordinates">
-        <span>COORDINATES LOCKED</span>
-        <h2>Ubicación secreta</h2>
-        <p>9.864° N · 84.243° W</p>
-      </div>
-    </div>
-
-    <div class="location-copy">
-      <span>SECRET DROP</span>
-      <h2>La ubicación exacta será revelada a los viajeros autorizados.</h2>
-      <p>
-        Lost Trip no empieza cuando llegás. Empieza desde el momento en que tu pase
-        queda confirmado.
-      </p>
     </div>
   </section>
 
