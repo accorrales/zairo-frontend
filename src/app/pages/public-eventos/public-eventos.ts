@@ -29,8 +29,17 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
   private sequenceImages: HTMLImageElement[] = [];
   private sequenceCtx?: CanvasRenderingContext2D | null;
   private sequenceFrame = 0;
+  // Fotograma "objetivo" (segun scroll) y el actual (animado): el lerp entre
+  // ambos es lo que da la sensacion fluida y cara, sin saltos.
+  private sequenceTargetFrame = 0;
+  private sequenceCurrentFrame = 0;
+  private sequenceProgress = 0;
+  private sequenceRaf = 0;
   private sequenceScrollHandler = () => this.onSequenceScroll();
-  private sequenceResizeHandler = () => this.drawSequenceFrame(this.sequenceFrame);
+  private sequenceResizeHandler = () => {
+    this.resizeSequenceCanvas();
+    this.drawSequenceFrame(this.sequenceCurrentFrame);
+  };
 
   eventos: any[] = [];
   cargando = true;
@@ -100,6 +109,7 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
     this.observer?.disconnect();
     window.removeEventListener('scroll', this.sequenceScrollHandler);
     window.removeEventListener('resize', this.sequenceResizeHandler);
+    cancelAnimationFrame(this.sequenceRaf);
   }
 
   get proximoEvento(): any {
@@ -204,24 +214,27 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
     const canvas = this.sequenceCanvasEl?.nativeElement;
     if (!canvas) return;
 
-    this.sequenceCtx = canvas.getContext('2d');
+    // alpha:false = compositing mas rapido (no necesitamos transparencia).
+    this.sequenceCtx = canvas.getContext('2d', { alpha: false });
 
     for (let i = 1; i <= SEQUENCE_FRAME_COUNT; i++) {
       const index = i - 1;
       const img = new Image();
+      img.decoding = 'async';
       img.src = `/secuencia/frame-${String(i).padStart(3, '0')}.jpg`;
-      // Redibuja en cuanto cargue el frame, si es el que toca mostrar ahora.
       img.onload = () => {
-        if (index === this.sequenceFrame) {
-          this.drawSequenceFrame(index);
+        if (Math.round(this.sequenceCurrentFrame) === index) {
+          this.drawSequenceFrame(this.sequenceCurrentFrame);
         }
       };
       this.sequenceImages.push(img);
     }
 
+    this.resizeSequenceCanvas();
     window.addEventListener('resize', this.sequenceResizeHandler);
     window.addEventListener('scroll', this.sequenceScrollHandler, { passive: true });
     this.onSequenceScroll();
+    this.sequenceRaf = requestAnimationFrame(() => this.renderSequenceLoop());
   }
 
   private onSequenceScroll(): void {
@@ -233,52 +246,76 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
     const progress = scrollable > 0 ? -rect.top / scrollable : 0;
     const clamped = Math.min(1, Math.max(0, progress));
 
-    const frame = Math.min(
-      SEQUENCE_FRAME_COUNT - 1,
-      Math.floor(clamped * SEQUENCE_FRAME_COUNT)
-    );
-
-    if (frame !== this.sequenceFrame) {
-      this.drawSequenceFrame(frame);
-    }
+    this.sequenceProgress = clamped;
+    // Suavizado tipo "ease" sobre el progreso para arranque/cierre mas elegante.
+    const eased = clamped * clamped * (3 - 2 * clamped);
+    this.sequenceTargetFrame = eased * (SEQUENCE_FRAME_COUNT - 1);
   }
 
-  private drawSequenceFrame(frame: number): void {
+  // Bucle continuo: interpola el frame actual hacia el objetivo (lerp).
+  // El resultado es una animacion fluida y pesada, sin saltos de fotograma.
+  private renderSequenceLoop(): void {
+    const diff = this.sequenceTargetFrame - this.sequenceCurrentFrame;
+
+    if (Math.abs(diff) > 0.001) {
+      this.sequenceCurrentFrame += diff * 0.12;
+      this.drawSequenceFrame(this.sequenceCurrentFrame);
+    }
+
+    this.sequenceRaf = requestAnimationFrame(() => this.renderSequenceLoop());
+  }
+
+  private resizeSequenceCanvas(): void {
     const canvas = this.sequenceCanvasEl?.nativeElement;
-    const ctx = this.sequenceCtx;
-    const img = this.sequenceImages[frame];
-    if (!canvas || !ctx || !img || !img.complete || img.naturalWidth === 0) return;
+    if (!canvas) return;
 
-    this.sequenceFrame = frame;
-
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
 
-    if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-    }
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+  }
+
+  private drawSequenceFrame(frameValue: number): void {
+    const canvas = this.sequenceCanvasEl?.nativeElement;
+    const ctx = this.sequenceCtx;
+    if (!canvas || !ctx) return;
+
+    const frame = Math.round(frameValue);
+    const img = this.sequenceImages[frame];
+    if (!img || !img.complete || img.naturalWidth === 0) return;
+
+    this.sequenceFrame = frame;
+    this.sequenceCurrentFrame = frameValue;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     const canvasRatio = width / height;
     const imgRatio = img.naturalWidth / img.naturalHeight;
 
-    let drawWidth = width;
-    let drawHeight = height;
-    let offsetX = 0;
-    let offsetY = 0;
+    // Zoom sutil que se relaja con el scroll: da sensacion cinematografica.
+    const scale = 1.06 - this.sequenceProgress * 0.06;
+
+    let drawWidth: number;
+    let drawHeight: number;
 
     if (imgRatio > canvasRatio) {
-      drawHeight = height;
-      drawWidth = height * imgRatio;
-      offsetX = (width - drawWidth) / 2;
+      drawHeight = height * scale;
+      drawWidth = drawHeight * imgRatio;
     } else {
-      drawWidth = width;
-      drawHeight = width / imgRatio;
-      offsetY = (height - drawHeight) / 2;
+      drawWidth = width * scale;
+      drawHeight = drawWidth / imgRatio;
     }
+
+    const offsetX = (width - drawWidth) / 2;
+    const offsetY = (height - drawHeight) / 2;
 
     ctx.clearRect(0, 0, width, height);
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);

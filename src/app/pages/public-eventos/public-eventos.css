@@ -12,7 +12,7 @@
 
 .scroll-sequence {
   position: relative;
-  height: 400vh;
+  height: 600vh;
   background: #020503;
 }
 
@@ -24,6 +24,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #020503;
 }
 
 .scroll-sequence-sticky canvas {
@@ -32,40 +33,92 @@
   display: block;
 }
 
+/* Viñeta + degradado inferior: profundidad y look caro sobre el frame. */
+.scroll-sequence-sticky::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 35%, transparent 55%, rgba(0, 0, 0, .55) 100%),
+    linear-gradient(to top, rgba(2, 5, 3, .9) 0%, transparent 38%),
+    linear-gradient(to bottom, rgba(2, 5, 3, .55) 0%, transparent 22%);
+}
+
+/* Tinte de marca muy sutil para unificar con el resto del sitio. */
+.scroll-sequence-sticky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  background: radial-gradient(circle at 70% 30%, rgba(21, 255, 136, .18), transparent 45%);
+}
+
 .scroll-sequence-copy {
   position: absolute;
-  left: 6%;
-  bottom: 12%;
-  max-width: 480px;
+  left: 7%;
+  bottom: 13%;
+  max-width: 520px;
   z-index: 2;
-  text-shadow: 0 4px 24px rgba(0, 0, 0, .7);
+  text-shadow: 0 6px 30px rgba(0, 0, 0, .8);
+  opacity: 0;
+  transform: translateY(28px);
+  animation: sequence-copy-in 1.1s cubic-bezier(.16, 1, .3, 1) .35s forwards;
 }
 
 .scroll-sequence-copy span {
+  display: inline-block;
   color: #19ff88;
-  font-weight: 950;
-  letter-spacing: 4px;
+  font-weight: 800;
+  letter-spacing: 5px;
   font-size: 12px;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border: 1px solid rgba(21, 255, 136, .35);
+  border-radius: 999px;
+  background: rgba(21, 255, 136, .06);
+  backdrop-filter: blur(6px);
 }
 
 .scroll-sequence-copy h2 {
-  margin: 10px 0 0;
-  font-size: 38px;
-  line-height: 1.1;
+  margin: 18px 0 0;
+  font-size: clamp(30px, 4.4vw, 56px);
+  line-height: 1.05;
+  font-weight: 900;
+  letter-spacing: -.5px;
+  background: linear-gradient(180deg, #ffffff 0%, #c9ffe2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes sequence-copy-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 720px) {
   .scroll-sequence {
-    height: 300vh;
+    height: 460vh;
   }
 
   .scroll-sequence-copy {
-    left: 8%;
-    bottom: 8%;
+    left: 7%;
+    right: 7%;
+    bottom: 9%;
   }
+}
 
-  .scroll-sequence-copy h2 {
-    font-size: 26px;
+@media (prefers-reduced-motion: reduce) {
+  .scroll-sequence-copy {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
 
