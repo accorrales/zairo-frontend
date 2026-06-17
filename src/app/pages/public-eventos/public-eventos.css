@@ -12,7 +12,7 @@
 
 .scroll-sequence {
   position: relative;
-  height: 600vh;
+  height: 180vh;
   background: #020503;
 }
 
@@ -104,7 +104,7 @@
 
 @media (max-width: 720px) {
   .scroll-sequence {
-    height: 460vh;
+    height: 140vh;
   }
 
   .scroll-sequence-copy {
