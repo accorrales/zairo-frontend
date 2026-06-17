@@ -207,11 +207,15 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
     this.sequenceCtx = canvas.getContext('2d');
 
     for (let i = 1; i <= SEQUENCE_FRAME_COUNT; i++) {
+      const index = i - 1;
       const img = new Image();
       img.src = `/secuencia/frame-${String(i).padStart(3, '0')}.jpg`;
-      if (i === 1) {
-        img.onload = () => this.drawSequenceFrame(0);
-      }
+      // Redibuja en cuanto cargue el frame, si es el que toca mostrar ahora.
+      img.onload = () => {
+        if (index === this.sequenceFrame) {
+          this.drawSequenceFrame(index);
+        }
+      };
       this.sequenceImages.push(img);
     }
 
