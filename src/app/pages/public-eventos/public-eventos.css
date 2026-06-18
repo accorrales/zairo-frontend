@@ -120,8 +120,8 @@
 
 .intro-ring-core {
   position: absolute;
-  width: 86px;
-  height: 86px;
+  width: 92px;
+  height: 92px;
   border-radius: 999px;
   display: grid;
   place-items: center;
@@ -135,8 +135,8 @@
 }
 
 .intro-ring-logo {
-  width: 62px;
-  height: 62px;
+  width: 68px;
+  height: 68px;
   object-fit: contain;
   display: block;
   filter:
