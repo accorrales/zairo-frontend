@@ -1,22 +1,176 @@
-<div class="intro-loader" *ngIf="loadingIntro">
-  <div class="intro-ring-wrap">
-    <img
-      src="/assets/zairo-loader-ring.png"
-      alt="Cargando ZAIRO"
-      class="intro-ring">
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Zairo Club</title>
+  <base href="/">
 
-    <div class="intro-ring-core">
-      <img
-        src="/assets/zairo-loader-logo.png"
-        alt="Logo ZAIRO"
-        class="intro-ring-logo">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- Preload del loader para que cargue rápido en celular -->
+  <link rel="preload" as="image" href="/assets/zairo-loader-ring.png">
+  <link rel="preload" as="image" href="/assets/zairo-loader-logo.png">
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #020503;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at center, rgba(255, 184, 77, .14), transparent 30%),
+        radial-gradient(circle at center, rgba(25,255,136,.10), transparent 46%),
+        linear-gradient(180deg, #010302 0%, #041106 58%, #010302 100%);
+    }
+
+    app-root {
+      display: block;
+      min-height: 100dvh;
+      background: #020503;
+    }
+
+    .zairo-start-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      min-height: 100dvh;
+      display: grid;
+      place-content: center;
+      justify-items: center;
+      text-align: center;
+      color: white;
+      overflow: hidden;
+      font-family: Inter, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at center, rgba(255, 184, 77, .14), transparent 30%),
+        radial-gradient(circle at center, rgba(25,255,136,.10), transparent 46%),
+        linear-gradient(180deg, #010302 0%, #041106 58%, #010302 100%);
+    }
+
+    .zairo-start-loader::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(25,255,136,.10), transparent 30%),
+        radial-gradient(circle at 80% 20%, rgba(124,58,237,.10), transparent 34%);
+      pointer-events: none;
+    }
+
+    .zairo-start-ring-wrap {
+      position: relative;
+      z-index: 2;
+      width: clamp(180px, 42vw, 270px);
+      height: clamp(180px, 42vw, 270px);
+      display: grid;
+      place-items: center;
+      margin-bottom: 24px;
+    }
+
+    .zairo-start-ring {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      animation: zairoStartRingSpin 2.4s linear infinite;
+      filter:
+        drop-shadow(0 0 18px rgba(255, 184, 77, .42))
+        drop-shadow(0 0 34px rgba(25,255,136,.18));
+    }
+
+    .zairo-start-logo-core {
+      position: absolute;
+      width: 92px;
+      height: 92px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle, rgba(255,184,77,.12), rgba(2,5,3,.82) 70%);
+      border: 1px solid rgba(255, 184, 77, .35);
+      box-shadow:
+        inset 0 0 28px rgba(255,184,77,.14),
+        0 0 28px rgba(255,184,77,.12),
+        0 0 38px rgba(25,255,136,.14);
+    }
+
+    .zairo-start-logo {
+      width: 82px;
+      height: 82px;
+      object-fit: contain;
+      display: block;
+      filter:
+        drop-shadow(0 0 8px rgba(255,184,77,.32))
+        drop-shadow(0 0 18px rgba(255,184,77,.18));
+    }
+
+    .zairo-start-loader h2 {
+      position: relative;
+      z-index: 2;
+      margin: 0;
+      padding: 0 22px;
+      font-size: clamp(25px, 6vw, 38px);
+      letter-spacing: -1px;
+    }
+
+    .zairo-start-loader p {
+      position: relative;
+      z-index: 2;
+      margin: 12px 0 18px;
+      padding: 0 28px;
+      color: #d8eadf;
+      font-size: 14px;
+    }
+
+    .zairo-start-loader span {
+      position: relative;
+      z-index: 2;
+      color: #19ff88;
+      font-weight: 950;
+      letter-spacing: 3px;
+      font-size: 10px;
+    }
+
+    @keyframes zairoStartRingSpin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <app-root>
+    <div class="zairo-start-loader">
+      <div class="zairo-start-ring-wrap">
+        <img
+          src="/assets/zairo-loader-ring.png"
+          alt="Cargando ZAIRO"
+          class="zairo-start-ring">
+
+        <div class="zairo-start-logo-core">
+          <img
+            src="/assets/zairo-loader-logo.png"
+            alt="ZAIRO"
+            class="zairo-start-logo">
+        </div>
+      </div>
+
+      <h2>Inicializando Lost Trip</h2>
+      <p>Abriendo el portal de la jungla...</p>
+      <span>ACCESS GRANTED</span>
     </div>
-  </div>
-
-  <h2>Inicializando Lost Trip</h2>
-  <p>Abriendo el portal de la jungla...</p>
-  <span>ACCESS GRANTED</span>
-</div>
+  </app-root>
+</body>
+</html>
 
 <div class="zairo-home">
 
