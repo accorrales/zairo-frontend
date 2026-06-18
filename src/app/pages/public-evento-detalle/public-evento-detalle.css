@@ -539,6 +539,42 @@
   display: block;
 }
 
+.lost-nav .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.lost-nav .logo-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 6px;
+
+  background:
+    radial-gradient(circle at top, rgba(198, 255, 64, 0.18), transparent 55%),
+    rgba(3, 14, 8, 0.82);
+
+  border: 1px solid rgba(205, 255, 72, 0.35);
+
+  box-shadow:
+    0 0 22px rgba(102, 255, 76, 0.22),
+    0 0 38px rgba(255, 214, 10, 0.08),
+    inset 0 0 18px rgba(255, 255, 255, 0.04);
+}
+
+.lost-nav .logo-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 10px rgba(203, 255, 80, 0.35));
+}
+
 /* ===========================================================
    DETALLE DE LA ZONA SELECCIONADA
    =========================================================== */
