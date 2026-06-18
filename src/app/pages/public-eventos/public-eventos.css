@@ -66,7 +66,7 @@
   text-align: center;
   color: white;
   overflow: hidden;
-  animation: introOut .5s ease 1.9s forwards;
+  animation: introOut .5s ease 2.6s forwards;
 }
 
 .intro-loader::before {
@@ -2378,5 +2378,51 @@ nav a {
   .final-cta {
     background:
       linear-gradient(180deg, rgba(5, 15, 8, .76), rgba(5, 15, 8, .48));
+  }
+}
+
+@media (max-width: 560px) {
+  .intro-loader {
+    min-height: 100dvh;
+    background:
+      radial-gradient(circle at center, rgba(255, 184, 77, .16), transparent 30%),
+      radial-gradient(circle at center, rgba(25,255,136,.10), transparent 46%),
+      linear-gradient(180deg, #020503 0%, #041006 60%, #020503 100%);
+  }
+
+  .intro-loader::before {
+    background: none;
+    opacity: 0;
+  }
+
+  .intro-ring-wrap {
+    width: 190px;
+    height: 190px;
+    margin-bottom: 22px;
+  }
+
+  .intro-ring-core {
+    width: 92px;
+    height: 92px;
+  }
+
+  .intro-ring-logo {
+    width: 82px;
+    height: 82px;
+  }
+
+  .intro-loader h2 {
+    font-size: 25px;
+    padding: 0 22px;
+  }
+
+  .intro-loader p {
+    font-size: 14px;
+    padding: 0 28px;
+  }
+
+  .intro-loader span {
+    font-size: 10px;
+    letter-spacing: 3px;
   }
 }

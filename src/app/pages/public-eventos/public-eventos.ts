@@ -61,9 +61,11 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
   private observer?: IntersectionObserver;
 
   ngOnInit(): void {
+    this.preloadIntroAssets();
+
     this.introTimer = setTimeout(() => {
       this.loadingIntro = false;
-    }, 2300);
+    }, 2600);
 
     this.eventosService.obtenerEventosActivos().subscribe({
       next: (data: any) => {
@@ -95,6 +97,21 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
           this.iniciarScrollReveal();
         }, 300);
       }
+    });
+  }
+
+  private preloadIntroAssets(): void {
+    const assets = [
+      '/assets/zairo-loader-ring.png',
+      '/assets/zairo-loader-logo.png'
+    ];
+
+    assets.forEach((src) => {
+      const img = new Image();
+
+      img.decoding = 'async';
+      img.loading = 'eager';
+      img.src = src;
     });
   }
 
