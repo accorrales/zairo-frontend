@@ -2164,3 +2164,107 @@ nav a {
     transform: none;
   }
 }
+
+/* =========================================================
+   ZAIRO — BOSQUE MÁS VISIBLE EN EL HOME
+   ========================================================= */
+
+/* Hacemos que el bosque realmente se vea detrás de la web */
+.site-jungle-bg {
+  z-index: 0;
+  opacity: .88;
+  background:
+    linear-gradient(rgba(2, 5, 3, .58), rgba(2, 5, 3, .74)),
+    url('https://images.unsplash.com/photo-1448375240586-882707db888b') center/cover no-repeat;
+  filter: brightness(1.12) contrast(1.08) saturate(1.15);
+}
+
+/* Bajamos la oscuridad del overlay */
+.site-jungle-bg::after {
+  background:
+    radial-gradient(80% 70% at 50% 30%, transparent 52%, rgba(0,0,0,.48) 100%),
+    linear-gradient(to bottom, rgba(2,5,3,.06), rgba(2,5,3,.72));
+}
+
+/* Le damos más atmósfera verde/morada sin tapar el bosque */
+.site-jungle-bg::before {
+  opacity: .52;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(25,255,136,.13), transparent 30%),
+    radial-gradient(circle at 80% 20%, rgba(124,58,237,.12), transparent 34%),
+    linear-gradient(115deg, transparent 0%, rgba(25,255,136,.035) 28%, transparent 47%);
+}
+
+/* Importante: el contenido queda encima del bosque */
+.navbar,
+.scroll-sequence,
+.hero,
+.trip-alert,
+.story-section,
+.experience-strip,
+.how-it-works,
+.ai-pass,
+.lineup-section,
+.secret-location,
+.ticket-types,
+.events-section,
+.final-cta,
+.whatsapp-float,
+.mobile-buy-bar {
+  position: relative;
+  z-index: 2;
+}
+
+/* Hacemos las secciones más transparentes para que respire el fondo */
+.story-card,
+.experience-item,
+.ai-pass,
+.secret-location,
+.lineup-section article,
+.ticket-types article,
+.steps-grid article,
+.event-card,
+.final-cta {
+  background:
+    linear-gradient(180deg, rgba(5, 15, 8, .66), rgba(5, 15, 8, .36));
+  border-color: rgba(255,255,255,.14);
+}
+
+/* La sección grande de historia deja ver más selva */
+.story-card.large {
+  background:
+    linear-gradient(rgba(2,5,3,.18), rgba(2,5,3,.62)),
+    url('https://images.unsplash.com/photo-1511497584788-876760111969') center/cover;
+}
+
+/* Bajamos un poco el fondo negro general */
+.zairo-home {
+  background:
+    radial-gradient(circle at top left, rgba(21, 255, 136, .11), transparent 30%),
+    radial-gradient(circle at 78% 12%, rgba(132, 68, 255, .13), transparent 34%),
+    radial-gradient(circle at 50% 100%, rgba(255, 184, 77, .07), transparent 36%),
+    linear-gradient(180deg, rgba(2,5,3,.82) 0%, rgba(4,16,6,.72) 38%, rgba(2,5,3,.86) 100%);
+}
+
+/* En móvil lo dejamos un poco más oscuro para que el texto no se pierda */
+@media (max-width: 560px) {
+  .site-jungle-bg {
+    opacity: .72;
+    background:
+      linear-gradient(rgba(2, 5, 3, .68), rgba(2, 5, 3, .82)),
+      url('https://images.unsplash.com/photo-1448375240586-882707db888b') center/cover no-repeat;
+  }
+
+  .story-card,
+  .experience-item,
+  .ai-pass,
+  .secret-location,
+  .lineup-section article,
+  .ticket-types article,
+  .steps-grid article,
+  .event-card,
+  .final-cta {
+    background:
+      linear-gradient(180deg, rgba(5, 15, 8, .76), rgba(5, 15, 8, .48));
+  }
+}
