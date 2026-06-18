@@ -133,6 +133,16 @@
     0 0 32px rgba(25,255,136,.22);
 }
 
+.intro-ring-logo {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  display: block;
+  filter:
+    drop-shadow(0 0 10px rgba(255, 184, 77, .45))
+    drop-shadow(0 0 18px rgba(255, 184, 77, .22));
+}
+
 .intro-loader h2 {
   position: relative;
   z-index: 2;
