@@ -94,74 +94,62 @@
 
       <div class="venue-map" *ngIf="zonas.length > 0; else sinTiers">
 
-        <div class="venue-screen">
+        <div class="plano">
+          <img
+            class="plano-img"
+            [src]="planoImagen"
+            alt="Plano del lugar — Lost Trip by ZAIRO">
 
-          <div class="stage">
-            <span>◆ ESCENARIO · DJ ◆</span>
-          </div>
-
-          <div class="zones-row" *ngIf="zonasPremium.length">
+          <div class="hotspots">
             <button
-              class="zone-area"
-              *ngFor="let z of zonasPremium"
+              class="hotspot"
+              *ngFor="let z of zonasConMapa"
               [ngClass]="'zone-' + z.clave"
               [class.selected]="esZonaSeleccionada(z)"
               [class.no-disp]="z.estado !== 'DISPONIBLE'"
+              [style.left.%]="z.pos.x"
+              [style.top.%]="z.pos.y"
               (click)="seleccionarZona(z)">
 
-              <span
-                class="status"
-                [ngClass]="{
-                  'disponible': z.estado === 'DISPONIBLE',
-                  'proximamente': z.estado === 'PROXIMAMENTE',
-                  'cerrado': z.estado === 'CERRADO',
-                  'agotado': z.estado === 'AGOTADO',
-                  'desactivado': z.estado === 'DESACTIVADO'
-                }">
-                {{ z.estado }}
-              </span>
+              <span class="hotspot-dot"></span>
 
-              <span class="zone-icono">{{ z.icono }}</span>
-              <span class="zone-nombre">{{ z.nombre }}</span>
-              <span class="zone-precio">{{ formatearMoneda(z.precioActual) }}</span>
-              <span class="zone-fases" *ngIf="z.multiFase">↑ Precio por fases</span>
+              <span class="hotspot-card">
+                <span class="hotspot-nombre">{{ z.nombre }}</span>
+                <span class="hotspot-precio">{{ formatearMoneda(z.precioActual) }}</span>
+                <span
+                  class="status"
+                  [ngClass]="{
+                    'disponible': z.estado === 'DISPONIBLE',
+                    'proximamente': z.estado === 'PROXIMAMENTE',
+                    'cerrado': z.estado === 'CERRADO',
+                    'agotado': z.estado === 'AGOTADO',
+                    'desactivado': z.estado === 'DESACTIVADO'
+                  }">
+                  {{ z.estado }}
+                </span>
+              </span>
             </button>
           </div>
-
-          <button
-            class="zone-area zone-block-general"
-            *ngIf="zonaGeneral"
-            [class.selected]="esZonaSeleccionada(zonaGeneral)"
-            [class.no-disp]="zonaGeneral.estado !== 'DISPONIBLE'"
-            (click)="seleccionarZona(zonaGeneral)">
-
-            <span
-              class="status"
-              [ngClass]="{
-                'disponible': zonaGeneral.estado === 'DISPONIBLE',
-                'proximamente': zonaGeneral.estado === 'PROXIMAMENTE',
-                'cerrado': zonaGeneral.estado === 'CERRADO',
-                'agotado': zonaGeneral.estado === 'AGOTADO',
-                'desactivado': zonaGeneral.estado === 'DESACTIVADO'
-              }">
-              {{ zonaGeneral.estado }}
-            </span>
-
-            <div class="zone-block-info">
-              <span class="zone-icono">{{ zonaGeneral.icono }}</span>
-              <span class="zone-nombre">{{ zonaGeneral.nombre }}</span>
-              <span class="zone-sub">Pista principal</span>
-            </div>
-
-            <div class="zone-block-price">
-              <span class="zone-precio">{{ formatearMoneda(zonaGeneral.precioActual) }}</span>
-              <span class="zone-fases" *ngIf="zonaGeneral.multiFase">↑ Precio por fases</span>
-            </div>
-          </button>
-
         </div>
 
-        <p class="map-hint">👆 Tocá una zona para ver el precio y continuar la compra.</p>
+        <!-- Zonas sin posición en el plano (si las hubiera) -->
+        <div class="zones-row" *ngIf="zonasSinMapa.length">
+          <button
+            class="zone-area"
+            *ngFor="let z of zonasSinMapa"
+            [ngClass]="'zone-' + z.clave"
+            [class.selected]="esZonaSeleccionada(z)"
+            [class.no-disp]="z.estado !== 'DISPONIBLE'"
+            (click)="seleccionarZona(z)">
+
+            <span class="zone-icono">{{ z.icono }}</span>
+            <span class="zone-nombre">{{ z.nombre }}</span>
+            <span class="zone-precio">{{ formatearMoneda(z.precioActual) }}</span>
+            <span class="zone-fases" *ngIf="z.multiFase">↑ Precio por fases</span>
+          </button>
+        </div>
+
+        <p class="map-hint">👆 Tocá una zona del plano para ver el precio y comprar.</p>
       </div>
 
       <ng-template #sinTiers>

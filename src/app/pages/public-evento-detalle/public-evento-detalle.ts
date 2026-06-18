@@ -25,9 +25,12 @@ export class PublicEventoDetalle implements OnInit {
   tiers: any[] = [];
 
   zonas: any[] = [];
-  zonasPremium: any[] = [];
-  zonaGeneral: any = null;
+  zonasConMapa: any[] = [];
+  zonasSinMapa: any[] = [];
   zonaSeleccionada: any = null;
+
+  /** Imagen del plano del lugar. Guardala en public/assets/ con este nombre. */
+  planoImagen = '/assets/plano-lost-trip.png';
 
   cargando = true;
 
@@ -59,6 +62,19 @@ export class PublicEventoDetalle implements OnInit {
     { clave: 'backstage', nombre: 'Backstage',       icono: '🎤', keywords: ['backstage', 'back stage'] },
     { clave: 'general',   nombre: 'Zona General',    icono: '🎟️', keywords: ['general'] }
   ];
+
+  /**
+   * Posición (en % del plano) del marcador de cada zona. Ajustá x/y si
+   * querés mover un punto sobre la imagen (0,0 = arriba-izquierda).
+   */
+  private posicionesMapa: Record<string, { x: number; y: number }> = {
+    general:   { x: 56, y: 58 },
+    punch:     { x: 17, y: 41 },
+    soleo:     { x: 87, y: 27 },
+    vip:       { x: 87, y: 72 },
+    palco:     { x: 13, y: 72 },
+    backstage: { x: 56, y: 13 }
+  };
 
   private regexFase =
     /\b(tier|fase|phase|etapa|preventa|pre-?venta|early\s*-?\s*bird|earlybird)\b\s*\.?\s*([ivxlc]+|\d+)?/i;
@@ -161,6 +177,7 @@ export class PublicEventoDetalle implements OnInit {
           nombre,
           icono,
           descripcion: tier.descripcion || '',
+          pos: this.posicionesMapa[clave] || null,
           fases: []
         });
         orden.push(clave);
@@ -173,8 +190,8 @@ export class PublicEventoDetalle implements OnInit {
     zonas.forEach((z) => this.calcularFasesZona(z));
 
     this.zonas = zonas;
-    this.zonaGeneral = zonas.find((z) => z.clave === 'general') || null;
-    this.zonasPremium = zonas.filter((z) => z.clave !== 'general');
+    this.zonasConMapa = zonas.filter((z) => z.pos);
+    this.zonasSinMapa = zonas.filter((z) => !z.pos);
 
     // Mantener la zona seleccionada si todavía existe tras recargar.
     if (this.zonaSeleccionada) {
