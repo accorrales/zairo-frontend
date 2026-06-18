@@ -133,15 +133,6 @@
     0 0 32px rgba(25,255,136,.22);
 }
 
-.intro-ring-core strong {
-  font-size: 36px;
-  font-weight: 950;
-  color: #ffdd91;
-  text-shadow:
-    0 0 16px rgba(255,184,77,.8),
-    0 0 28px rgba(25,255,136,.3);
-}
-
 .intro-loader h2 {
   position: relative;
   z-index: 2;
