@@ -1,7 +1,24 @@
 <div class="lost-detail">
 
-  <div *ngIf="cargando" class="loading">
-    Cargando Lost Trip...
+  <div class="intro-loader" *ngIf="cargando">
+    <div class="intro-ring-wrap">
+      <img
+        src="/assets/zairo-loader-ring.png"
+        alt="Cargando ZAIRO"
+        class="intro-ring">
+
+      <div class="intro-ring-core">
+        <img
+          src="/assets/zairo-loader-logo.png"
+          alt="Logo ZAIRO"
+          class="intro-ring-logo">
+      </div>
+    </div>
+
+    <div class="intro-loader-copy">
+      <h2 class="intro-loader-kicker">WELCOME TO THE</h2>
+      <h2 class="intro-loader-title">JUNGLE</h2>
+    </div>
   </div>
 
   <ng-container *ngIf="!cargando && evento">
@@ -32,7 +49,7 @@
         <span class="tag">ZAIRO PRESENTS</span>
 
         <div class="jungle-badge">
-          🌴 WELCOME TO THE JUNGLE
+          LOST TRIP
         </div>
 
         <h1>{{ evento.nombre }}</h1>
