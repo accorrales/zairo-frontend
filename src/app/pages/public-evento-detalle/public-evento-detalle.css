@@ -223,7 +223,7 @@
 }
 
 .features article,
-.ticket,
+.map-card,
 .checkout {
   background:
     linear-gradient(180deg, rgba(34,197,94,.12), rgba(255,255,255,.035));
@@ -238,7 +238,7 @@
 }
 
 .features article:hover,
-.ticket:hover {
+.map-card:hover {
   transform: translateY(-7px);
   border-color: rgba(251,191,36,.38);
 }
@@ -277,25 +277,22 @@
   color: #cfe7d5;
 }
 
-.tickets-grid {
+.price-map {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 24px;
 }
 
-.ticket {
+.map-card {
   position: relative;
   overflow: hidden;
   padding: 30px;
+  display: flex;
+  flex-direction: column;
   transition: .35s ease;
 }
 
-.ticket.selected {
-  border-color: rgba(34,197,94,.75);
-  box-shadow: 0 0 55px rgba(34,197,94,.22);
-}
-
-.ticket::before {
+.map-card::before {
   content: "";
   position: absolute;
   inset: -1px;
@@ -305,20 +302,208 @@
   pointer-events: none;
 }
 
-.ticket-head {
+.map-card.selected {
+  border-color: rgba(34,197,94,.75);
+  box-shadow: 0 0 55px rgba(34,197,94,.22);
+}
+
+.map-card.no-disponible {
+  opacity: .85;
+}
+
+.map-card .select-btn {
+  margin-top: auto;
+}
+
+.map-head {
   position: relative;
   display: flex;
   justify-content: space-between;
   gap: 18px;
 }
 
-.ticket-head h3 {
+.map-head-info h3 {
   margin: 0 0 8px;
   font-size: 28px;
 }
 
-.ticket-head p {
+.map-head-info p {
+  margin: 0;
   color: #cfe7d5;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Precio actual + etiquetas de ahorro / subida */
+.map-now {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 22px 0 4px;
+}
+
+.map-now-label {
+  display: block;
+  color: #86efac;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.map-now .price {
+  margin: 0;
+  font-size: 42px;
+}
+
+.map-now-tags {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.save-pill,
+.rise-pill {
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.save-pill {
+  background: rgba(34,197,94,.18);
+  color: #86efac;
+  border: 1px solid rgba(34,197,94,.4);
+}
+
+.rise-pill {
+  background: rgba(251,191,36,.14);
+  color: #fde68a;
+  border: 1px solid rgba(251,191,36,.4);
+}
+
+/* Línea de tiempo de precios por fase */
+.phase-track {
+  position: relative;
+  margin: 28px 0 22px;
+  --progreso: 0%;
+  --edge: 8%;
+}
+
+.phase-rail {
+  position: absolute;
+  top: 11px;
+  left: var(--edge, 8%);
+  right: var(--edge, 8%);
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(187,247,208,.16);
+  overflow: hidden;
+}
+
+.phase-rail-fill {
+  position: absolute;
+  inset: 0;
+  width: var(--progreso, 0%);
+  background: linear-gradient(90deg, #22c55e, #fbbf24, #f97316);
+  border-radius: 999px;
+  transition: width .5s ease;
+}
+
+.phase-nodes {
+  position: relative;
+  display: flex;
+}
+
+.phase-node {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+}
+
+.phase-dot {
+  width: 16px;
+  height: 16px;
+  margin-bottom: 8px;
+  border-radius: 50%;
+  background: #0a1a0f;
+  border: 2px solid rgba(187,247,208,.4);
+  transition: .3s ease;
+}
+
+.phase-label {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #cfe7d5;
+}
+
+.phase-price {
+  font-size: 15px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.phase-when {
+  font-size: 11px;
+  color: #9fc3a8;
+}
+
+.phase-node.is-past .phase-dot {
+  background: #22c55e;
+  border-color: #22c55e;
+}
+
+.phase-node.is-past .phase-price {
+  color: #7e9d86;
+  text-decoration: line-through;
+}
+
+.phase-node.is-past .phase-label,
+.phase-node.is-past .phase-when {
+  color: #6f8a76;
+}
+
+.phase-node.is-active .phase-dot {
+  width: 20px;
+  height: 20px;
+  margin-bottom: 6px;
+  background: #fbbf24;
+  border-color: #fff7d6;
+  animation: phasePulse 1.9s ease-in-out infinite;
+}
+
+.phase-node.is-active .phase-label {
+  color: #fde68a;
+}
+
+.phase-node.is-active .phase-price {
+  color: #fff;
+  font-size: 17px;
+}
+
+.phase-node.is-future .phase-price,
+.phase-node.is-future .phase-label {
+  color: #cde3d3;
+}
+
+@keyframes phasePulse {
+  0%, 100% {
+    box-shadow: 0 0 0 6px rgba(251,191,36,.16), 0 0 22px rgba(251,191,36,.5);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(251,191,36,.07), 0 0 30px rgba(251,191,36,.72);
+  }
 }
 
 .status {
@@ -356,13 +541,13 @@
   color: transparent;
 }
 
-.ticket-meta {
+.map-meta {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
   color: #cfe7d5;
-  font-size: 14px;
+  font-size: 13.5px;
   margin-bottom: 24px;
 }
 
@@ -400,6 +585,49 @@
 
 .checkout-title p {
   color: #cfe7d5;
+}
+
+.selected-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+  padding: 16px 20px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(34,197,94,.16), rgba(251,191,36,.1));
+  border: 1px solid rgba(187,247,208,.2);
+}
+
+.selected-label {
+  display: block;
+  color: #86efac;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+
+.selected-summary strong {
+  font-size: 19px;
+}
+
+.selected-price {
+  color: #fde68a;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.total-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.total-detail small {
+  color: #9fc3a8;
+  font-size: 13px;
 }
 
 .age-alert {
@@ -818,5 +1046,71 @@
 
   .total strong {
     font-size: 1.6rem;
+  }
+}
+
+/* Mapa de precios en pantallas pequeñas: timeline vertical en tarjetas */
+@media (max-width: 620px) {
+  .map-now .price {
+    font-size: 36px;
+  }
+
+  .map-now-tags {
+    align-items: flex-start;
+  }
+
+  .phase-track {
+    margin: 22px 0 20px;
+  }
+
+  .phase-rail {
+    display: none;
+  }
+
+  .phase-nodes {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .phase-node {
+    flex: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    text-align: left;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(187,247,208,.12);
+  }
+
+  .phase-node.is-active {
+    background: rgba(251,191,36,.12);
+    border-color: rgba(251,191,36,.4);
+  }
+
+  .phase-dot,
+  .phase-node.is-active .phase-dot {
+    margin: 0;
+  }
+
+  .phase-label {
+    min-width: 70px;
+  }
+
+  .phase-price {
+    margin-left: auto;
+  }
+
+  .phase-when {
+    width: 100%;
+    padding-left: 28px;
+  }
+
+  .selected-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 }

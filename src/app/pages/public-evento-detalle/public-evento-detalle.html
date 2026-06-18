@@ -110,56 +110,93 @@
 
       <div class="section-title">
         <span>TICKETS</span>
-        <h2>Seleccioná tu entrada</h2>
-        <p>Elegí tu entrada, completá tus datos y continuá por WhatsApp.</p>
+        <h2>Mapa de precios</h2>
+        <p>Los precios suben por fases. Comprá hoy y asegurá la mejor tarifa antes de que cambie.</p>
       </div>
 
-      <div class="tickets-grid" *ngIf="tiers.length > 0; else sinTiers">
+      <div class="price-map" *ngIf="gruposTiers.length > 0; else sinTiers">
 
         <article
-          class="ticket"
-          *ngFor="let t of tiers"
-          [class.selected]="tierSeleccionado?.id_tier === t.id_tier">
+          class="map-card"
+          *ngFor="let g of gruposTiers"
+          [class.selected]="esGrupoSeleccionado(g)"
+          [class.no-disponible]="g.estado !== 'DISPONIBLE'">
 
-          <div class="ticket-head">
-            <div>
-              <h3>{{ t.nombre }}</h3>
-              <p>{{ t.descripcion || 'Entrada oficial para Lost Trip by ZAIRO.' }}</p>
+          <div class="map-head">
+            <div class="map-head-info">
+              <h3>{{ g.nombre }}</h3>
+              <p>{{ g.descripcion || 'Entrada oficial para Lost Trip by ZAIRO.' }}</p>
             </div>
 
             <span
               class="status"
               [ngClass]="{
-                'disponible': t.disponibilidad === 'DISPONIBLE',
-                'proximamente': t.disponibilidad === 'PROXIMAMENTE',
-                'cerrado': t.disponibilidad === 'CERRADO',
-                'agotado': t.disponibilidad === 'AGOTADO',
-                'desactivado': t.disponibilidad === 'DESACTIVADO'
+                'disponible': g.estado === 'DISPONIBLE',
+                'proximamente': g.estado === 'PROXIMAMENTE',
+                'cerrado': g.estado === 'CERRADO',
+                'agotado': g.estado === 'AGOTADO',
+                'desactivado': g.estado === 'DESACTIVADO'
               }">
-              {{ t.disponibilidad }}
+              {{ g.estado }}
             </span>
           </div>
 
-          <div class="price">
-            {{ formatearMoneda(t.precio) }}
+          <div class="map-now">
+            <div class="map-now-price">
+              <span class="map-now-label">
+                {{ g.estado === 'DISPONIBLE' ? 'Precio actual' : 'Precio' }}
+              </span>
+              <div class="price">{{ formatearMoneda(g.precioActual) }}</div>
+            </div>
+
+            <div class="map-now-tags">
+              <span class="save-pill" *ngIf="porcentajeAhorro(g) > 0">
+                Ahorrás {{ porcentajeAhorro(g) }}%
+              </span>
+              <span class="rise-pill" *ngIf="g.siguienteFase">
+                ↑ Luego sube a {{ formatearMoneda(g.siguienteFase.precio) }}
+              </span>
+            </div>
           </div>
 
-          <div class="ticket-meta">
+          <!-- Línea de tiempo de precios por fase -->
+          <div
+            class="phase-track"
+            *ngIf="g.fases.length > 1"
+            [style.--progreso]="g.progreso + '%'"
+            [style.--edge]="(50 / g.fases.length) + '%'">
+            <div class="phase-rail">
+              <div class="phase-rail-fill"></div>
+            </div>
+
+            <div class="phase-nodes">
+              <div
+                class="phase-node"
+                *ngFor="let f of g.fases"
+                [ngClass]="'is-' + f.estadoMapa">
+                <div class="phase-dot"></div>
+                <span class="phase-label">{{ f.etiquetaFase }}</span>
+                <span class="phase-price">{{ formatearMoneda(f.precio) }}</span>
+                <span class="phase-when">{{ etiquetaCuandoFase(f) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="map-meta" *ngIf="g.faseActual">
             <span>
-              Cupo:
-              {{ t.cantidad_disponible === null ? 'Ilimitado' : t.cantidad_disponible }}
+              🎟️ Cupo:
+              {{ g.faseActual.cantidad_disponible === null ? 'Ilimitado' : g.faseActual.cantidad_disponible }}
             </span>
-
-            <span *ngIf="t.fecha_fin">
-              Hasta: {{ t.fecha_fin | date:'dd/MM/yyyy HH:mm' }}
+            <span *ngIf="g.faseActual.fecha_fin">
+              ⏳ Esta tarifa vence el {{ g.faseActual.fecha_fin | date:'dd/MM/yyyy HH:mm' }}
             </span>
           </div>
 
           <button
             class="select-btn"
-            [disabled]="t.disponibilidad !== 'DISPONIBLE'"
-            (click)="seleccionarTier(t)">
-            {{ tierSeleccionado?.id_tier === t.id_tier ? 'Seleccionada' : 'Seleccionar entrada' }}
+            [disabled]="g.estado !== 'DISPONIBLE'"
+            (click)="seleccionarGrupo(g)">
+            {{ textoBotonGrupo(g) }}
           </button>
 
         </article>
@@ -172,15 +209,20 @@
         </div>
       </ng-template>
 
-      <div class="checkout" *ngIf="tierSeleccionado">
+      <div class="checkout" id="checkout" *ngIf="tierSeleccionado">
 
         <div class="checkout-title">
           <span>CHECKOUT</span>
           <h2>Completar compra</h2>
-          <p>
-            Entrada seleccionada:
+          <p>Revisá tu entrada, completá tus datos y continuá por WhatsApp.</p>
+        </div>
+
+        <div class="selected-summary">
+          <div>
+            <span class="selected-label">Entrada seleccionada</span>
             <strong>{{ tierSeleccionado.nombre }}</strong>
-          </p>
+          </div>
+          <div class="selected-price">{{ formatearMoneda(tierSeleccionado.precio) }} c/u</div>
         </div>
 
         <div class="age-alert">
@@ -255,7 +297,10 @@
         </div>
 
         <div class="total">
-          <span>Total</span>
+          <div class="total-detail">
+            <span>Total</span>
+            <small>{{ cantidad }} × {{ formatearMoneda(tierSeleccionado.precio) }}</small>
+          </div>
           <strong>{{ formatearMoneda(calcularTotal()) }}</strong>
         </div>
 

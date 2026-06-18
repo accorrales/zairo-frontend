@@ -23,6 +23,7 @@ export class PublicEventoDetalle implements OnInit {
   idEvento!: number;
   evento: any = null;
   tiers: any[] = [];
+  gruposTiers: any[] = [];
   cargando = true;
 
   tierSeleccionado: any = null;
@@ -80,11 +81,12 @@ export class PublicEventoDetalle implements OnInit {
       behavior: 'smooth'
     });
   }
-    
+
   cargarTiers(): void {
     this.tiersService.obtenerTiersPorEvento(this.idEvento).subscribe({
       next: (data) => {
-        this.tiers = data;
+        this.tiers = data || [];
+        this.agruparTiers();
         this.cargando = false;
       },
       error: (err) => {
@@ -92,6 +94,179 @@ export class PublicEventoDetalle implements OnInit {
         this.cargando = false;
       }
     });
+  }
+
+  /**
+   * Agrupa los tiers que comparten un mismo nombre base (por ejemplo
+   * "General · Tier 1", "General · Tier 2") en una sola entrada con su
+   * propio mapa de precios por fases. Los tiers con nombre único quedan
+   * como un grupo de una sola fase.
+   */
+  agruparTiers(): void {
+    const regexFase =
+      /[\s\-–—·|:]*\(?\s*\b(tier|fase|phase|etapa|stage|preventa|pre-?venta|early\s*-?\s*bird|earlybird)\b[\s.\-]*([ivxlc]+|\d+)?\s*\)?\s*$/i;
+
+    const grupos: any[] = [];
+    const indicePorClave = new Map<string, number>();
+
+    for (const tier of this.tiers) {
+      const nombre = (tier.nombre || '').trim();
+      const match = nombre.match(regexFase);
+
+      let base = nombre;
+      let etiquetaFase = '';
+
+      if (match) {
+        base = nombre.slice(0, match.index).replace(/[\s\-–—·|:]+$/, '').trim();
+        const palabra = match[1] ? this.capitalizar(match[1].trim()) : '';
+        const numero = match[2] ? match[2].trim().toUpperCase() : '';
+        etiquetaFase = [palabra, numero].filter(Boolean).join(' ');
+      }
+
+      if (!base) {
+        base = nombre || 'Entrada general';
+      }
+
+      const clave = base.toLowerCase();
+      let indice = indicePorClave.get(clave);
+
+      if (indice === undefined) {
+        indice = grupos.length;
+        indicePorClave.set(clave, indice);
+        grupos.push({ nombre: base, descripcion: tier.descripcion || '', fases: [] });
+      }
+
+      grupos[indice].fases.push({ ...tier, etiquetaFase });
+    }
+
+    for (const grupo of grupos) {
+      // Las fases escalan en precio: la más barata es la fase actual/temprana.
+      grupo.fases.sort((a: any, b: any) => Number(a.precio || 0) - Number(b.precio || 0));
+
+      grupo.fases.forEach((fase: any, i: number) => {
+        if (!fase.etiquetaFase) {
+          fase.etiquetaFase = `Fase ${i + 1}`;
+        }
+      });
+
+      const faseActual =
+        grupo.fases.find((f: any) => f.disponibilidad === 'DISPONIBLE') || null;
+
+      const precios = grupo.fases.map((f: any) => Number(f.precio || 0));
+      grupo.precioMin = Math.min(...precios);
+      grupo.precioMax = Math.max(...precios);
+      grupo.faseActual = faseActual;
+
+      let indiceActivo: number;
+
+      if (faseActual) {
+        grupo.estado = 'DISPONIBLE';
+        grupo.precioActual = Number(faseActual.precio || 0);
+        indiceActivo = grupo.fases.indexOf(faseActual);
+        grupo.siguienteFase =
+          grupo.fases
+            .slice(indiceActivo + 1)
+            .find((f: any) => Number(f.precio || 0) > grupo.precioActual) || null;
+      } else {
+        const proxima = grupo.fases.find((f: any) => f.disponibilidad === 'PROXIMAMENTE');
+
+        if (proxima) {
+          grupo.estado = 'PROXIMAMENTE';
+          grupo.precioActual = Number(proxima.precio || 0);
+          indiceActivo = 0;
+        } else {
+          const ultima = grupo.fases[grupo.fases.length - 1];
+          grupo.estado = ultima ? ultima.disponibilidad : 'CERRADO';
+          grupo.precioActual = Number((ultima && ultima.precio) || 0);
+          indiceActivo = grupo.fases.length - 1;
+        }
+
+        grupo.siguienteFase = null;
+      }
+
+      if (!grupo.descripcion) {
+        grupo.descripcion =
+          (faseActual && faseActual.descripcion) ||
+          (grupo.fases[0] && grupo.fases[0].descripcion) ||
+          '';
+      }
+
+      grupo.progreso =
+        grupo.fases.length > 1
+          ? Math.round((indiceActivo / (grupo.fases.length - 1)) * 100)
+          : 100;
+
+      grupo.fases.forEach((fase: any) => {
+        if (faseActual && fase.id_tier === faseActual.id_tier) {
+          fase.estadoMapa = 'active';
+        } else if (fase.disponibilidad === 'CERRADO' || fase.disponibilidad === 'AGOTADO') {
+          fase.estadoMapa = 'past';
+        } else {
+          fase.estadoMapa = 'future';
+        }
+      });
+    }
+
+    this.gruposTiers = grupos;
+  }
+
+  seleccionarGrupo(grupo: any): void {
+    if (!grupo?.faseActual) return;
+
+    this.seleccionarTier(grupo.faseActual);
+    setTimeout(() => this.irACheckout(), 60);
+  }
+
+  esGrupoSeleccionado(grupo: any): boolean {
+    return (
+      !!grupo?.faseActual &&
+      this.tierSeleccionado?.id_tier === grupo.faseActual.id_tier
+    );
+  }
+
+  textoBotonGrupo(grupo: any): string {
+    if (grupo.faseActual) {
+      return this.esGrupoSeleccionado(grupo) ? 'Entrada seleccionada' : 'Comprar a este precio';
+    }
+    if (grupo.estado === 'PROXIMAMENTE') return 'Próximamente';
+    if (grupo.estado === 'AGOTADO') return 'Agotado';
+    if (grupo.estado === 'CERRADO') return 'Ventas cerradas';
+    return 'No disponible';
+  }
+
+  porcentajeAhorro(grupo: any): number {
+    if (!grupo?.precioActual || !grupo?.precioMax) return 0;
+    if (grupo.precioMax <= grupo.precioActual) return 0;
+    return Math.round((1 - grupo.precioActual / grupo.precioMax) * 100);
+  }
+
+  etiquetaCuandoFase(fase: any): string {
+    if (fase.estadoMapa === 'active') {
+      return fase.fecha_fin ? `Hasta ${this.fechaCorta(fase.fecha_fin)}` : 'Precio de hoy';
+    }
+    if (fase.estadoMapa === 'future') {
+      return fase.fecha_inicio ? `Sube el ${this.fechaCorta(fase.fecha_inicio)}` : 'Próximo precio';
+    }
+    return 'Finalizado';
+  }
+
+  fechaCorta(fecha: string): string {
+    if (!fecha) return '';
+    return new Date(fecha).toLocaleDateString('es-CR', { day: '2-digit', month: 'short' });
+  }
+
+  capitalizar(texto: string): string {
+    if (!texto) return '';
+    return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
+  }
+
+  irACheckout(): void {
+    const el = document.getElementById('checkout');
+
+    if (!el) return;
+
+    const y = el.getBoundingClientRect().top + window.pageYOffset - 90;
+    window.scrollTo({ top: y, behavior: 'smooth' });
   }
 
   seleccionarTier(tier: any): void {
