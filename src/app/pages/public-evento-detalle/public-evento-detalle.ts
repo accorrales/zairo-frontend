@@ -23,7 +23,12 @@ export class PublicEventoDetalle implements OnInit {
   idEvento!: number;
   evento: any = null;
   tiers: any[] = [];
-  gruposTiers: any[] = [];
+
+  zonas: any[] = [];
+  zonasPremium: any[] = [];
+  zonaGeneral: any = null;
+  zonaSeleccionada: any = null;
+
   cargando = true;
 
   tierSeleccionado: any = null;
@@ -40,6 +45,23 @@ export class PublicEventoDetalle implements OnInit {
 
   procesandoCompra = false;
   mensajeCompra = '';
+
+  /**
+   * Zonas conocidas del lugar. Cada tier se asigna a una zona buscando
+   * su palabra clave dentro del nombre del tier (ej. un tier llamado
+   * "TIER 1 (Entrada General)" cae en la zona "general").
+   */
+  private zonaDefs = [
+    { clave: 'punch',     nombre: 'Zona Punch Club', icono: '🍹', keywords: ['punch'] },
+    { clave: 'soleo',     nombre: 'Zona Soleo',      icono: '🍾', keywords: ['soleo'] },
+    { clave: 'vip',       nombre: 'Zona VIP',        icono: '⭐', keywords: ['vip'] },
+    { clave: 'palco',     nombre: 'Palcos',          icono: '🎭', keywords: ['palco'] },
+    { clave: 'backstage', nombre: 'Backstage',       icono: '🎤', keywords: ['backstage', 'back stage'] },
+    { clave: 'general',   nombre: 'Zona General',    icono: '🎟️', keywords: ['general'] }
+  ];
+
+  private regexFase =
+    /\b(tier|fase|phase|etapa|preventa|pre-?venta|early\s*-?\s*bird|earlybird)\b\s*\.?\s*([ivxlc]+|\d+)?/i;
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -66,27 +88,11 @@ export class PublicEventoDetalle implements OnInit {
     });
   }
 
-  irAEntradas(): void {
-    const section = document.getElementById('entradas');
-
-    if (!section) return;
-
-    const y =
-      section.getBoundingClientRect().top +
-      window.pageYOffset -
-      100;
-
-    window.scrollTo({
-      top: y,
-      behavior: 'smooth'
-    });
-  }
-
   cargarTiers(): void {
     this.tiersService.obtenerTiersPorEvento(this.idEvento).subscribe({
       next: (data) => {
         this.tiers = data || [];
-        this.agruparTiers();
+        this.agruparPorZona();
         this.cargando = false;
       },
       error: (err) => {
@@ -96,148 +102,186 @@ export class PublicEventoDetalle implements OnInit {
     });
   }
 
-  /**
-   * Agrupa los tiers que comparten un mismo nombre base (por ejemplo
-   * "General · Tier 1", "General · Tier 2") en una sola entrada con su
-   * propio mapa de precios por fases. Los tiers con nombre único quedan
-   * como un grupo de una sola fase.
-   */
-  agruparTiers(): void {
-    const regexFase =
-      /[\s\-–—·|:]*\(?\s*\b(tier|fase|phase|etapa|stage|preventa|pre-?venta|early\s*-?\s*bird|earlybird)\b[\s.\-]*([ivxlc]+|\d+)?\s*\)?\s*$/i;
+  // ===========================================================
+  //  Mapa de zonas
+  // ===========================================================
 
-    const grupos: any[] = [];
-    const indicePorClave = new Map<string, number>();
+  private normalizar(texto: string): string {
+    return (texto || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim();
+  }
+
+  /** Etiqueta corta de la fase (Tier 1, Fase 2, Preventa...) si el nombre la incluye. */
+  private etiquetaFaseDe(nombre: string): string {
+    const m = (nombre || '').match(this.regexFase);
+    if (!m) return '';
+    const palabra = this.capitalizar(m[1].trim());
+    const numero = m[2] ? m[2].trim().toUpperCase() : '';
+    return [palabra, numero].filter(Boolean).join(' ');
+  }
+
+  /** Nombre legible de una zona no reconocida (sin fase ni paréntesis). */
+  private nombreBase(nombre: string): string {
+    const limpio = (nombre || '')
+      .replace(this.regexFase, '')
+      .replace(/\(.*?\)/g, '')
+      .replace(/[\s\-–—·|:]+/g, ' ')
+      .trim();
+    return limpio || (nombre || '').trim() || 'Zona';
+  }
+
+  agruparPorZona(): void {
+    const zonasMap = new Map<string, any>();
+    const orden: string[] = [];
 
     for (const tier of this.tiers) {
-      const nombre = (tier.nombre || '').trim();
-      const match = nombre.match(regexFase);
+      const norm = this.normalizar(tier.nombre);
+      const def = this.zonaDefs.find((d) => d.keywords.some((k) => norm.includes(k)));
 
-      let base = nombre;
-      let etiquetaFase = '';
+      let clave: string;
+      let nombre: string;
+      let icono: string;
 
-      if (match) {
-        base = nombre.slice(0, match.index).replace(/[\s\-–—·|:]+$/, '').trim();
-        const palabra = match[1] ? this.capitalizar(match[1].trim()) : '';
-        const numero = match[2] ? match[2].trim().toUpperCase() : '';
-        etiquetaFase = [palabra, numero].filter(Boolean).join(' ');
-      }
-
-      if (!base) {
-        base = nombre || 'Entrada general';
-      }
-
-      const clave = base.toLowerCase();
-      let indice = indicePorClave.get(clave);
-
-      if (indice === undefined) {
-        indice = grupos.length;
-        indicePorClave.set(clave, indice);
-        grupos.push({ nombre: base, descripcion: tier.descripcion || '', fases: [] });
-      }
-
-      grupos[indice].fases.push({ ...tier, etiquetaFase });
-    }
-
-    for (const grupo of grupos) {
-      // Las fases escalan en precio: la más barata es la fase actual/temprana.
-      grupo.fases.sort((a: any, b: any) => Number(a.precio || 0) - Number(b.precio || 0));
-
-      grupo.fases.forEach((fase: any, i: number) => {
-        if (!fase.etiquetaFase) {
-          fase.etiquetaFase = `Fase ${i + 1}`;
-        }
-      });
-
-      const faseActual =
-        grupo.fases.find((f: any) => f.disponibilidad === 'DISPONIBLE') || null;
-
-      const precios = grupo.fases.map((f: any) => Number(f.precio || 0));
-      grupo.precioMin = Math.min(...precios);
-      grupo.precioMax = Math.max(...precios);
-      grupo.faseActual = faseActual;
-
-      let indiceActivo: number;
-
-      if (faseActual) {
-        grupo.estado = 'DISPONIBLE';
-        grupo.precioActual = Number(faseActual.precio || 0);
-        indiceActivo = grupo.fases.indexOf(faseActual);
-        grupo.siguienteFase =
-          grupo.fases
-            .slice(indiceActivo + 1)
-            .find((f: any) => Number(f.precio || 0) > grupo.precioActual) || null;
+      if (def) {
+        clave = def.clave;
+        nombre = def.nombre;
+        icono = def.icono;
       } else {
-        const proxima = grupo.fases.find((f: any) => f.disponibilidad === 'PROXIMAMENTE');
-
-        if (proxima) {
-          grupo.estado = 'PROXIMAMENTE';
-          grupo.precioActual = Number(proxima.precio || 0);
-          indiceActivo = 0;
-        } else {
-          const ultima = grupo.fases[grupo.fases.length - 1];
-          grupo.estado = ultima ? ultima.disponibilidad : 'CERRADO';
-          grupo.precioActual = Number((ultima && ultima.precio) || 0);
-          indiceActivo = grupo.fases.length - 1;
-        }
-
-        grupo.siguienteFase = null;
+        nombre = this.nombreBase(tier.nombre);
+        clave = 'otra-' + this.normalizar(nombre);
+        icono = '🎟️';
       }
 
-      if (!grupo.descripcion) {
-        grupo.descripcion =
-          (faseActual && faseActual.descripcion) ||
-          (grupo.fases[0] && grupo.fases[0].descripcion) ||
-          '';
+      if (!zonasMap.has(clave)) {
+        zonasMap.set(clave, {
+          clave,
+          nombre,
+          icono,
+          descripcion: tier.descripcion || '',
+          fases: []
+        });
+        orden.push(clave);
       }
 
-      grupo.progreso =
-        grupo.fases.length > 1
-          ? Math.round((indiceActivo / (grupo.fases.length - 1)) * 100)
-          : 100;
-
-      grupo.fases.forEach((fase: any) => {
-        if (faseActual && fase.id_tier === faseActual.id_tier) {
-          fase.estadoMapa = 'active';
-        } else if (fase.disponibilidad === 'CERRADO' || fase.disponibilidad === 'AGOTADO') {
-          fase.estadoMapa = 'past';
-        } else {
-          fase.estadoMapa = 'future';
-        }
-      });
+      zonasMap.get(clave).fases.push({ ...tier, etiquetaFase: this.etiquetaFaseDe(tier.nombre) });
     }
 
-    this.gruposTiers = grupos;
-  }
+    const zonas = orden.map((c) => zonasMap.get(c));
+    zonas.forEach((z) => this.calcularFasesZona(z));
 
-  seleccionarGrupo(grupo: any): void {
-    if (!grupo?.faseActual) return;
+    this.zonas = zonas;
+    this.zonaGeneral = zonas.find((z) => z.clave === 'general') || null;
+    this.zonasPremium = zonas.filter((z) => z.clave !== 'general');
 
-    this.seleccionarTier(grupo.faseActual);
-    setTimeout(() => this.irACheckout(), 60);
-  }
-
-  esGrupoSeleccionado(grupo: any): boolean {
-    return (
-      !!grupo?.faseActual &&
-      this.tierSeleccionado?.id_tier === grupo.faseActual.id_tier
-    );
-  }
-
-  textoBotonGrupo(grupo: any): string {
-    if (grupo.faseActual) {
-      return this.esGrupoSeleccionado(grupo) ? 'Entrada seleccionada' : 'Comprar a este precio';
+    // Mantener la zona seleccionada si todavía existe tras recargar.
+    if (this.zonaSeleccionada) {
+      this.zonaSeleccionada =
+        zonas.find((z) => z.clave === this.zonaSeleccionada.clave) || null;
     }
-    if (grupo.estado === 'PROXIMAMENTE') return 'Próximamente';
-    if (grupo.estado === 'AGOTADO') return 'Agotado';
-    if (grupo.estado === 'CERRADO') return 'Ventas cerradas';
+  }
+
+  private calcularFasesZona(zona: any): void {
+    // Las fases escalan en precio: la más barata es la tarifa temprana.
+    zona.fases.sort((a: any, b: any) => Number(a.precio || 0) - Number(b.precio || 0));
+
+    zona.fases.forEach((fase: any, i: number) => {
+      if (!fase.etiquetaFase) {
+        fase.etiquetaFase = `Fase ${i + 1}`;
+      }
+    });
+
+    const faseActual = zona.fases.find((f: any) => f.disponibilidad === 'DISPONIBLE') || null;
+    const precios = zona.fases.map((f: any) => Number(f.precio || 0));
+
+    zona.precioMin = Math.min(...precios);
+    zona.precioMax = Math.max(...precios);
+    zona.faseActual = faseActual;
+    zona.multiFase = zona.fases.length > 1;
+
+    let indiceActivo: number;
+
+    if (faseActual) {
+      zona.estado = 'DISPONIBLE';
+      zona.precioActual = Number(faseActual.precio || 0);
+      indiceActivo = zona.fases.indexOf(faseActual);
+      zona.siguienteFase =
+        zona.fases
+          .slice(indiceActivo + 1)
+          .find((f: any) => Number(f.precio || 0) > zona.precioActual) || null;
+    } else {
+      const proxima = zona.fases.find((f: any) => f.disponibilidad === 'PROXIMAMENTE');
+
+      if (proxima) {
+        zona.estado = 'PROXIMAMENTE';
+        zona.precioActual = Number(proxima.precio || 0);
+        indiceActivo = 0;
+      } else {
+        const ultima = zona.fases[zona.fases.length - 1];
+        zona.estado = ultima ? ultima.disponibilidad : 'CERRADO';
+        zona.precioActual = Number((ultima && ultima.precio) || 0);
+        indiceActivo = zona.fases.length - 1;
+      }
+
+      zona.siguienteFase = null;
+    }
+
+    if (!zona.descripcion) {
+      zona.descripcion =
+        (faseActual && faseActual.descripcion) ||
+        (zona.fases[0] && zona.fases[0].descripcion) ||
+        '';
+    }
+
+    zona.progreso =
+      zona.fases.length > 1
+        ? Math.round((indiceActivo / (zona.fases.length - 1)) * 100)
+        : 100;
+
+    zona.fases.forEach((fase: any) => {
+      if (faseActual && fase.id_tier === faseActual.id_tier) {
+        fase.estadoMapa = 'active';
+      } else if (fase.disponibilidad === 'CERRADO' || fase.disponibilidad === 'AGOTADO') {
+        fase.estadoMapa = 'past';
+      } else {
+        fase.estadoMapa = 'future';
+      }
+    });
+  }
+
+  seleccionarZona(zona: any): void {
+    if (!zona) return;
+
+    this.zonaSeleccionada = zona;
+    this.mensajeCompra = '';
+
+    if (zona.faseActual) {
+      this.seleccionarTier(zona.faseActual);
+    } else {
+      this.tierSeleccionado = null;
+    }
+
+    setTimeout(() => this.irA('zona-detalle'), 60);
+  }
+
+  esZonaSeleccionada(zona: any): boolean {
+    return !!zona && this.zonaSeleccionada?.clave === zona.clave;
+  }
+
+  textoBotonZona(zona: any): string {
+    if (zona.estado === 'DISPONIBLE') return 'Comprar a este precio';
+    if (zona.estado === 'PROXIMAMENTE') return 'Próximamente';
+    if (zona.estado === 'AGOTADO') return 'Agotado';
+    if (zona.estado === 'CERRADO') return 'Ventas cerradas';
     return 'No disponible';
   }
 
-  porcentajeAhorro(grupo: any): number {
-    if (!grupo?.precioActual || !grupo?.precioMax) return 0;
-    if (grupo.precioMax <= grupo.precioActual) return 0;
-    return Math.round((1 - grupo.precioActual / grupo.precioMax) * 100);
+  porcentajeAhorro(zona: any): number {
+    if (!zona?.precioActual || !zona?.precioMax) return 0;
+    if (zona.precioMax <= zona.precioActual) return 0;
+    return Math.round((1 - zona.precioActual / zona.precioMax) * 100);
   }
 
   etiquetaCuandoFase(fase: any): string {
@@ -260,14 +304,26 @@ export class PublicEventoDetalle implements OnInit {
     return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
   }
 
+  irAEntradas(): void {
+    this.irA('entradas');
+  }
+
   irACheckout(): void {
-    const el = document.getElementById('checkout');
+    this.irA('checkout');
+  }
+
+  irA(id: string): void {
+    const el = document.getElementById(id);
 
     if (!el) return;
 
     const y = el.getBoundingClientRect().top + window.pageYOffset - 90;
     window.scrollTo({ top: y, behavior: 'smooth' });
   }
+
+  // ===========================================================
+  //  Compra
+  // ===========================================================
 
   seleccionarTier(tier: any): void {
     if (tier.disponibilidad !== 'DISPONIBLE') return;
@@ -394,6 +450,7 @@ Hola ZAIRO, quiero confirmar mi compra.
 
 Código de compra: ${compra.id_compra}
 Evento: ${this.evento.nombre}
+Zona: ${this.zonaSeleccionada?.nombre || this.tierSeleccionado.nombre}
 Entrada: ${this.tierSeleccionado.nombre}
 Cantidad: ${this.cantidad}
 Total: ${this.formatearMoneda(this.calcularTotal())}

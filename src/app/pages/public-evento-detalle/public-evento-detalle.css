@@ -223,7 +223,7 @@
 }
 
 .features article,
-.map-card,
+.zone-detail,
 .checkout {
   background:
     linear-gradient(180deg, rgba(34,197,94,.12), rgba(255,255,255,.035));
@@ -237,8 +237,7 @@
   transition: .35s ease;
 }
 
-.features article:hover,
-.map-card:hover {
+.features article:hover {
   transform: translateY(-7px);
   border-color: rgba(251,191,36,.38);
 }
@@ -277,22 +276,211 @@
   color: #cfe7d5;
 }
 
-.price-map {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 24px;
+/* ===========================================================
+   MAPA DE ZONAS DEL LUGAR
+   =========================================================== */
+.venue-map {
+  position: relative;
 }
 
-.map-card {
+.venue-screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: clamp(18px, 3vw, 34px);
+  border-radius: 30px;
+  border: 1px solid rgba(187,247,208,.16);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(251,191,36,.16), transparent 45%),
+    linear-gradient(180deg, rgba(10,26,15,.92), rgba(4,11,7,.92));
+  box-shadow: inset 0 0 80px rgba(0,0,0,.55), 0 25px 80px rgba(0,0,0,.45);
+  overflow: hidden;
+}
+
+/* piso del plano */
+.venue-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(134,239,172,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(134,239,172,.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+  -webkit-mask-image: radial-gradient(circle at 50% 30%, #000 60%, transparent 100%);
+  mask-image: radial-gradient(circle at 50% 30%, #000 60%, transparent 100%);
+  pointer-events: none;
+}
+
+.stage {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto 6px;
+  width: min(82%, 640px);
+  padding: 16px;
+  text-align: center;
+  font-weight: 950;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #061008;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fde68a, #fbbf24 55%, #f97316);
+  box-shadow: 0 0 50px rgba(251,191,36,.45), 0 14px 30px rgba(0,0,0,.5);
+  clip-path: polygon(6% 0, 94% 0, 100% 100%, 0% 100%);
+}
+
+.stage span {
+  font-size: clamp(12px, 2vw, 15px);
+}
+
+.zones-row {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.zone-area {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 30px 18px 22px;
+  border-radius: 20px;
+  cursor: pointer;
+  color: #fff;
+  text-align: center;
+  border: 1.5px solid rgba(187,247,208,.22);
+  background: linear-gradient(180deg, rgba(34,197,94,.16), rgba(255,255,255,.04));
+  transition: .25s ease;
+}
+
+.zone-area:hover {
+  transform: translateY(-5px);
+  border-color: rgba(251,191,36,.6);
+  box-shadow: 0 18px 45px rgba(0,0,0,.45);
+}
+
+.zone-area.selected {
+  border-color: rgba(251,191,36,.95);
+  box-shadow: 0 0 0 2px rgba(251,191,36,.5), 0 0 45px rgba(251,191,36,.4);
+  background: linear-gradient(180deg, rgba(251,191,36,.22), rgba(34,197,94,.12));
+}
+
+.zone-area.no-disp {
+  opacity: .72;
+  filter: grayscale(.25);
+}
+
+.zone-area .status {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.zone-icono {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.zone-nombre {
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: .5px;
+}
+
+.zone-precio {
+  font-size: 22px;
+  font-weight: 950;
+  background: linear-gradient(135deg, #fff, #fbbf24, #86efac);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.zone-fases {
+  font-size: 11px;
+  font-weight: 800;
+  color: #fde68a;
+  letter-spacing: .4px;
+}
+
+/* color por zona */
+.zone-punch {
+  background: linear-gradient(180deg, rgba(244,114,182,.2), rgba(255,255,255,.04));
+}
+
+.zone-soleo {
+  background: linear-gradient(180deg, rgba(56,189,248,.2), rgba(255,255,255,.04));
+}
+
+.zone-vip {
+  background: linear-gradient(180deg, rgba(251,191,36,.22), rgba(255,255,255,.04));
+}
+
+/* zona general: bloque grande tipo pista */
+.zone-block-general {
+  position: relative;
+  z-index: 1;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 26px 28px;
+  min-height: 118px;
+  text-align: left;
+  border-style: dashed;
+  background:
+    repeating-linear-gradient(45deg, rgba(34,197,94,.08) 0 14px, rgba(34,197,94,.14) 14px 28px);
+}
+
+.zone-block-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.zone-block-info .zone-icono {
+  font-size: 26px;
+}
+
+.zone-sub {
+  font-size: 12px;
+  color: #cfe7d5;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.zone-block-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.map-hint {
+  text-align: center;
+  margin: 18px 0 0;
+  color: #9fc3a8;
+  font-size: 14px;
+}
+
+/* ===========================================================
+   DETALLE DE LA ZONA SELECCIONADA
+   =========================================================== */
+.zone-detail {
   position: relative;
   overflow: hidden;
+  max-width: 760px;
+  margin: 26px auto 0;
   padding: 30px;
   display: flex;
   flex-direction: column;
-  transition: .35s ease;
 }
 
-.map-card::before {
+.zone-detail::before {
   content: "";
   position: absolute;
   inset: -1px;
@@ -302,17 +490,8 @@
   pointer-events: none;
 }
 
-.map-card.selected {
-  border-color: rgba(34,197,94,.75);
-  box-shadow: 0 0 55px rgba(34,197,94,.22);
-}
-
-.map-card.no-disponible {
-  opacity: .85;
-}
-
-.map-card .select-btn {
-  margin-top: auto;
+.zone-detail .select-btn {
+  margin-top: 6px;
 }
 
 .map-head {
@@ -1112,5 +1291,19 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+  }
+
+  .zone-block-general {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .zone-block-price {
+    align-items: flex-start;
+  }
+
+  .zone-detail {
+    padding: 22px;
   }
 }

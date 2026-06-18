@@ -67,7 +67,7 @@
         <button
           class="primary-btn"
           (click)="irAEntradas()">
-          Comprar entrada
+          Elegir mi zona
         </button>
       </div>
 
@@ -84,123 +84,84 @@
       </p>
     </section>
 
-    <section class="features">
-
-      <article>
-        <span>01</span>
-        <h3>Jungle Stage</h3>
-        <p>Una atmósfera tropical, oscura y elegante para vivir la fiesta desde otra vibra.</p>
-      </article>
-
-      <article>
-        <span>02</span>
-        <h3>Acceso digital</h3>
-        <p>Tu compra queda registrada en ZAIRO para validar el ingreso el día del evento.</p>
-      </article>
-
-      <article>
-        <span>03</span>
-        <h3>Confirmación segura</h3>
-        <p>Después de crear la compra, continuás por WhatsApp para enviar el comprobante SINPE.</p>
-      </article>
-
-    </section>
-
     <section class="tickets" id="entradas">
 
       <div class="section-title">
-        <span>TICKETS</span>
-        <h2>Mapa de precios</h2>
-        <p>Los precios suben por fases. Comprá hoy y asegurá la mejor tarifa antes de que cambie.</p>
+        <span>MAPA DEL EVENTO</span>
+        <h2>Elegí tu zona</h2>
+        <p>Tocá una zona del mapa para ver su precio y comprar. Los precios suben por fases.</p>
       </div>
 
-      <div class="price-map" *ngIf="gruposTiers.length > 0; else sinTiers">
+      <div class="venue-map" *ngIf="zonas.length > 0; else sinTiers">
 
-        <article
-          class="map-card"
-          *ngFor="let g of gruposTiers"
-          [class.selected]="esGrupoSeleccionado(g)"
-          [class.no-disponible]="g.estado !== 'DISPONIBLE'">
+        <div class="venue-screen">
 
-          <div class="map-head">
-            <div class="map-head-info">
-              <h3>{{ g.nombre }}</h3>
-              <p>{{ g.descripcion || 'Entrada oficial para Lost Trip by ZAIRO.' }}</p>
-            </div>
+          <div class="stage">
+            <span>◆ ESCENARIO · DJ ◆</span>
+          </div>
+
+          <div class="zones-row" *ngIf="zonasPremium.length">
+            <button
+              class="zone-area"
+              *ngFor="let z of zonasPremium"
+              [ngClass]="'zone-' + z.clave"
+              [class.selected]="esZonaSeleccionada(z)"
+              [class.no-disp]="z.estado !== 'DISPONIBLE'"
+              (click)="seleccionarZona(z)">
+
+              <span
+                class="status"
+                [ngClass]="{
+                  'disponible': z.estado === 'DISPONIBLE',
+                  'proximamente': z.estado === 'PROXIMAMENTE',
+                  'cerrado': z.estado === 'CERRADO',
+                  'agotado': z.estado === 'AGOTADO',
+                  'desactivado': z.estado === 'DESACTIVADO'
+                }">
+                {{ z.estado }}
+              </span>
+
+              <span class="zone-icono">{{ z.icono }}</span>
+              <span class="zone-nombre">{{ z.nombre }}</span>
+              <span class="zone-precio">{{ formatearMoneda(z.precioActual) }}</span>
+              <span class="zone-fases" *ngIf="z.multiFase">↑ Precio por fases</span>
+            </button>
+          </div>
+
+          <button
+            class="zone-area zone-block-general"
+            *ngIf="zonaGeneral"
+            [class.selected]="esZonaSeleccionada(zonaGeneral)"
+            [class.no-disp]="zonaGeneral.estado !== 'DISPONIBLE'"
+            (click)="seleccionarZona(zonaGeneral)">
 
             <span
               class="status"
               [ngClass]="{
-                'disponible': g.estado === 'DISPONIBLE',
-                'proximamente': g.estado === 'PROXIMAMENTE',
-                'cerrado': g.estado === 'CERRADO',
-                'agotado': g.estado === 'AGOTADO',
-                'desactivado': g.estado === 'DESACTIVADO'
+                'disponible': zonaGeneral.estado === 'DISPONIBLE',
+                'proximamente': zonaGeneral.estado === 'PROXIMAMENTE',
+                'cerrado': zonaGeneral.estado === 'CERRADO',
+                'agotado': zonaGeneral.estado === 'AGOTADO',
+                'desactivado': zonaGeneral.estado === 'DESACTIVADO'
               }">
-              {{ g.estado }}
+              {{ zonaGeneral.estado }}
             </span>
-          </div>
 
-          <div class="map-now">
-            <div class="map-now-price">
-              <span class="map-now-label">
-                {{ g.estado === 'DISPONIBLE' ? 'Precio actual' : 'Precio' }}
-              </span>
-              <div class="price">{{ formatearMoneda(g.precioActual) }}</div>
+            <div class="zone-block-info">
+              <span class="zone-icono">{{ zonaGeneral.icono }}</span>
+              <span class="zone-nombre">{{ zonaGeneral.nombre }}</span>
+              <span class="zone-sub">Pista principal</span>
             </div>
 
-            <div class="map-now-tags">
-              <span class="save-pill" *ngIf="porcentajeAhorro(g) > 0">
-                Ahorrás {{ porcentajeAhorro(g) }}%
-              </span>
-              <span class="rise-pill" *ngIf="g.siguienteFase">
-                ↑ Luego sube a {{ formatearMoneda(g.siguienteFase.precio) }}
-              </span>
+            <div class="zone-block-price">
+              <span class="zone-precio">{{ formatearMoneda(zonaGeneral.precioActual) }}</span>
+              <span class="zone-fases" *ngIf="zonaGeneral.multiFase">↑ Precio por fases</span>
             </div>
-          </div>
-
-          <!-- Línea de tiempo de precios por fase -->
-          <div
-            class="phase-track"
-            *ngIf="g.fases.length > 1"
-            [style.--progreso]="g.progreso + '%'"
-            [style.--edge]="(50 / g.fases.length) + '%'">
-            <div class="phase-rail">
-              <div class="phase-rail-fill"></div>
-            </div>
-
-            <div class="phase-nodes">
-              <div
-                class="phase-node"
-                *ngFor="let f of g.fases"
-                [ngClass]="'is-' + f.estadoMapa">
-                <div class="phase-dot"></div>
-                <span class="phase-label">{{ f.etiquetaFase }}</span>
-                <span class="phase-price">{{ formatearMoneda(f.precio) }}</span>
-                <span class="phase-when">{{ etiquetaCuandoFase(f) }}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="map-meta" *ngIf="g.faseActual">
-            <span>
-              🎟️ Cupo:
-              {{ g.faseActual.cantidad_disponible === null ? 'Ilimitado' : g.faseActual.cantidad_disponible }}
-            </span>
-            <span *ngIf="g.faseActual.fecha_fin">
-              ⏳ Esta tarifa vence el {{ g.faseActual.fecha_fin | date:'dd/MM/yyyy HH:mm' }}
-            </span>
-          </div>
-
-          <button
-            class="select-btn"
-            [disabled]="g.estado !== 'DISPONIBLE'"
-            (click)="seleccionarGrupo(g)">
-            {{ textoBotonGrupo(g) }}
           </button>
 
-        </article>
+        </div>
 
+        <p class="map-hint">👆 Tocá una zona para ver el precio y continuar la compra.</p>
       </div>
 
       <ng-template #sinTiers>
@@ -209,18 +170,101 @@
         </div>
       </ng-template>
 
+      <!-- Detalle de la zona seleccionada -->
+      <div class="zone-detail" id="zona-detalle" *ngIf="zonaSeleccionada">
+
+        <div class="map-head">
+          <div class="map-head-info">
+            <span class="map-now-label">Zona seleccionada</span>
+            <h3>{{ zonaSeleccionada.icono }} {{ zonaSeleccionada.nombre }}</h3>
+            <p>{{ zonaSeleccionada.descripcion || 'Entrada oficial para Lost Trip by ZAIRO.' }}</p>
+          </div>
+
+          <span
+            class="status"
+            [ngClass]="{
+              'disponible': zonaSeleccionada.estado === 'DISPONIBLE',
+              'proximamente': zonaSeleccionada.estado === 'PROXIMAMENTE',
+              'cerrado': zonaSeleccionada.estado === 'CERRADO',
+              'agotado': zonaSeleccionada.estado === 'AGOTADO',
+              'desactivado': zonaSeleccionada.estado === 'DESACTIVADO'
+            }">
+            {{ zonaSeleccionada.estado }}
+          </span>
+        </div>
+
+        <div class="map-now">
+          <div class="map-now-price">
+            <span class="map-now-label">
+              {{ zonaSeleccionada.estado === 'DISPONIBLE' ? 'Precio actual' : 'Precio' }}
+            </span>
+            <div class="price">{{ formatearMoneda(zonaSeleccionada.precioActual) }}</div>
+          </div>
+
+          <div class="map-now-tags">
+            <span class="save-pill" *ngIf="porcentajeAhorro(zonaSeleccionada) > 0">
+              Ahorrás {{ porcentajeAhorro(zonaSeleccionada) }}%
+            </span>
+            <span class="rise-pill" *ngIf="zonaSeleccionada.siguienteFase">
+              ↑ Luego sube a {{ formatearMoneda(zonaSeleccionada.siguienteFase.precio) }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Línea de tiempo de precios por fase (zonas que cambian de precio) -->
+        <div
+          class="phase-track"
+          *ngIf="zonaSeleccionada.multiFase"
+          [style.--progreso]="zonaSeleccionada.progreso + '%'"
+          [style.--edge]="(50 / zonaSeleccionada.fases.length) + '%'">
+          <div class="phase-rail">
+            <div class="phase-rail-fill"></div>
+          </div>
+
+          <div class="phase-nodes">
+            <div
+              class="phase-node"
+              *ngFor="let f of zonaSeleccionada.fases"
+              [ngClass]="'is-' + f.estadoMapa">
+              <div class="phase-dot"></div>
+              <span class="phase-label">{{ f.etiquetaFase }}</span>
+              <span class="phase-price">{{ formatearMoneda(f.precio) }}</span>
+              <span class="phase-when">{{ etiquetaCuandoFase(f) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="map-meta" *ngIf="zonaSeleccionada.faseActual">
+          <span>
+            🎟️ Cupo:
+            {{ zonaSeleccionada.faseActual.cantidad_disponible === null ? 'Ilimitado' : zonaSeleccionada.faseActual.cantidad_disponible }}
+          </span>
+          <span *ngIf="zonaSeleccionada.faseActual.fecha_fin">
+            ⏳ Esta tarifa vence el {{ zonaSeleccionada.faseActual.fecha_fin | date:'dd/MM/yyyy HH:mm' }}
+          </span>
+        </div>
+
+        <button
+          class="select-btn"
+          [disabled]="zonaSeleccionada.estado !== 'DISPONIBLE'"
+          (click)="irACheckout()">
+          {{ textoBotonZona(zonaSeleccionada) }}
+        </button>
+      </div>
+
+      <!-- Checkout -->
       <div class="checkout" id="checkout" *ngIf="tierSeleccionado">
 
         <div class="checkout-title">
           <span>CHECKOUT</span>
           <h2>Completar compra</h2>
-          <p>Revisá tu entrada, completá tus datos y continuá por WhatsApp.</p>
+          <p>Revisá tu zona, completá tus datos y continuá por WhatsApp.</p>
         </div>
 
         <div class="selected-summary">
           <div>
-            <span class="selected-label">Entrada seleccionada</span>
-            <strong>{{ tierSeleccionado.nombre }}</strong>
+            <span class="selected-label">Zona seleccionada</span>
+            <strong>{{ zonaSeleccionada?.nombre || tierSeleccionado.nombre }}</strong>
           </div>
           <div class="selected-price">{{ formatearMoneda(tierSeleccionado.precio) }} c/u</div>
         </div>
