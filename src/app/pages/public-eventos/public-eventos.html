@@ -7,30 +7,66 @@
 
 <div class="zairo-home">
 
+  <div class="site-jungle-bg" aria-hidden="true"></div>
+
   <header class="navbar">
     <div class="brand" routerLink="/home">
-  <div class="logo-img">
-    <img
-      src="https://i.postimg.cc/7P3gL7GF/ZAIRO-Lost-Trip-Logo.jpg"
-      alt="ZAIRO Lost Trip">
-  </div>
+      <div class="logo-img">
+        <img
+          src="https://i.postimg.cc/7P3gL7GF/ZAIRO-Lost-Trip-Logo.jpg"
+          alt="ZAIRO Lost Trip">
+      </div>
 
-  <div>
-    <h2>ZAIRO</h2>
-    <span>Welcome to the Jungle</span>
-  </div>
-</div>
+      <div>
+        <h2>ZAIRO</h2>
+        <span>Lost Trip</span>
+      </div>
+    </div>
 
     <nav>
       <a href="#historia">El viaje</a>
-      <a href="#ai-pass">AI Pass</a>
+      <a href="#como-funciona">Cómo funciona</a>
       <a href="#lineup">Lineup</a>
-      <a href="#eventos">Entradas</a>
+      <a href="#eventos" class="nav-buy">Comprar</a>
       <a routerLink="/login" class="login-btn">Mi cuenta</a>
     </nav>
   </header>
 
-  <section class="hero">
+  <!-- ENTRADA CINEMATOGRÁFICA CON SCROLL -->
+  <section class="scroll-sequence scroll-sequence-intro" #scrollSequence>
+    <div class="scroll-sequence-sticky">
+      <div class="scroll-sequence-fallback"></div>
+
+      <canvas #sequenceCanvas></canvas>
+
+      <div class="sequence-vignette"></div>
+      <div class="sequence-leaves sequence-leaves-left"></div>
+      <div class="sequence-leaves sequence-leaves-right"></div>
+      <div class="sequence-fog sequence-fog-one"></div>
+      <div class="sequence-fog sequence-fog-two"></div>
+
+      <div class="scroll-sequence-copy">
+        <span>WELCOME TO THE JUNGLE</span>
+        <h2>El viaje empieza antes de llegar.</h2>
+        <p>
+          Entrá al portal ZAIRO. Música, niebla, luces y una experiencia diseñada
+          para sentirse como otra realidad.
+        </p>
+
+        <a href="#eventos" class="scroll-sequence-cta">
+          Comprar entrada
+        </a>
+      </div>
+
+      <a href="#hero" class="scroll-cue">
+        <span class="mouse"></span>
+        Scroll
+      </a>
+    </div>
+  </section>
+
+  <!-- HERO PRINCIPAL -->
+  <section class="hero" id="hero">
     <div class="hero-bg">
       <img
         [src]="proximoEvento?.imagen || 'https://images.unsplash.com/photo-1511497584788-876760111969'"
@@ -57,13 +93,14 @@
       </h1>
 
       <p>
-        Una experiencia inmersiva entre música, luces, niebla, energía salvaje
-        y acceso digital. La jungla abre sus puertas solo para viajeros autorizados.
+        Lost Trip es una noche inmersiva de música, luces, visuales selváticos,
+        niebla y acceso digital seguro. Comprás tu pase, confirmás tu entrada
+        y recibís un QR único para ingresar al viaje.
       </p>
 
       <div class="hero-actions">
         <a href="#eventos" class="primary-btn">Comprar entrada</a>
-        <a href="#historia" class="secondary-btn">Entrar al viaje</a>
+        <a href="#como-funciona" class="secondary-btn">Cómo funciona</a>
       </div>
 
       <div class="countdown" *ngIf="proximoEvento">
@@ -82,8 +119,8 @@
       (mouseleave)="resetTicket()">
 
       <div class="ticket-top">
-        <span>AI PASS</span>
-        <small>ZAIRO ACCESS</small>
+        <span>ZAIRO PASS</span>
+        <small>OFFICIAL ACCESS</small>
       </div>
 
       <h3>{{ proximoEvento.nombre }}</h3>
@@ -102,20 +139,12 @@
     </div>
   </section>
 
-  <section class="scroll-sequence" #scrollSequence>
-    <div class="scroll-sequence-sticky">
-      <canvas #sequenceCanvas></canvas>
-
-      <div class="scroll-sequence-copy">
-        <span>ENTRANDO A LA JUNGLA</span>
-        <h2>El portal se abre con cada scroll.</h2>
-      </div>
-    </div>
-  </section>
-
   <section class="trip-alert reveal">
-    <span>TRANSMISIÓN ACTIVA</span>
-    <p>El viaje ha comenzado. La ubicación se revela cuando la energía llama.</p>
+    <span>ACCESO LIMITADO</span>
+    <p>
+      La experiencia está diseñada para cupo limitado. Cada entrada confirmada
+      recibe un QR único para validación en puerta.
+    </p>
   </section>
 
   <section class="story-section" id="historia">
@@ -131,13 +160,18 @@
     <article class="story-card reveal">
       <span>02 / LA ENTRADA</span>
       <h3>No todos reciben acceso.</h3>
-      <p>Cada viajero entra con un pase digital único. Sin copias. Sin caos.</p>
+      <p>
+        Cada viajero entra con un pase digital único. Sin copias.
+        Sin caos. Sin entradas falsas.
+      </p>
     </article>
 
     <article class="story-card reveal">
       <span>03 / LA JUNGLA</span>
       <h3>Cuando las luces bajan, el viaje comienza.</h3>
-      <p>Sonido, visuales, comunidad y atmósfera diseñada para sentirse diferente.</p>
+      <p>
+        Sonido, visuales, comunidad y atmósfera diseñada para sentirse diferente.
+      </p>
     </article>
   </section>
 
@@ -145,25 +179,68 @@
     <article class="experience-item reveal">
       <span>01</span>
       <h3>Jungle Visuals</h3>
-      <p>Sombras, neón, humo y luces diseñadas para una atmósfera cinematográfica.</p>
+      <p>
+        Sombras, neón, humo y luces diseñadas para una atmósfera cinematográfica.
+      </p>
     </article>
 
     <article class="experience-item reveal">
       <span>02</span>
       <h3>Sound Trip</h3>
-      <p>Una curaduría musical para pasar de sunset vibes a noche intensa.</p>
+      <p>
+        Una curaduría musical para pasar de sunset vibes a una noche intensa.
+      </p>
     </article>
 
     <article class="experience-item reveal">
       <span>03</span>
       <h3>Secret Energy</h3>
-      <p>Una experiencia con ubicación, acceso y comunidad al estilo ZAIRO.</p>
+      <p>
+        Una experiencia con acceso digital, comunidad y estética ZAIRO.
+      </p>
     </article>
+  </section>
+
+  <section class="how-it-works reveal" id="como-funciona">
+    <div class="section-title">
+      <span>HOW IT WORKS</span>
+      <h2>Comprá tu pase en 3 pasos</h2>
+      <p>Un proceso simple, seguro y listo para entrar sin filas ni enredos.</p>
+    </div>
+
+    <div class="steps-grid">
+      <article>
+        <span>01</span>
+        <h3>Elegís tu entrada</h3>
+        <p>
+          Seleccionás el tipo de pase disponible para Lost Trip y completás
+          los datos de las personas que van a asistir.
+        </p>
+      </article>
+
+      <article>
+        <span>02</span>
+        <h3>Confirmás por WhatsApp</h3>
+        <p>
+          Enviás el comprobante de pago para que el equipo ZAIRO pueda validar
+          tu compra de forma segura.
+        </p>
+      </article>
+
+      <article>
+        <span>03</span>
+        <h3>Recibís tu QR oficial</h3>
+        <p>
+          Tu entrada llega con un código único. En puerta se escanea y se valida
+          en tiempo real.
+        </p>
+      </article>
+    </div>
   </section>
 
   <section class="ai-pass reveal" id="ai-pass">
     <div class="ai-copy">
-      <span>ZAIRO AI ACCESS</span>
+      <span>ZAIRO DIGITAL ACCESS</span>
       <h2>Tu entrada no es solo un QR. Es tu pase al viaje.</h2>
       <p>
         Cada entrada genera un acceso único, seguro e irrepetible. El sistema valida
@@ -223,19 +300,26 @@
       <div class="map-pulse"></div>
 
       <div class="coordinates">
-        <span>COORDINATES LOCKED</span>
-        <h2>Ubicación secreta</h2>
-        <p>9.864° N · 84.243° W</p>
+        <span>LOCATION DROP</span>
+        <h2>Ubicación revelada a compradores</h2>
+        <p>La dirección oficial se comparte únicamente con entradas confirmadas.</p>
       </div>
     </div>
 
     <div class="location-copy">
-      <span>SECRET DROP</span>
-      <h2>La ubicación exacta será revelada a los viajeros autorizados.</h2>
+      <span>SAFE ACCESS</span>
+      <h2>Menos ruido. Más control. Mejor experiencia.</h2>
       <p>
-        Lost Trip no empieza cuando llegás. Empieza desde el momento en que tu pase
-        queda confirmado.
+        ZAIRO maneja acceso digital, QR único, validación en puerta y comunicación
+        directa por WhatsApp para que cada viajero llegue con su entrada confirmada.
       </p>
+
+      <div class="location-points">
+        <div>QR único por persona</div>
+        <div>Validación anti duplicado</div>
+        <div>Soporte antes del evento</div>
+        <div>Cupo limitado</div>
+      </div>
     </div>
   </section>
 
