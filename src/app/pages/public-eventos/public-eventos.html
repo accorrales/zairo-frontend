@@ -147,30 +147,25 @@
   </style>
 </head>
 
-<body>
-  <app-root>
-    <div class="zairo-start-loader">
-      <div class="zairo-start-ring-wrap">
-        <img
-          src="/assets/zairo-loader-ring.png"
-          alt="Cargando ZAIRO"
-          class="zairo-start-ring">
+<div class="intro-loader" *ngIf="loadingIntro">
+  <div class="intro-ring-wrap">
+    <img
+      src="/assets/zairo-loader-ring.png"
+      alt="Cargando ZAIRO"
+      class="intro-ring">
 
-        <div class="zairo-start-logo-core">
-          <img
-            src="/assets/zairo-loader-logo.png"
-            alt="ZAIRO"
-            class="zairo-start-logo">
-        </div>
-      </div>
-
-      <h2>Inicializando Lost Trip</h2>
-      <p>Abriendo el portal de la jungla...</p>
-      <span>ACCESS GRANTED</span>
+    <div class="intro-ring-core">
+      <img
+        src="/assets/zairo-loader-logo.png"
+        alt="Logo ZAIRO"
+        class="intro-ring-logo">
     </div>
-  </app-root>
-</body>
-</html>
+  </div>
+
+  <h2>Inicializando Lost Trip</h2>
+  <p>Abriendo el portal de la jungla...</p>
+  <span>ACCESS GRANTED</span>
+</div>
 
 <div class="zairo-home">
 
@@ -239,20 +234,6 @@
 
        <h2>La selva no se encuentra. Te llama.</h2>
 
-      <p>
-        Entre luces, humo y sonido, Lost Trip revela una experiencia oculta.
-        Solo quienes tienen acceso pueden entrar al viaje.
-      </p>
-
-        <div class="sequence-actions">
-          <a href="" class="scroll-sequence-cta" (click)="scrollToSection('eventos', $event)">
-            Comprar entrada
-          </a>
-
-          <a href="" class="scroll-sequence-secondary" (click)="scrollToSection('hero', $event)">
-            Ver experiencia
-          </a>
-        </div>
       </div>
 
       <a href="" class="scroll-cue" (click)="scrollToSection('hero', $event)">
@@ -283,10 +264,7 @@
     <div class="particles"></div>
 
     <div class="hero-content reveal">
-      <span class="eyebrow">ZAIRO PRESENTS</span>
-
       <h1>
-        ZAIRO LOST TRIP
         <strong>Welcome to the Jungle</strong>
       </h1>
 
