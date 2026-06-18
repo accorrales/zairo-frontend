@@ -65,7 +65,7 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
 
     this.introTimer = setTimeout(() => {
       this.loadingIntro = false;
-    }, 2600);
+    }, 5000);
 
     this.eventosService.obtenerEventosActivos().subscribe({
       next: (data: any) => {
