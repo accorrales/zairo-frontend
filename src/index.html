@@ -11,6 +11,9 @@
   <!-- Preload para que el loader cargue rápido -->
   <link rel="preload" as="image" href="/assets/zairo-loader-ring.png">
   <link rel="preload" as="image" href="/assets/zairo-loader-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Unbounded:wght@700;800;900&display=swap" rel="stylesheet">
 
   <style>
     html,
@@ -111,15 +114,6 @@
         drop-shadow(0 0 18px rgba(255,184,77,.18));
     }
 
-    .zairo-start-loader h2 {
-      position: relative;
-      z-index: 2;
-      margin: 0;
-      padding: 0 22px;
-      font-size: clamp(25px, 6vw, 38px);
-      letter-spacing: -1px;
-    }
-
     .zairo-start-loader p {
       position: relative;
       z-index: 2;
@@ -137,6 +131,50 @@
       letter-spacing: 3px;
       font-size: 10px;
     }
+
+    .zairo-start-copy {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.zairo-start-kicker {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  font-size: clamp(17px, 3.5vw, 28px);
+  font-weight: 800;
+  letter-spacing: clamp(5px, 1vw, 10px);
+  color: #d8eadf;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 14px rgba(255, 184, 77, .25),
+    0 0 26px rgba(25, 255, 136, .15);
+}
+
+.zairo-start-title {
+    margin: 4px 0 0;
+    font-family: "Unbounded", sans-serif;
+    font-size: clamp(38px, 9vw, 82px);
+    font-weight: 900;
+    line-height: .9;
+    letter-spacing: clamp(3px, .8vw, 8px);
+    text-transform: uppercase;
+    background: linear-gradient(
+      180deg,
+      #fff6c7 0%,
+      #ffcf63 38%,
+      #b87516 72%,
+      #fff0a6 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 18px rgba(255, 184, 77, .35));
+    text-shadow:
+      0 0 24px rgba(255, 184, 77, .25),
+      0 0 42px rgba(25, 255, 136, .12);
+  }
 
     @keyframes zairoStartRingSpin {
       from {
@@ -167,8 +205,10 @@
         </div>
       </div>
 
-      <h2>WELCOME TO THE</h2>
-      <h2>LOST TRIP</h2>
+      <div class="zairo-start-copy">
+        <h2 class="zairo-start-kicker">WELCOME TO THE</h2>
+        <h2 class="zairo-start-title">JUNGLE</h2>
+      </div>
     </div>
   </app-root>
 </body>
