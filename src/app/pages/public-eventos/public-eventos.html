@@ -19,7 +19,7 @@
 
       <div>
         <h2>ZAIRO</h2>
-        <span>Lost Trip</span>
+        <span>CLUB</span>
       </div>
     </div>
 
@@ -37,32 +37,63 @@
   <!-- ENTRADA CINEMATOGRÁFICA CON SCROLL -->
   <section class="scroll-sequence scroll-sequence-intro" #scrollSequence>
     <div class="scroll-sequence-sticky">
+
       <div class="scroll-sequence-fallback"></div>
 
       <canvas #sequenceCanvas></canvas>
 
-      <div class="sequence-vignette"></div>
-      <div class="sequence-leaves sequence-leaves-left"></div>
-      <div class="sequence-leaves sequence-leaves-right"></div>
+      <div class="sequence-premium-overlay"></div>
+      <div class="sequence-noise"></div>
+      <div class="sequence-frame"></div>
+
+      <div class="sequence-orb sequence-orb-one"></div>
+      <div class="sequence-orb sequence-orb-two"></div>
+
       <div class="sequence-fog sequence-fog-one"></div>
       <div class="sequence-fog sequence-fog-two"></div>
+      <div class="sequence-fog sequence-fog-three"></div>
 
-      <div class="scroll-sequence-copy">
-        <h2>El viaje empieza antes de llegar.</h2>
-        <p>
-          Entrá al portal ZAIRO. Música, niebla, luces y una experiencia diseñada
-          para sentirse como otra realidad.
-        </p>
+      <div class="sequence-leaves sequence-leaves-left"></div>
+      <div class="sequence-leaves sequence-leaves-right"></div>
 
-        <a href="" class="scroll-sequence-cta" (click)="scrollToSection('eventos', $event)">
-          Comprar entrada
-        </a>
+      <div class="sequence-progress">
+        <div class="sequence-progress-top">
+          <span>ZAIRO LOST TRIP</span>
+          <strong class="sequence-progress-count">01 / 16</strong>
+        </div>
+
+        <div class="sequence-progress-bar">
+          <i></i>
+        </div>
       </div>
 
-      <a href="#hero" class="scroll-cue">
+      <div class="scroll-sequence-copy">
+        <span>PORTAL ACCESS</span>
+
+        <h2>El viaje empieza antes de llegar.</h2>
+
+        <p>
+          Entrá al universo ZAIRO. Una apertura visual diseñada para presentar
+          Lost Trip como una experiencia inmersiva, exclusiva y diferente desde
+          el primer scroll.
+        </p>
+
+        <div class="sequence-actions">
+          <a href="" class="scroll-sequence-cta" (click)="scrollToSection('eventos', $event)">
+            Comprar entrada
+          </a>
+
+          <a href="" class="scroll-sequence-secondary" (click)="scrollToSection('hero', $event)">
+            Ver experiencia
+          </a>
+        </div>
+      </div>
+
+      <a href="" class="scroll-cue" (click)="scrollToSection('hero', $event)">
         <span class="mouse"></span>
         Scroll
       </a>
+
     </div>
   </section>
 
@@ -89,7 +120,7 @@
       <span class="eyebrow">ZAIRO PRESENTS</span>
 
       <h1>
-        LOST TRIP
+        ZAIRO LOST TRIP
         <strong>Welcome to the Jungle</strong>
       </h1>
 
@@ -381,7 +412,7 @@
           <h3>{{ e.nombre }}</h3>
 
           <p>
-            {{ e.descripcion || 'Welcome to the Jungle: una experiencia ZAIRO con música, comunidad y acceso digital.' }}
+            {{ e.descripcion || 'Lost Trip: una experiencia ZAIRO con música, comunidad y acceso digital.' }}
           </p>
 
           <div class="meta">
@@ -402,7 +433,7 @@
   </section>
 
   <section class="final-cta reveal">
-    <span>WELCOME TO THE JUNGLE</span>
+    <span>ZAIRO LOST TRIP</span>
     <h2>El próximo viaje empieza con tu entrada.</h2>
     <a href="" (click)="scrollToSection('eventos', $event)">
       Comprar ahora
