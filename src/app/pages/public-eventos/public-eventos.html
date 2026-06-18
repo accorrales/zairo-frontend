@@ -24,10 +24,12 @@
     </div>
 
     <nav>
-      <a href="#historia">El viaje</a>
-      <a href="#como-funciona">Cómo funciona</a>
-      <a href="#lineup">Lineup</a>
-      <a href="#eventos" class="nav-buy">Comprar</a>
+      <a href="" (click)="scrollToSection('historia', $event)">El viaje</a>
+      <a href="" (click)="scrollToSection('como-funciona', $event)">Cómo funciona</a>
+      <a href="" (click)="scrollToSection('lineup', $event)">Lineup</a>
+      <a href="" class="nav-buy" (click)="scrollToSection('eventos', $event)">
+        Comprar
+      </a>
       <a routerLink="/login" class="login-btn">Mi cuenta</a>
     </nav>
   </header>
@@ -53,7 +55,7 @@
           para sentirse como otra realidad.
         </p>
 
-        <a href="#eventos" class="scroll-sequence-cta">
+        <a href="" class="scroll-sequence-cta" (click)="scrollToSection('eventos', $event)">
           Comprar entrada
         </a>
       </div>
@@ -99,8 +101,12 @@
       </p>
 
       <div class="hero-actions">
-        <a href="#eventos" class="primary-btn">Comprar entrada</a>
-        <a href="#como-funciona" class="secondary-btn">Cómo funciona</a>
+        <a href="" class="primary-btn" (click)="scrollToSection('eventos', $event)">
+          Comprar entrada
+        </a>
+        <a href="" class="secondary-btn" (click)="scrollToSection('como-funciona', $event)">
+          Cómo funciona
+        </a>
       </div>
 
       <div class="countdown" *ngIf="proximoEvento">
@@ -399,14 +405,16 @@
   <section class="final-cta reveal">
     <span>WELCOME TO THE JUNGLE</span>
     <h2>El próximo viaje empieza con tu entrada.</h2>
-    <a href="#eventos">Comprar ahora</a>
+    <a href="" (click)="scrollToSection('eventos', $event)">
+      Comprar ahora
+    </a>
   </section>
 
   <a class="whatsapp-float" [href]="whatsappUrl" target="_blank">
     WhatsApp
   </a>
 
-  <a class="mobile-buy-bar" href="#eventos">
+  <a class="mobile-buy-bar" href="" (click)="scrollToSection('eventos', $event)">
     Comprar entrada
   </a>
 

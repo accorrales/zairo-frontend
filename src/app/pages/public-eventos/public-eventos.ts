@@ -277,6 +277,28 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
     canvas.height = Math.round(height * dpr);
   }
 
+  scrollToSection(sectionId: string, event?: Event): void {
+    event?.preventDefault();
+
+    const element = document.getElementById(sectionId);
+
+    if (!element) {
+      return;
+    }
+
+    const navbarOffset = 92;
+
+    const y =
+      element.getBoundingClientRect().top +
+      window.pageYOffset -
+      navbarOffset;
+
+    window.scrollTo({
+      top: y,
+      behavior: 'smooth'
+    });
+  }
+
   private drawSequenceFrame(frameValue: number): void {
     const canvas = this.sequenceCanvasEl?.nativeElement;
     const ctx = this.sequenceCtx;
