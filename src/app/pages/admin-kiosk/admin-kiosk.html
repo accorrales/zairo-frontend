@@ -1,18 +1,25 @@
 <div class="kiosk-page" [ngClass]="estado">
   <div class="kiosk-bg"></div>
+  <div class="kiosk-grid"></div>
 
   <header class="kiosk-header">
     <div class="brand">
-      <div class="logo">Z</div>
+      <div class="logo-img">
+        <img
+          src="/assets/zairo-loader-logo.png"
+          alt="ZAIRO">
+      </div>
+
       <div>
+        <span class="brand-kicker">ZAIRO ACCESS</span>
         <h1>ZAIRO KIOSK</h1>
-        <span>Control de acceso profesional</span>
+        <p>Control de entrada · Lost Trip</p>
       </div>
     </div>
 
     <div class="status-pill">
       <span class="status-dot"></span>
-      {{ mensaje }}
+      <strong>{{ mensaje }}</strong>
     </div>
   </header>
 
@@ -21,8 +28,9 @@
     <section class="scanner-panel">
       <div class="scanner-top">
         <div>
-          <h2>Escáner QR</h2>
-          <p>Validación en tiempo real</p>
+          <span class="panel-kicker">QR SCANNER</span>
+          <h2>Escáner de acceso</h2>
+          <p>Apuntá al QR oficial de la entrada.</p>
         </div>
 
         <div class="scanner-toolbar">
@@ -49,17 +57,22 @@
             <span class="corner bottom-left"></span>
             <span class="corner bottom-right"></span>
             <div class="scan-line"></div>
+
+            <div class="scan-center">
+              <span>SCAN</span>
+            </div>
           </div>
         </div>
 
         <div class="camera-state" *ngIf="estado === 'validating'">
           <div class="loader"></div>
           <strong>Validando entrada...</strong>
+          <small>No movás el QR</small>
         </div>
       </div>
 
       <p class="scanner-hint">
-        Colocá el QR dentro del cuadro. Mantenelo a 20–30 cm del iPhone,
+        Colocá el QR dentro del cuadro. Mantenelo a 20–30 cm del teléfono,
         con buen brillo y sin moverlo.
       </p>
     </section>
@@ -82,7 +95,7 @@
         <h2>{{ mensaje }}</h2>
 
         <div class="entrada-info" *ngIf="entrada">
-          <div class="info-row">
+          <div class="info-row principal">
             <span>Nombre</span>
             <strong>{{ entrada.nombre_completo }}</strong>
           </div>
@@ -110,8 +123,8 @@
 
         <div class="idle-copy" *ngIf="!entrada">
           <p>
-            El sistema validará automáticamente si la entrada es oficial,
-            está confirmada y no fue utilizada anteriormente.
+            El sistema valida si la entrada es oficial, está confirmada
+            y no fue utilizada anteriormente.
           </p>
         </div>
 
@@ -119,8 +132,12 @@
 
       <div class="historial">
         <div class="historial-header">
-          <h3>Últimos escaneos</h3>
-          <span>{{ historial.length }}/6</span>
+          <div>
+            <span>LIVE LOG</span>
+            <h3>Últimos escaneos</h3>
+          </div>
+
+          <strong>{{ historial.length }}/6</strong>
         </div>
 
         <div
