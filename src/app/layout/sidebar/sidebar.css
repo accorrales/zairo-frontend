@@ -218,36 +218,6 @@
   box-shadow: 0 0 16px rgba(198,255,87,.75);
 }
 
-.admin-layout {
-  min-height: 100vh;
-  display: flex;
-  background:
-    radial-gradient(circle at top left, rgba(198,255,87,.08), transparent 30%),
-    linear-gradient(180deg, #020403, #050b06);
-}
-
-.content {
-  flex: 1;
-  min-width: 0;
-  padding: 24px;
-}
-
-@media (max-width: 900px) {
-  .admin-layout {
-    flex-direction: column;
-  }
-
-  .content {
-    padding: 16px;
-  }
-}
-
-@media (max-width: 520px) {
-  .content {
-    padding: 12px;
-  }
-}
-
 @media (max-width: 900px) {
   .sidebar {
     width: 100%;

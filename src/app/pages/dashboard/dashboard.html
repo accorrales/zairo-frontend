@@ -1,10 +1,10 @@
 <div class="layout">
   <app-sidebar></app-sidebar>
 
-  <div class="content">
+  <main class="content">
     <app-header
       [title]="'Dashboard'"
-      [subtitle]="'Resumen general del sistema de planilla'">
+      [subtitle]="'Resumen general del sistema ZAIRO'">
     </app-header>
 
     <div *ngIf="cargando" class="estado-box">
@@ -18,30 +18,37 @@
     <ng-container *ngIf="!cargando && !error">
       <div class="cards">
         <div class="card">
+          <span class="card-label">01</span>
           <h3>Total de empleados</h3>
           <p>{{ resumen.totalEmpleados }}</p>
         </div>
 
         <div class="card">
+          <span class="card-label">02</span>
           <h3>Empleados activos</h3>
           <p>{{ resumen.empleadosActivos }}</p>
         </div>
 
         <div class="card">
+          <span class="card-label">03</span>
           <h3>Departamentos</h3>
           <p>{{ resumen.totalDepartamentos }}</p>
         </div>
 
         <div class="card">
+          <span class="card-label">04</span>
           <h3>Promedio salarial</h3>
           <p>₡{{ resumen.promedioSalario | number:'1.0-2' }}</p>
         </div>
       </div>
 
       <div class="dashboard-grid">
-        <div class="panel">
+        <section class="panel">
           <div class="panel-top">
-            <h2>Últimos empleados ingresados</h2>
+            <div>
+              <span class="panel-kicker">REGISTROS</span>
+              <h2>Últimos empleados ingresados</h2>
+            </div>
           </div>
 
           <div class="table-wrapper">
@@ -54,6 +61,7 @@
                   <th>Fecha ingreso</th>
                 </tr>
               </thead>
+
               <tbody>
                 <tr *ngFor="let empleado of ultimosEmpleados">
                   <td>{{ empleado.nombre }} {{ empleado.apellido }}</td>
@@ -70,11 +78,14 @@
               </div>
             </ng-template>
           </div>
-        </div>
+        </section>
 
-        <div class="panel">
+        <section class="panel">
           <div class="panel-top">
-            <h2>Empleados por departamento</h2>
+            <div>
+              <span class="panel-kicker">ÁREAS</span>
+              <h2>Empleados por departamento</h2>
+            </div>
           </div>
 
           <div class="departamentos-list">
@@ -82,11 +93,12 @@
               <div>
                 <strong>{{ item.nombre }}</strong>
               </div>
+
               <span class="badge">{{ item.cantidad }}</span>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     </ng-container>
-  </div>
+  </main>
 </div>
