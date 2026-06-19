@@ -65,7 +65,8 @@
   position: fixed;
   top: 24px;
   left: 24px;
-  z-index: 10;
+  z-index: 9999;
+  pointer-events: auto;
 
   display: inline-flex;
   align-items: center;
