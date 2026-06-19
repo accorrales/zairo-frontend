@@ -67,6 +67,7 @@
   left: 24px;
   z-index: 9999;
   pointer-events: auto;
+  cursor: pointer;
 
   display: inline-flex;
   align-items: center;
