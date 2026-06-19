@@ -1,32 +1,119 @@
 <div class="login-page">
-  <div class="login-card">
-    <h1>ZAIRO Payroll</h1>
-    <p>Inicia sesión para entrar al sistema</p>
 
-    <div class="form-group">
-      <label>Correo</label>
-      <input
-        [(ngModel)]="correo"
-        name="correo"
-        type="email"
-        placeholder="correo@zairo.com" />
-    </div>
+  <a routerLink="/home" class="back-home">
+    ← Volver al home
+  </a>
 
-    <div class="form-group">
-      <label>Contraseña</label>
-      <input
-        [(ngModel)]="password"
-        name="password"
-        type="password"
-        placeholder="********" />
-    </div>
+  <div class="login-bg-grid"></div>
+  <div class="login-orb login-orb-one"></div>
+  <div class="login-orb login-orb-two"></div>
 
-    <p *ngIf="errorMessage" class="error">
-      {{ errorMessage }}
-    </p>
+  <main class="login-shell">
 
-    <button (click)="login()" [disabled]="loading">
-      {{ loading ? 'Ingresando...' : 'Ingresar' }}
-    </button>
-  </div>
+    <section class="login-brand-panel">
+      <div class="brand-top">
+        <div class="brand-logo">
+          <img
+            src="/assets/zairo-loader-logo.png"
+            alt="ZAIRO">
+        </div>
+
+        <div>
+          <span>ZAIRO CLUB</span>
+          <h1>AFTER LOVE</h1>
+        </div>
+      </div>
+
+      <div class="brand-copy">
+        <span>OFFICIAL ACCESS</span>
+        <h2>Entrá al sistema ZAIRO.</h2>
+        <p>
+          Panel administrativo para gestionar usuarios, eventos, entradas,
+          compras y control de acceso QR.
+        </p>
+      </div>
+
+      <div class="brand-points">
+        <div>
+          <strong>QR</strong>
+          <span>Validación en vivo</span>
+        </div>
+
+        <div>
+          <strong>Admin</strong>
+          <span>Control total</span>
+        </div>
+
+        <div>
+          <strong>ZAIRO</strong>
+          <span>Acceso seguro</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="login-card">
+
+      <div class="mobile-logo">
+        <img
+          src="/assets/zairo-loader-logo.png"
+          alt="ZAIRO">
+      </div>
+
+      <span class="login-kicker">PRIVATE SYSTEM</span>
+
+      <h2>Iniciar sesión</h2>
+
+      <p class="login-subtitle">
+        Accedé con tu cuenta autorizada del equipo ZAIRO.
+      </p>
+
+      <div class="form-group">
+        <label>Correo</label>
+
+        <div class="input-box">
+          <span>✉️</span>
+          <input
+            [(ngModel)]="correo"
+            name="correo"
+            type="email"
+            placeholder="correo@zairoclub.com"
+            autocomplete="email" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+
+        <div class="input-box">
+          <span>🔒</span>
+          <input
+            [(ngModel)]="password"
+            name="password"
+            type="password"
+            placeholder="********"
+            autocomplete="current-password"
+            (keydown.enter)="login()" />
+        </div>
+      </div>
+
+      <p *ngIf="errorMessage" class="error">
+        {{ errorMessage }}
+      </p>
+
+      <button
+        type="button"
+        class="login-btn"
+        (click)="login()"
+        [disabled]="loading">
+        {{ loading ? 'Ingresando...' : 'Ingresar al sistema' }}
+      </button>
+
+      <div class="login-footer">
+        <span>ZAIRO EXPERIENCE</span>
+        <small>After Love · Lost Trip · Official Access</small>
+      </div>
+
+    </section>
+
+  </main>
 </div>
