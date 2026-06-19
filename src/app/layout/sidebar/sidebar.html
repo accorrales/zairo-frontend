@@ -1,63 +1,79 @@
 <aside class="sidebar">
   <div class="sidebar-glow"></div>
+  <div class="sidebar-line"></div>
 
   <div class="brand">
     <div class="logo">
       <img
-        src="https://i.postimg.cc/7P3gL7GF/ZAIRO-Lost-Trip-Logo.jpg"
-        alt="ZAIRO Lost Trip">
+        src="/assets/zairo-loader-logo.png"
+        alt="ZAIRO">
     </div>
-    <div>
+
+    <div class="brand-copy">
       <h2>ZAIRO</h2>
-<p>WELCOME TO THE JUNGLE</p>
+      <p>WELCOME TO THE JUNGLE</p>
     </div>
   </div>
 
   <div class="theme-badge">
-    🌴 Welcome to the Jungle
+    <span>🌴</span>
+    <strong>Lost Trip Admin</strong>
   </div>
 
   <nav class="menu">
-    <a routerLink="/dashboard" routerLinkActive="active">🏠 Dashboard</a>
+    <a routerLink="/dashboard" routerLinkActive="active">
+      <span>🏠</span>
+      Dashboard
+    </a>
 
     <a *ngIf="tienePermiso(['admin'])" routerLink="/usuarios" routerLinkActive="active">
-      👤 Usuarios
+      <span>👤</span>
+      Usuarios
     </a>
 
     <a *ngIf="tienePermiso(['admin','rrhh'])" routerLink="/empleados" routerLinkActive="active">
-      👥 Empleados
+      <span>👥</span>
+      Empleados
     </a>
 
     <a *ngIf="tienePermiso(['admin','rrhh'])" routerLink="/conceptos" routerLinkActive="active">
-      🧾 Conceptos
+      <span>🧾</span>
+      Conceptos
     </a>
 
     <a *ngIf="tienePermiso(['admin','rrhh'])" routerLink="/novedades" routerLinkActive="active">
-      ⚡ Novedades
+      <span>⚡</span>
+      Novedades
     </a>
 
     <a *ngIf="tienePermiso(['admin','rrhh','contabilidad'])" routerLink="/planillas" routerLinkActive="active">
-      💰 Planillas
+      <span>💰</span>
+      Planillas
     </a>
 
     <a *ngIf="tienePermiso(['admin','rrhh','contabilidad','visor'])" routerLink="/reportes" routerLinkActive="active">
-      📊 Reportes
+      <span>📊</span>
+      Reportes
     </a>
 
     <a *ngIf="tienePermiso(['admin'])" routerLink="/eventos" routerLinkActive="active">
-      🎪 Eventos
+      <span>🎪</span>
+      Eventos
     </a>
 
     <a *ngIf="tienePermiso(['admin','rrhh'])" routerLink="/departamentos" routerLinkActive="active">
-      🏢 Departamentos
+      <span>🏢</span>
+      Departamentos
     </a>
 
     <a *ngIf="tienePermiso(['admin'])" routerLink="/admin/compras" routerLinkActive="active">
-      🎟️ Compras pendientes
+      <span>🎟️</span>
+      Compras
     </a>
 
     <a *ngIf="tienePermiso(['admin'])" routerLink="/admin/kiosk" routerLinkActive="active">
-      📱 KIOSK QR
+      <span>📱</span>
+      KIOSK QR
     </a>
   </nav>
 </aside>
