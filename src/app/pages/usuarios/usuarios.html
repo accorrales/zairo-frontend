@@ -30,9 +30,11 @@
           [(ngModel)]="nuevoUsuario.password">
 
         <select [(ngModel)]="nuevoUsuario.rol">
-          <option value="ADMIN">ADMIN</option>
-          <option value="RRHH">RRHH</option>
-          <option value="CONTABILIDAD">CONTABILIDAD</option>
+          <option value="admin">Admin</option>
+          <option value="rrhh">RRHH</option>
+          <option value="contabilidad">Contabilidad</option>
+          <option value="visor">Visor</option>
+          <option value="entrada">Entrada / KIOSK QR</option>
         </select>
 
         <select *ngIf="editando" [(ngModel)]="nuevoUsuario.estado">

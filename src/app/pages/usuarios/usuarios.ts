@@ -31,7 +31,7 @@ export class Usuarios implements OnInit {
     nombre: '',
     correo: '',
     password: '',
-    rol: 'RRHH',
+    rol: 'visor',
     estado: true
   };
 
