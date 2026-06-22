@@ -32,6 +32,9 @@ export class PublicEventoDetalle implements OnInit {
   /** Imagen del plano del lugar. Guardala en public/assets/ con este nombre. */
   planoImagen = '/assets/plano-lost-trip.png';
 
+  /** Se pone en false si la imagen del plano no carga, para mostrar el respaldo. */
+  planoDisponible = true;
+
   cargando = true;
 
   tierSeleccionado: any = null;
@@ -285,6 +288,11 @@ export class PublicEventoDetalle implements OnInit {
 
   esZonaSeleccionada(zona: any): boolean {
     return !!zona && this.zonaSeleccionada?.clave === zona.clave;
+  }
+
+  /** La imagen del plano falló: ocultamos el <img> y mostramos el respaldo. */
+  onPlanoError(): void {
+    this.planoDisponible = false;
   }
 
   textoBotonZona(zona: any): string {

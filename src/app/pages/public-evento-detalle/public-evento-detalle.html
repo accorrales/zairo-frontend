@@ -99,10 +99,11 @@
 
       <div class="venue-map" *ngIf="zonas.length > 0; else sinTiers">
 
-        <div class="plano">
+        <div class="plano" [class.plano--sin-img]="!planoDisponible">
           <img
             class="plano-img"
             [src]="planoImagen"
+            (error)="onPlanoError()"
             alt="Plano del lugar — Lost Trip by ZAIRO">
 
           <div class="hotspots">
