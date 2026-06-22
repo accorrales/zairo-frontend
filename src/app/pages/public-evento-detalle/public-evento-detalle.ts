@@ -30,7 +30,7 @@ export class PublicEventoDetalle implements OnInit {
   zonaSeleccionada: any = null;
 
   /** Imagen del plano del lugar. Guardala en public/assets/ con este nombre. */
-  planoImagen = '/assets/plano-lost-trip.png';
+  planoImagen = '/assets/plano-lost-trip.jpg';
 
   /** Se pone en false si la imagen del plano no carga, para mostrar el respaldo. */
   planoDisponible = true;
