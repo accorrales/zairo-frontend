@@ -2491,3 +2491,63 @@ nav a {
     letter-spacing: 3px;
   }
 }
+
+/* =========================================================
+   OPTIMIZACIÓN DE RENDIMIENTO (bloque agregado)
+   El loop del canvas ya se pausa fuera de pantalla y solo
+   redibuja cuando hay cambio (ver public-eventos.ts).
+   Aquí bajamos el costo de COMPOSICIÓN de las capas con blur,
+   que es lo más caro para la GPU mientras se hace scroll.
+   ========================================================= */
+
+/* El lienzo de la secuencia vive en su propia capa de GPU */
+.scroll-sequence-sticky {
+  contain: layout paint;
+}
+
+.scroll-sequence-sticky canvas {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Respeta a quien pidió menos movimiento: corta animaciones infinitas */
+@media (prefers-reduced-motion: reduce) {
+  .sequence-noise,
+  .sequence-orb,
+  .sequence-fog,
+  .sequence-leaves,
+  .intro-ring,
+  .particles,
+  .jungle-fog,
+  .leaf,
+  .hero-video-fake,
+  .map-pulse,
+  .scroll-cue .mouse::before {
+    animation: none !important;
+  }
+}
+
+/* En móvil, el blur gigante (88–95px) animado es el cuello de botella.
+   Un blur animado se recompone en cada frame; uno estático se cachea.
+   Reducimos el radio y, sobre todo, detenemos su animación. */
+@media (max-width: 900px) {
+  .sequence-orb {
+    filter: blur(45px);
+    opacity: 0.4;
+    animation: none;
+  }
+
+  .sequence-fog {
+    filter: blur(42px);
+    opacity: 0.26;
+    animation: none;
+  }
+
+  .sequence-leaves {
+    animation: none;
+  }
+
+  .sequence-noise {
+    animation: none;
+  }
+}

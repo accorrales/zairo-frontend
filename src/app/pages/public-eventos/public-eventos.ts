@@ -5,6 +5,7 @@ import {
   AfterViewInit,
   ElementRef,
   ViewChild,
+  NgZone,
   inject
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -22,6 +23,7 @@ const SEQUENCE_FRAME_COUNT = 16;
 })
 export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
   private eventosService = inject(EventosService);
+  private zone = inject(NgZone);
 
   @ViewChild('scrollSequence') scrollSequenceEl?: ElementRef<HTMLElement>;
   @ViewChild('sequenceCanvas') sequenceCanvasEl?: ElementRef<HTMLCanvasElement>;
@@ -29,10 +31,23 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
   private sequenceImages: HTMLImageElement[] = [];
   private sequenceCtx?: CanvasRenderingContext2D | null;
 
-  private sequenceFrame = 0;
   private sequenceTargetProgress = 0;
   private sequenceCurrentProgress = 0;
   private sequenceRaf = 0;
+
+  // Banderas para arrancar/detener el render loop (no corre en vacío)
+  private sequenceRunning = false;
+  private sequenceVisible = false;
+  private sequenceReady = false;
+
+  // Cache de DOM para no consultar/escribir en cada frame
+  private progressCountEl: HTMLElement | null = null;
+  private lastRenderedFrame = -1;
+  private lastProgressVar = -1;
+  private lastDeep = false;
+  private lastEnding = false;
+
+  private prefersReducedMotion = false;
 
   private sequenceScrollHandler = () => this.onSequenceScroll();
 
@@ -59,18 +74,23 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
   private timer: any;
   private introTimer: any;
   private observer?: IntersectionObserver;
+  private sequenceObserver?: IntersectionObserver;
 
   ngOnInit(): void {
+    this.prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
+
     this.preloadIntroAssets();
 
+    // Failsafe: el loader nunca se queda pegado, pero si la secuencia
+    // carga antes, se oculta de inmediato (ver onPrimerFrameListo()).
     this.introTimer = setTimeout(() => {
       this.loadingIntro = false;
-    }, 5000);
+    }, 3500);
 
     this.eventosService.obtenerEventosActivos().subscribe({
       next: (data: any) => {
-        console.log('EVENTOS RECIBIDOS:', data);
-
         if (Array.isArray(data)) {
           this.eventos = data;
         } else if (Array.isArray(data?.eventos)) {
@@ -84,18 +104,14 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
         this.cargando = false;
         this.iniciarCountdown();
 
-        setTimeout(() => {
-          this.iniciarScrollReveal();
-        }, 300);
+        setTimeout(() => this.iniciarScrollReveal(), 300);
       },
       error: (error) => {
         console.error('ERROR CARGANDO EVENTOS:', error);
         this.eventos = [];
         this.cargando = false;
 
-        setTimeout(() => {
-          this.iniciarScrollReveal();
-        }, 300);
+        setTimeout(() => this.iniciarScrollReveal(), 300);
       }
     });
   }
@@ -130,6 +146,7 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.observer?.disconnect();
+    this.sequenceObserver?.disconnect();
 
     window.removeEventListener('scroll', this.sequenceScrollHandler);
     window.removeEventListener('resize', this.sequenceResizeHandler);
@@ -196,15 +213,15 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('visible');
+            // Una vez revelado, dejamos de observarlo.
+            this.observer?.unobserve(entry.target);
           }
         });
       },
       { threshold: 0.12 }
     );
 
-    elementos.forEach((el) => {
-      this.observer?.observe(el);
-    });
+    elementos.forEach((el) => this.observer?.observe(el));
   }
 
   moverTicket(event: MouseEvent): void {
@@ -261,8 +278,9 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
 
   private iniciarSecuenciaScroll(): void {
     const canvas = this.sequenceCanvasEl?.nativeElement;
+    const section = this.scrollSequenceEl?.nativeElement;
 
-    if (!canvas) {
+    if (!canvas || !section) {
       return;
     }
 
@@ -272,36 +290,87 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
       mientras cargan los frames.
     */
     this.sequenceCtx = canvas.getContext('2d');
+    this.progressCountEl = section.querySelector('.sequence-progress-count');
 
     this.resizeSequenceCanvas();
     this.precargarFramesSecuencia();
 
-    window.addEventListener('resize', this.sequenceResizeHandler, { passive: true });
-    window.addEventListener('scroll', this.sequenceScrollHandler, { passive: true });
+    // Los listeners y el rAF viven FUERA de Angular: no disparan
+    // change detection en cada scroll/frame (clave para que vaya fluido).
+    this.zone.runOutsideAngular(() => {
+      window.addEventListener('resize', this.sequenceResizeHandler, { passive: true });
+      window.addEventListener('scroll', this.sequenceScrollHandler, { passive: true });
 
-    this.onSequenceScroll();
-    this.updateSequenceVisualState(0);
-    this.sequenceRaf = requestAnimationFrame(() => this.renderSequenceLoop());
+      // Solo animamos cuando la sección está realmente en pantalla.
+      this.sequenceObserver = new IntersectionObserver(
+        (entries) => {
+          this.sequenceVisible = entries[0]?.isIntersecting ?? false;
+
+          if (this.sequenceVisible) {
+            this.onSequenceScroll();
+            this.startSequenceLoop();
+          }
+        },
+        { threshold: 0 }
+      );
+
+      this.sequenceObserver.observe(section);
+      this.onSequenceScroll();
+    });
   }
 
   private precargarFramesSecuencia(): void {
     this.sequenceImages = [];
 
+    // Soporte WebP con fallback automático a JPG (ambos sets sirven).
+    const supportsWebp =
+      typeof document !== 'undefined' &&
+      document
+        .createElement('canvas')
+        .toDataURL('image/webp')
+        .startsWith('data:image/webp');
+
+    const ext = supportsWebp ? 'webp' : 'jpg';
+
     for (let i = 1; i <= SEQUENCE_FRAME_COUNT; i++) {
       const index = i - 1;
+      const name = `frame-${String(i).padStart(3, '0')}`;
       const img = new Image();
 
       img.decoding = 'async';
       img.loading = 'eager';
-      img.src = `/secuencia/frame-${String(i).padStart(3, '0')}.jpg`;
 
-      img.onload = () => {
-        if (index === 0) {
-          this.drawSequenceFrame(0);
+      // Si el .webp no existe en el server, caemos a .jpg sin romper la secuencia.
+      img.onerror = () => {
+        if (img.src.endsWith('.webp')) {
+          img.src = `/secuencia/${name}.jpg`;
         }
       };
 
+      img.onload = () => {
+        if (index === 0) {
+          this.onPrimerFrameListo();
+        }
+      };
+
+      img.src = `/secuencia/${name}.${ext}`;
       this.sequenceImages.push(img);
+    }
+  }
+
+  private onPrimerFrameListo(): void {
+    this.sequenceReady = true;
+    this.drawSequenceFrame(this.sequenceCurrentProgress);
+
+    // El loader se oculta apenas el primer frame está listo (no esperamos 3.5s).
+    if (this.loadingIntro) {
+      this.zone.run(() => {
+        this.loadingIntro = false;
+      });
+    }
+
+    if (this.sequenceVisible) {
+      this.startSequenceLoop();
     }
   }
 
@@ -322,13 +391,34 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
 
     const rawProgress = -rect.top / scrollable;
     this.sequenceTargetProgress = this.clamp(rawProgress, 0, 1);
+
+    // Si el loop estaba dormido, lo despertamos para seguir el scroll.
+    if (this.sequenceVisible) {
+      this.startSequenceLoop();
+    }
+  }
+
+  private startSequenceLoop(): void {
+    if (this.sequenceRunning || !this.sequenceReady) {
+      return;
+    }
+
+    // Con reduced-motion no animamos: pintamos el frame destino y listo.
+    if (this.prefersReducedMotion) {
+      this.sequenceCurrentProgress = this.sequenceTargetProgress;
+      this.drawSequenceFrame(this.sequenceCurrentProgress);
+      this.updateSequenceVisualState(this.sequenceCurrentProgress);
+      return;
+    }
+
+    this.sequenceRunning = true;
+    this.sequenceRaf = requestAnimationFrame(() => this.renderSequenceLoop());
   }
 
   private renderSequenceLoop(): void {
     /*
       Entre menor el número, más pesado/cinemático.
       Entre mayor, más rápido responde al scroll.
-      0.075 - 0.095 es el punto fino.
     */
     const smoothness = 0.085;
 
@@ -343,6 +433,15 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
     this.drawSequenceFrame(this.sequenceCurrentProgress);
     this.updateSequenceVisualState(this.sequenceCurrentProgress);
 
+    // Cuando ya alcanzó el destino (o la sección salió de pantalla),
+    // dormimos el loop. El scroll/observer lo vuelven a despertar.
+    const settled = this.sequenceCurrentProgress === this.sequenceTargetProgress;
+
+    if (settled || !this.sequenceVisible) {
+      this.sequenceRunning = false;
+      return;
+    }
+
     this.sequenceRaf = requestAnimationFrame(() => this.renderSequenceLoop());
   }
 
@@ -353,7 +452,9 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Cap del DPR a 1.5: el lienzo es un fondo estilizado, no necesita 2x/3x.
+    // Baja muchísimo el fill-rate en móviles de gama media/baja.
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const width = canvas.clientWidth || window.innerWidth;
     const height = canvas.clientHeight || window.innerHeight;
 
@@ -395,7 +496,7 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const width = canvas.clientWidth || window.innerWidth;
     const height = canvas.clientHeight || window.innerHeight;
 
@@ -404,7 +505,8 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
+    // 'medium' rinde casi igual que 'high' pero cuesta bastante menos por frame.
+    ctx.imageSmoothingQuality = 'medium';
 
     this.drawImageCover(ctx, currentImage, width, height, safeProgress, 1);
 
@@ -416,8 +518,6 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
     ) {
       this.drawImageCover(ctx, nextImage, width, height, safeProgress, blend);
     }
-
-    this.sequenceFrame = currentIndex;
   }
 
   private drawImageCover(
@@ -474,18 +574,33 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
     const safeProgress = this.clamp(progress, 0, 1);
     const easedProgress = this.smoothstep(safeProgress);
 
-    const currentFrame =
-      Math.round(easedProgress * (SEQUENCE_FRAME_COUNT - 1)) + 1;
+    // Solo tocamos el DOM cuando el valor realmente cambió.
+    // Evita recalcular estilos en cada uno de los 60 frames por segundo.
+    const progressVar = Math.round(safeProgress * 1000) / 1000;
 
-    section.style.setProperty('--sequence-progress', safeProgress.toFixed(4));
+    if (progressVar !== this.lastProgressVar) {
+      this.lastProgressVar = progressVar;
+      section.style.setProperty('--sequence-progress', progressVar.toFixed(3));
+    }
 
-    section.classList.toggle('sequence-deep', safeProgress > 0.52);
-    section.classList.toggle('sequence-ending', safeProgress > 0.82);
+    const deep = safeProgress > 0.52;
+    const ending = safeProgress > 0.82;
 
-    const progressCount = section.querySelector('.sequence-progress-count');
+    if (deep !== this.lastDeep) {
+      this.lastDeep = deep;
+      section.classList.toggle('sequence-deep', deep);
+    }
 
-    if (progressCount) {
-      progressCount.textContent =
+    if (ending !== this.lastEnding) {
+      this.lastEnding = ending;
+      section.classList.toggle('sequence-ending', ending);
+    }
+
+    const currentFrame = Math.round(easedProgress * (SEQUENCE_FRAME_COUNT - 1)) + 1;
+
+    if (currentFrame !== this.lastRenderedFrame && this.progressCountEl) {
+      this.lastRenderedFrame = currentFrame;
+      this.progressCountEl.textContent =
         `${String(currentFrame).padStart(2, '0')} / ${SEQUENCE_FRAME_COUNT}`;
     }
   }
