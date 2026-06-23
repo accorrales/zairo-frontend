@@ -949,15 +949,6 @@
   font-size: 13px;
 }
 
-.age-alert {
-  margin: 24px 0 28px;
-  padding: 14px 16px;
-  border-radius: 18px;
-  background: rgba(251,191,36,.12);
-  border: 1px solid rgba(251,191,36,.35);
-  color: #fde68a;
-}
-
 .form-grid,
 .people {
   display: grid;
