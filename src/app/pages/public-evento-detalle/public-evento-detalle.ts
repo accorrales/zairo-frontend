@@ -39,6 +39,12 @@ export class PublicEventoDetalle implements OnInit {
 
   tierSeleccionado: any = null;
   cantidad = 1;
+
+  /** Máximo de entradas que una persona puede comprar en una sola compra. */
+  maxEntradas = 10;
+  /** Opciones del selector de cantidad (1..maxEntradas). */
+  opcionesCantidad: number[] = Array.from({ length: this.maxEntradas }, (_, i) => i + 1);
+
   correoComprador = '';
   telefonoComprador = '';
 
@@ -359,12 +365,13 @@ export class PublicEventoDetalle implements OnInit {
   }
 
   actualizarPersonas(): void {
-    const nuevaCantidad = Number(this.cantidad || 1);
+    // La cantidad queda siempre entre 1 y maxEntradas.
+    let nuevaCantidad = Number(this.cantidad || 1);
 
-    if (nuevaCantidad < 1) {
-      this.cantidad = 1;
-      return;
-    }
+    if (nuevaCantidad < 1) nuevaCantidad = 1;
+    if (nuevaCantidad > this.maxEntradas) nuevaCantidad = this.maxEntradas;
+
+    this.cantidad = nuevaCantidad;
 
     while (this.personas.length < nuevaCantidad) {
       this.personas.push({
@@ -405,6 +412,9 @@ export class PublicEventoDetalle implements OnInit {
     if (!this.correoComprador.trim()) return 'Ingresá un correo electrónico.';
     if (!this.telefonoComprador.trim()) return 'Ingresá un número de teléfono.';
     if (!this.personas.length) return 'Agregá al menos una persona.';
+    if (this.personas.length > this.maxEntradas) {
+      return `Solo se pueden comprar hasta ${this.maxEntradas} entradas por compra.`;
+    }
 
     for (let i = 0; i < this.personas.length; i++) {
       const p = this.personas[i];

@@ -271,12 +271,14 @@
         <div class="form-grid">
 
           <div class="form-group">
-            <label>Cantidad de entradas</label>
-            <input
-              type="number"
-              min="1"
+            <label>Cantidad de entradas (máximo {{ maxEntradas }})</label>
+            <select
               [(ngModel)]="cantidad"
               (ngModelChange)="actualizarPersonas()">
+              <option *ngFor="let n of opcionesCantidad" [ngValue]="n">
+                {{ n }} {{ n === 1 ? 'entrada' : 'entradas' }}
+              </option>
+            </select>
           </div>
 
           <div class="form-group">
