@@ -1,0 +1,156 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <app-header
+      [title]="'Códigos de descuento'"
+      [subtitle]="'Promociones aplicables a las entradas'">
+    </app-header>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>{{ editando ? 'Editar código' : 'Nuevo código' }}</h2>
+      </div>
+
+      <div class="form-grid">
+        <input
+          type="text"
+          placeholder="Código (ej. VERANO2026)"
+          [(ngModel)]="nuevoCodigo.codigo">
+
+        <input
+          type="text"
+          placeholder="Descripción"
+          [(ngModel)]="nuevoCodigo.descripcion">
+
+        <select [(ngModel)]="nuevoCodigo.tipo_descuento">
+          <option value="PORCENTAJE">Porcentaje (%)</option>
+          <option value="MONTO">Monto fijo (CRC)</option>
+        </select>
+
+        <input
+          type="number"
+          [placeholder]="nuevoCodigo.tipo_descuento === 'PORCENTAJE' ? 'Porcentaje (0-100)' : 'Monto en CRC'"
+          [(ngModel)]="nuevoCodigo.valor">
+
+        <select [(ngModel)]="nuevoCodigo.id_evento">
+          <option [ngValue]="null">Todos los eventos</option>
+          <option *ngFor="let e of eventos" [ngValue]="e.id_evento">
+            {{ e.nombre }}
+          </option>
+        </select>
+
+        <input
+          type="datetime-local"
+          title="Válido desde"
+          [(ngModel)]="nuevoCodigo.fecha_inicio">
+
+        <input
+          type="datetime-local"
+          title="Válido hasta"
+          [(ngModel)]="nuevoCodigo.fecha_fin">
+
+        <input
+          type="number"
+          placeholder="Usos máximos (vacío = ilimitado)"
+          [(ngModel)]="nuevoCodigo.usos_maximos">
+
+        <select [(ngModel)]="nuevoCodigo.estado">
+          <option [ngValue]="true">Activo</option>
+          <option [ngValue]="false">Inactivo</option>
+        </select>
+
+        <div class="acciones-form">
+          <button class="btn-primary" (click)="guardarCodigo()">
+            {{ editando ? 'Actualizar' : 'Crear' }}
+          </button>
+
+          <button
+            *ngIf="editando"
+            class="btn-secondary"
+            (click)="resetFormulario()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>Listado de códigos</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table *ngIf="codigos.length > 0; else sinCodigos">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Descuento</th>
+              <th>Evento</th>
+              <th>Vigencia</th>
+              <th>Usos</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let c of codigos">
+              <td>
+                <strong>{{ c.codigo }}</strong><br>
+                <small>{{ c.descripcion || '-' }}</small>
+              </td>
+              <td>{{ descuentoTexto(c) }}</td>
+              <td>{{ nombreEvento(c.id_evento) }}</td>
+              <td>
+                <small>
+                  {{ c.fecha_inicio ? (c.fecha_inicio | date:'dd/MM/yyyy HH:mm') : 'Sin inicio' }}
+                  →
+                  {{ c.fecha_fin ? (c.fecha_fin | date:'dd/MM/yyyy HH:mm') : 'Sin fin' }}
+                </small>
+              </td>
+              <td>{{ usosTexto(c) }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'disponible': c.estado === true,
+                    'desactivado': c.estado === false
+                  }">
+                  {{ c.estado ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td class="acciones">
+                <button class="btn-warning" (click)="editarCodigo(c)">
+                  Editar
+                </button>
+
+                <button class="btn-secondary" (click)="toggleEstado(c)">
+                  {{ c.estado ? 'Desactivar' : 'Activar' }}
+                </button>
+
+                <button class="btn-danger" (click)="eliminarCodigo(c.id_codigo)">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #sinCodigos>
+          <div class="estado-box">
+            No hay códigos de descuento registrados.
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-confirm-dialog
+  [visible]="modalVisible"
+  [titulo]="tituloModal"
+  [mensaje]="mensajeModal"
+  (confirmar)="confirmarAccion()"
+  (cancelar)="cancelarAccion()">
+</app-confirm-dialog>
