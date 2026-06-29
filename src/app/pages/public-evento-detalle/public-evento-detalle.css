@@ -1482,3 +1482,59 @@
     padding: 22px;
   }
 }
+/* ===== Código de descuento ===== */
+.promo-box {
+  margin-top: 6px;
+}
+
+.promo-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.promo-row input {
+  flex: 1;
+  text-transform: uppercase;
+}
+
+.promo-btn {
+  padding: 0 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(34,197,94,.55);
+  background: rgba(34,197,94,.18);
+  color: #bbf7d0;
+  font-weight: 700;
+  letter-spacing: .03em;
+  cursor: pointer;
+  transition: .25s ease;
+  white-space: nowrap;
+}
+
+.promo-btn:hover:not(:disabled) {
+  background: rgba(34,197,94,.3);
+}
+
+.promo-btn:disabled {
+  opacity: .6;
+  cursor: default;
+}
+
+.promo-btn.quitar {
+  border-color: rgba(248,113,113,.5);
+  background: rgba(248,113,113,.16);
+  color: #fecaca;
+}
+
+.promo-msg {
+  margin-top: 8px;
+  font-size: .88rem;
+}
+
+.promo-msg.ok {
+  color: #6ee7b7;
+}
+
+.promo-msg.error {
+  color: #fca5a5;
+}

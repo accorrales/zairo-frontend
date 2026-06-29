@@ -331,10 +331,61 @@
 
         </div>
 
+        <div class="form-group full promo-box">
+          <label>Código de descuento (opcional)</label>
+          <div class="promo-row">
+            <input
+              type="text"
+              [(ngModel)]="codigoDescuento"
+              [disabled]="codigoAplicado"
+              placeholder="Ej. VERANO2026"
+              (ngModelChange)="onCodigoChange()">
+
+            <button
+              type="button"
+              class="promo-btn"
+              *ngIf="!codigoAplicado"
+              [disabled]="validandoCodigo"
+              (click)="aplicarCodigo()">
+              {{ validandoCodigo ? 'Validando...' : 'Aplicar' }}
+            </button>
+
+            <button
+              type="button"
+              class="promo-btn quitar"
+              *ngIf="codigoAplicado"
+              (click)="quitarCodigo()">
+              Quitar
+            </button>
+          </div>
+
+          <div class="promo-msg ok" *ngIf="mensajeCodigo && codigoAplicado">
+            {{ mensajeCodigo }}
+          </div>
+          <div class="promo-msg error" *ngIf="mensajeCodigo && !codigoAplicado">
+            {{ mensajeCodigo }}
+          </div>
+        </div>
+
         <div class="total">
           <div class="total-detail">
-            <span>Total</span>
+            <span *ngIf="!codigoAplicado">Total</span>
+            <span *ngIf="codigoAplicado">Subtotal</span>
             <small>{{ cantidad }} × {{ formatearMoneda(tierSeleccionado.precio) }}</small>
+          </div>
+          <strong>{{ formatearMoneda(calcularSubtotal()) }}</strong>
+        </div>
+
+        <div class="total" *ngIf="codigoAplicado">
+          <div class="total-detail">
+            <span>Descuento ({{ codigoDescuento }})</span>
+          </div>
+          <strong>- {{ formatearMoneda(descuentoAplicado) }}</strong>
+        </div>
+
+        <div class="total" *ngIf="codigoAplicado">
+          <div class="total-detail">
+            <span>Total a pagar</span>
           </div>
           <strong>{{ formatearMoneda(calcularTotal()) }}</strong>
         </div>

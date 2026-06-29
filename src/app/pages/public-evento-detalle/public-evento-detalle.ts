@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { EventosService } from '../../core/services/eventos.service';
 import { EntradaTiersService } from '../../core/services/entrada-tiers.service';
 import { ComprasEntradasService } from '../../core/services/compras-entradas.service';
+import { CodigosDescuentoService } from '../../core/services/codigos-descuento.service';
 
 @Component({
   selector: 'app-public-evento-detalle',
@@ -19,6 +20,7 @@ export class PublicEventoDetalle implements OnInit {
   private eventosService = inject(EventosService);
   private tiersService = inject(EntradaTiersService);
   private comprasService = inject(ComprasEntradasService);
+  private codigosService = inject(CodigosDescuentoService);
 
   idEvento!: number;
   evento: any = null;
@@ -57,6 +59,13 @@ export class PublicEventoDetalle implements OnInit {
 
   procesandoCompra = false;
   mensajeCompra = '';
+
+  // Código de descuento
+  codigoDescuento = '';
+  codigoAplicado = false;
+  descuentoAplicado = 0;
+  validandoCodigo = false;
+  mensajeCodigo = '';
 
   /**
    * Zonas conocidas del lugar. Cada tier se asigna a una zona buscando
@@ -362,6 +371,7 @@ export class PublicEventoDetalle implements OnInit {
     this.tierSeleccionado = tier;
     this.actualizarPersonas();
     this.mensajeCompra = '';
+    this.quitarCodigo();
   }
 
   actualizarPersonas(): void {
@@ -385,6 +395,13 @@ export class PublicEventoDetalle implements OnInit {
     }
 
     this.mensajeCompra = '';
+
+    // El descuento se calculó sobre otro subtotal: hay que volver a aplicarlo.
+    if (this.codigoAplicado) {
+      this.codigoAplicado = false;
+      this.descuentoAplicado = 0;
+      this.mensajeCodigo = 'La cantidad cambió. Volvé a aplicar el código.';
+    }
   }
 
   cumpleEdadMinima(fechaNacimiento: string): boolean {
@@ -402,9 +419,66 @@ export class PublicEventoDetalle implements OnInit {
     return fechaCumple17 <= fechaEvento;
   }
 
-  calcularTotal(): number {
+  calcularSubtotal(): number {
     if (!this.tierSeleccionado) return 0;
     return Number(this.tierSeleccionado.precio || 0) * Number(this.cantidad || 1);
+  }
+
+  calcularTotal(): number {
+    const total = this.calcularSubtotal() - (this.codigoAplicado ? this.descuentoAplicado : 0);
+    return total > 0 ? total : 0;
+  }
+
+  /** Al cambiar el texto del código, se descarta cualquier descuento previo. */
+  onCodigoChange(): void {
+    if (this.codigoAplicado) {
+      this.codigoAplicado = false;
+      this.descuentoAplicado = 0;
+    }
+    this.mensajeCodigo = '';
+  }
+
+  aplicarCodigo(): void {
+    const codigo = this.codigoDescuento.trim();
+
+    if (!codigo) {
+      this.mensajeCodigo = 'Ingresá un código.';
+      this.codigoAplicado = false;
+      return;
+    }
+
+    if (!this.tierSeleccionado) {
+      this.mensajeCodigo = 'Seleccioná primero una entrada.';
+      return;
+    }
+
+    this.validandoCodigo = true;
+    this.mensajeCodigo = '';
+
+    this.codigosService
+      .validar(codigo, this.idEvento, this.calcularSubtotal())
+      .subscribe({
+        next: (res) => {
+          this.validandoCodigo = false;
+          this.codigoAplicado = true;
+          this.descuentoAplicado = Number(res.descuento || 0);
+          this.codigoDescuento = res.codigo || codigo.toUpperCase();
+          this.mensajeCodigo = `Código aplicado: ahorrás ${this.formatearMoneda(this.descuentoAplicado)}.`;
+        },
+        error: (err) => {
+          this.validandoCodigo = false;
+          this.codigoAplicado = false;
+          this.descuentoAplicado = 0;
+          this.mensajeCodigo = err.error?.message || 'No se pudo aplicar el código.';
+        }
+      });
+  }
+
+  quitarCodigo(): void {
+    this.codigoDescuento = '';
+    this.codigoAplicado = false;
+    this.descuentoAplicado = 0;
+    this.mensajeCodigo = '';
   }
 
   validarCompra(): string | null {
@@ -456,7 +530,8 @@ export class PublicEventoDetalle implements OnInit {
       id_tier: this.tierSeleccionado.id_tier,
       correo_comprador: this.correoComprador.trim(),
       telefono_comprador: this.telefonoComprador.trim(),
-      personas: personasLimpias
+      personas: personasLimpias,
+      codigo_descuento: this.codigoAplicado ? this.codigoDescuento.trim() : null
     };
 
     this.comprasService.crearCompra(data).subscribe({
@@ -487,7 +562,11 @@ Código de compra: ${compra.id_compra}
 Evento: ${this.evento.nombre}
 Zona: ${this.zonaSeleccionada?.nombre || this.tierSeleccionado.nombre}
 Entrada: ${this.tierSeleccionado.nombre}
-Cantidad: ${this.cantidad}
+Cantidad: ${this.cantidad}${
+      this.codigoAplicado
+        ? `\nSubtotal: ${this.formatearMoneda(this.calcularSubtotal())}\nCódigo: ${this.codigoDescuento.trim()} (-${this.formatearMoneda(this.descuentoAplicado)})`
+        : ''
+    }
 Total: ${this.formatearMoneda(this.calcularTotal())}
 Correo: ${this.correoComprador.trim()}
 Teléfono: ${this.telefonoComprador.trim()}

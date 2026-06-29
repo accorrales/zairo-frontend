@@ -71,6 +71,11 @@
       Compras
     </a>
 
+    <a *ngIf="tienePermiso(['admin'])" routerLink="/codigos-descuento" routerLinkActive="active">
+      <span>🏷️</span>
+      Códigos
+    </a>
+
     <a *ngIf="tienePermiso(['admin','entrada'])" routerLink="/admin/kiosk" routerLinkActive="active">
       <span>📱</span>
       KIOSK QR

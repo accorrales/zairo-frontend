@@ -14,7 +14,8 @@ import { EventoTiers } from './pages/evento-tiers/evento-tiers';
 import { PublicEventos } from './pages/public-eventos/public-eventos';
 import { PublicEventoDetalle } from './pages/public-evento-detalle/public-evento-detalle';
 import { AdminCompras } from './pages/admin-compras/admin-compras';
-import { AdminKiosk } from './pages/admin-kiosk/admin-kiosk'; 
+import { AdminKiosk } from './pages/admin-kiosk/admin-kiosk';
+import { CodigosDescuento } from './pages/codigos-descuento/codigos-descuento';
 
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
@@ -94,6 +95,12 @@ export const routes: Routes = [
   {
     path: 'eventos/:id/tiers',
     component: EventoTiers,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin'] }
+  },
+  {
+    path: 'codigos-descuento',
+    component: CodigosDescuento,
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin'] }
   },
