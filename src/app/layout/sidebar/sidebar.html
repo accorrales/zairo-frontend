@@ -76,6 +76,11 @@
       Códigos
     </a>
 
+    <a *ngIf="tienePermiso(['admin'])" routerLink="/dashboard-entradas" routerLinkActive="active">
+      <span>📋</span>
+      Entradas
+    </a>
+
     <a *ngIf="tienePermiso(['admin','entrada'])" routerLink="/admin/kiosk" routerLinkActive="active">
       <span>📱</span>
       KIOSK QR

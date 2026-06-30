@@ -16,6 +16,7 @@ import { PublicEventoDetalle } from './pages/public-evento-detalle/public-evento
 import { AdminCompras } from './pages/admin-compras/admin-compras';
 import { AdminKiosk } from './pages/admin-kiosk/admin-kiosk';
 import { CodigosDescuento } from './pages/codigos-descuento/codigos-descuento';
+import { DashboardEntradas } from './pages/dashboard-entradas/dashboard-entradas';
 
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
@@ -101,6 +102,12 @@ export const routes: Routes = [
   {
     path: 'codigos-descuento',
     component: CodigosDescuento,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin'] }
+  },
+  {
+    path: 'dashboard-entradas',
+    component: DashboardEntradas,
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin'] }
   },

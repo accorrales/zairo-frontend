@@ -1,0 +1,154 @@
+<div class="layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <app-header
+      [title]="'Entradas confirmadas'"
+      [subtitle]="'Control de entradas vendidas por evento'">
+    </app-header>
+
+    <div class="panel">
+      <div class="panel-top">
+        <h2>Seleccionar evento</h2>
+
+        <button
+          class="btn-info"
+          *ngIf="eventoSeleccionado && entradas.length > 0"
+          (click)="descargarReporte()">
+          ⬇️ Descargar reporte (CSV)
+        </button>
+      </div>
+
+      <div class="form-grid">
+        <select [(ngModel)]="eventoSeleccionado" (ngModelChange)="onCambioEvento()">
+          <option [ngValue]="null">— Seleccioná un evento —</option>
+          <option *ngFor="let e of eventos" [ngValue]="e.id_evento">
+            {{ e.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <div class="mensaje" *ngIf="mensaje">{{ mensaje }}</div>
+    </div>
+
+    <ng-container *ngIf="eventoSeleccionado && !cargando">
+      <!-- Totales -->
+      <div class="cards">
+        <div class="card">
+          <span class="card-label">Entradas vendidas</span>
+          <strong class="card-value">{{ totales.total_entradas }}</strong>
+        </div>
+        <div class="card">
+          <span class="card-label">Dinero vendido</span>
+          <strong class="card-value">{{ formatearMoneda(totales.total_dinero) }}</strong>
+        </div>
+      </div>
+
+      <!-- Desglose por tier -->
+      <div class="panel" *ngIf="porTier.length > 0">
+        <div class="panel-top">
+          <h2>Vendido por tipo de entrada</h2>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Tipo de entrada</th>
+                <th>Cantidad</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let t of porTier">
+                <td>{{ t.tier }}</td>
+                <td>{{ t.cantidad }}</td>
+                <td>{{ formatearMoneda(t.total) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Listado de entradas -->
+      <div class="panel">
+        <div class="panel-top">
+          <h2>Entradas confirmadas</h2>
+        </div>
+
+        <div class="table-wrapper">
+          <table *ngIf="entradas.length > 0; else sinEntradas">
+            <thead>
+              <tr>
+                <th>Persona</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
+                <th>UUID</th>
+                <th>Tipo</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Fecha compra</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let e of entradas">
+                <td><strong>{{ e.nombre_completo }}</strong></td>
+                <td>{{ e.correo_comprador }}</td>
+                <td>{{ e.telefono_comprador }}</td>
+                <td><small>{{ e.uuid_entrada || '-' }}</small></td>
+                <td>{{ e.tier }}</td>
+                <td>{{ formatearMoneda(e.precio) }}</td>
+                <td>
+                  <span
+                    class="badge"
+                    [ngClass]="{
+                      'disponible': e.estado === 'CONFIRMADA',
+                      'cerrado': e.estado === 'USADA',
+                      'agotado': e.estado === 'INVALIDADA',
+                      'proximamente': e.estado === 'PENDIENTE'
+                    }">
+                    {{ e.estado }}
+                  </span>
+                </td>
+                <td>{{ formatearFecha(e.fecha_compra) }}</td>
+                <td class="acciones">
+                  <button
+                    *ngIf="e.estado !== 'INVALIDADA'"
+                    class="btn-danger"
+                    (click)="invalidarEntrada(e)">
+                    Invalidar
+                  </button>
+                  <button
+                    *ngIf="e.estado === 'INVALIDADA'"
+                    class="btn-success"
+                    (click)="revalidarEntrada(e)">
+                    Reactivar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <ng-template #sinEntradas>
+            <div class="estado-box">
+              No hay entradas confirmadas para este evento.
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="panel" *ngIf="cargando">
+      <div class="estado-box">Cargando entradas...</div>
+    </div>
+  </div>
+</div>
+
+<app-confirm-dialog
+  [visible]="modalVisible"
+  [titulo]="tituloModal"
+  [mensaje]="mensajeModal"
+  (confirmar)="confirmarAccion()"
+  (cancelar)="cancelarAccion()">
+</app-confirm-dialog>
