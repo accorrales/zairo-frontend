@@ -144,6 +144,22 @@ export class Eventos implements OnInit {
     );
   }
 
+  eliminarEvento(evento: any): void {
+    this.abrirConfirmacion(
+      'Eliminar evento',
+      `¿Eliminar por completo el evento "${evento.nombre}"? Se borrarán también sus tiers. Si el evento ya tiene compras, no se podrá eliminar y deberás desactivarlo.`,
+      () => {
+        this.eventosService.eliminarEvento(evento.id_evento).subscribe({
+          next: () => this.cargarEventos(),
+          error: (err) => {
+            console.error('Error al eliminar evento', err);
+            alert(err?.error?.error || 'Error al eliminar evento');
+          }
+        });
+      }
+    );
+  }
+
   abrirConfirmacion(titulo: string, mensaje: string, accion: () => void): void {
     this.tituloModal = titulo;
     this.mensajeModal = mensaje;

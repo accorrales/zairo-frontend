@@ -33,6 +33,11 @@ export class EventosService {
   reactivarEvento(id: number): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/${id}/reactivar`, {});
   }
+
+  eliminarEvento(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+  }
+
   obtenerEventoPorId(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }

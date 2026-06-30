@@ -187,11 +187,10 @@ export class EventoTiers implements OnInit {
   formatoInputFecha(fecha: string): string {
     if (!fecha) return '';
 
-    const date = new Date(fecha);
-    const offset = date.getTimezoneOffset();
-    const localDate = new Date(date.getTime() - offset * 60000);
-
-    return localDate.toISOString().slice(0, 16);
+    // El backend ya devuelve la fecha en hora de Costa Rica con formato
+    // datetime-local (YYYY-MM-DDTHH:mm), así que se usa tal cual sin
+    // convertir zonas horarias (evita el desfase de horas al editar).
+    return fecha.slice(0, 16);
   }
 
   formatearMoneda(valor: number): string {
