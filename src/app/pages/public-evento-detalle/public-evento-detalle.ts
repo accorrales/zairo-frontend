@@ -310,6 +310,14 @@ export class PublicEventoDetalle implements OnInit {
     return !!zona && this.zonaSeleccionada?.clave === zona.clave;
   }
 
+  trackByClave(_index: number, zona: any): unknown {
+    return zona?.clave ?? _index;
+  }
+
+  trackByTierId(_index: number, fase: any): unknown {
+    return fase?.id_tier ?? _index;
+  }
+
   /** La imagen del plano falló: ocultamos el <img> y mostramos el respaldo. */
   onPlanoError(): void {
     this.planoDisponible = false;

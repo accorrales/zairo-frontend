@@ -71,6 +71,11 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
 
   ticketTransform = 'perspective(900px) rotateX(6deg) rotateY(-10deg)';
 
+  // Array fijo para los puntitos decorativos del QR falso de la tarjeta 3D.
+  // Se define una sola vez acá para no crear un array nuevo en cada
+  // detección de cambios (como pasaba con [1,2,3...] inline en el template).
+  readonly ticketQrDots = Array.from({ length: 12 });
+
   private timer: any;
   private introTimer: any;
   private observer?: IntersectionObserver;
@@ -252,6 +257,10 @@ export class PublicEventos implements OnInit, AfterViewInit, OnDestroy {
 
   formatearMoneda(valor: number): string {
     return `CRC ${Number(valor || 0).toLocaleString('es-CR')}`;
+  }
+
+  trackByEventoId(_index: number, evento: any): unknown {
+    return evento?.id_evento ?? _index;
   }
 
   scrollToSection(sectionId: string, event?: Event): void {

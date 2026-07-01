@@ -1,134 +1,127 @@
 import { Routes } from '@angular/router';
-import { Login } from './pages/login/login';
-import { Dashboard } from './pages/dashboard/dashboard';
-import { Empleados } from './pages/empleados/empleados';
-import { Planillas } from './pages/planillas/planillas';
-import { Eventos } from './pages/eventos/eventos';
-import { Reportes } from './pages/reportes/reportes';
-import { PlanillaDetalle } from './pages/planilla-detalle/planilla-detalle';
-import { Conceptos } from './pages/conceptos/conceptos';
-import { Novedades } from './pages/novedades/novedades';
-import { Departamentos } from './pages/departamentos/departamentos';
-import { Usuarios } from './pages/usuarios/usuarios';
-import { EventoTiers } from './pages/evento-tiers/evento-tiers';
-import { PublicEventos } from './pages/public-eventos/public-eventos';
-import { PublicEventoDetalle } from './pages/public-evento-detalle/public-evento-detalle';
-import { AdminCompras } from './pages/admin-compras/admin-compras';
-import { AdminKiosk } from './pages/admin-kiosk/admin-kiosk';
-import { CodigosDescuento } from './pages/codigos-descuento/codigos-descuento';
-import { DashboardEntradas } from './pages/dashboard-entradas/dashboard-entradas';
 
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 
 
 export const routes: Routes = [
-  { path: 'login', component: Login },
+  {
+    path: 'login',
+    loadComponent: () => import('./pages/login/login').then((m) => m.Login)
+  },
 
   {
     path: 'dashboard',
-    component: Dashboard,
+    loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
     canActivate: [authGuard]
   },
 
   {
     path: 'empleados',
-    component: Empleados,
+    loadComponent: () => import('./pages/empleados/empleados').then((m) => m.Empleados),
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin', 'rrhh'] }
   },
 
   {
     path: 'conceptos',
-    component: Conceptos,
+    loadComponent: () => import('./pages/conceptos/conceptos').then((m) => m.Conceptos),
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin', 'rrhh'] }
   },
 
   {
     path: 'novedades',
-    component: Novedades,
+    loadComponent: () => import('./pages/novedades/novedades').then((m) => m.Novedades),
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin', 'rrhh'] }
   },
 
   {
     path: 'planillas',
-    component: Planillas,
+    loadComponent: () => import('./pages/planillas/planillas').then((m) => m.Planillas),
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin', 'rrhh', 'contabilidad'] }
   },
 
   {
     path: 'planillas/:id/detalle',
-    component: PlanillaDetalle,
+    loadComponent: () =>
+      import('./pages/planilla-detalle/planilla-detalle').then((m) => m.PlanillaDetalle),
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin', 'rrhh', 'contabilidad'] }
   },
 
   {
     path: 'reportes',
-    component: Reportes,
+    loadComponent: () => import('./pages/reportes/reportes').then((m) => m.Reportes),
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin', 'rrhh', 'contabilidad', 'visor'] }
   },
 
   {
     path: 'eventos',
-    component: Eventos,
+    loadComponent: () => import('./pages/eventos/eventos').then((m) => m.Eventos),
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin'] }
   },
 
   {
     path: 'departamentos',
-    component: Departamentos,
+    loadComponent: () =>
+      import('./pages/departamentos/departamentos').then((m) => m.Departamentos),
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin', 'rrhh'] }
   },
-  
+
   {
     path: 'usuarios',
-    component: Usuarios,
+    loadComponent: () => import('./pages/usuarios/usuarios').then((m) => m.Usuarios),
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin'] }
   },
   {
     path: 'eventos/:id/tiers',
-    component: EventoTiers,
+    loadComponent: () => import('./pages/evento-tiers/evento-tiers').then((m) => m.EventoTiers),
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin'] }
   },
   {
     path: 'codigos-descuento',
-    component: CodigosDescuento,
+    loadComponent: () =>
+      import('./pages/codigos-descuento/codigos-descuento').then((m) => m.CodigosDescuento),
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin'] }
   },
   {
     path: 'dashboard-entradas',
-    component: DashboardEntradas,
+    loadComponent: () =>
+      import('./pages/dashboard-entradas/dashboard-entradas').then((m) => m.DashboardEntradas),
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin'] }
   },
   {
     path: 'evento/:id',
-    component: PublicEventoDetalle
+    loadComponent: () =>
+      import('./pages/public-evento-detalle/public-evento-detalle').then(
+        (m) => m.PublicEventoDetalle
+      )
   },
   {
     path: 'home',
-    component: PublicEventos
+    loadComponent: () =>
+      import('./pages/public-eventos/public-eventos').then((m) => m.PublicEventos)
   },
-  
+
   {
     path: 'admin/compras',
-    component: AdminCompras
+    loadComponent: () => import('./pages/admin-compras/admin-compras').then((m) => m.AdminCompras)
   },
   {
     path: 'admin/kiosk',
-    component: AdminKiosk
+    loadComponent: () => import('./pages/admin-kiosk/admin-kiosk').then((m) => m.AdminKiosk)
   },
-    
+
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'home' }
 ];

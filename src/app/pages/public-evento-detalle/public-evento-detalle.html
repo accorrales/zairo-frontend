@@ -45,7 +45,10 @@
       <div class="hero-bg">
         <img
           [src]="evento.imagen || 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3'"
-          alt="Lost Trip">
+          alt="Lost Trip"
+          fetchpriority="high"
+          loading="eager"
+          decoding="async">
       </div>
 
       <div class="jungle-overlay"></div>
@@ -105,7 +108,7 @@
           <div class="hotspots">
             <button
               class="hotspot"
-              *ngFor="let z of zonasConMapa"
+              *ngFor="let z of zonasConMapa; trackBy: trackByClave"
               [ngClass]="'zone-' + z.clave"
               [class.selected]="esZonaSeleccionada(z)"
               [class.no-disp]="z.estado !== 'DISPONIBLE'"
@@ -138,7 +141,7 @@
         <div class="zones-row" *ngIf="zonasSinMapa.length">
           <button
             class="zone-area"
-            *ngFor="let z of zonasSinMapa"
+            *ngFor="let z of zonasSinMapa; trackBy: trackByClave"
             [ngClass]="'zone-' + z.clave"
             [class.selected]="esZonaSeleccionada(z)"
             [class.no-disp]="z.estado !== 'DISPONIBLE'"
@@ -214,7 +217,7 @@
           <div class="phase-nodes">
             <div
               class="phase-node"
-              *ngFor="let f of zonaSeleccionada.fases"
+              *ngFor="let f of zonaSeleccionada.fases; trackBy: trackByTierId"
               [ngClass]="'is-' + f.estadoMapa">
               <div class="phase-dot"></div>
               <span class="phase-label">{{ f.etiquetaFase }}</span>
