@@ -125,7 +125,12 @@ export class PublicEventoDetalle implements OnInit {
   cargarTiers(): void {
     this.tiersService.obtenerTiersPorEvento(this.idEvento).subscribe({
       next: (data) => {
-        this.tiers = data || [];
+        // En la venta pública no se muestran los tiers desactivados
+        // (estado = false / disponibilidad = 'DESACTIVADO'). El panel de
+        // administración sí los sigue viendo para poder reactivarlos.
+        this.tiers = (data || []).filter(
+          (t) => t.estado !== false && t.disponibilidad !== 'DESACTIVADO'
+        );
         this.agruparPorZona();
         this.cargando = false;
       },
