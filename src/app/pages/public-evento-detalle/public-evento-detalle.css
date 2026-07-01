@@ -635,15 +635,16 @@
 }
 
 .map-head {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  gap: 18px;
+  flex-direction: column;   /* antes: fila (título+descripción a la izquierda, badge a la derecha) */
+  gap: 10px;
 }
 
 .map-head-info h3 {
-  margin: 0 0 8px;
-  font-size: 28px;
+  font-size: 22px;          /* antes: 28px fijo, se partía en 2 líneas en pantallas angostas */
+}
+
+.map-head .status {
+  align-self: flex-start;   /* el badge "DISPONIBLE" pasa a su propia línea, alineado a la izquierda */
 }
 
 .map-head-info p {
