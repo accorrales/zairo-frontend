@@ -101,7 +101,10 @@
     <div class="hero-bg">
       <img
         [src]="proximoEvento?.imagen || 'https://images.unsplash.com/photo-1511497584788-876760111969'"
-        alt="Lost Trip">
+        alt="Lost Trip"
+        fetchpriority="high"
+        loading="eager"
+        decoding="async">
     </div>
 
     <div class="hero-video-fake"></div>
@@ -156,7 +159,7 @@
       <p>Welcome to the Jungle</p>
 
       <div class="ticket-qr">
-        <span *ngFor="let x of [1,2,3,4,5,6,7,8,9,10,11,12]"></span>
+        <span *ngFor="let x of ticketQrDots"></span>
       </div>
 
       <div class="ticket-meta">
@@ -281,11 +284,13 @@
     </div>
 
     <div class="events-grid" *ngIf="!cargando && eventos.length > 0">
-      <article class="event-card reveal" *ngFor="let e of eventos">
+      <article class="event-card reveal" *ngFor="let e of eventos; trackBy: trackByEventoId">
         <div class="image-wrap">
           <img
             [src]="e.imagen || 'https://images.unsplash.com/photo-1511497584788-876760111969'"
-            alt="Imagen del evento">
+            alt="Imagen del evento"
+            loading="lazy"
+            decoding="async">
 
           <div class="date-badge">{{ formatearFecha(e.fecha) }}</div>
         </div>
