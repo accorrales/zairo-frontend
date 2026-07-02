@@ -1,0 +1,3 @@
+ZAIRO deploy trigger
+Motivo: volver a ejecutar deploy después de agregar DJ Fari al lineup.
+Fecha: 2026-07-01
