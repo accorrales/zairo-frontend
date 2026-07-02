@@ -83,9 +83,7 @@
 
       <div class="scroll-sequence-copy">
         <span>PORTAL ACCESS</span>
-
-       <h2>La selva no se encuentra. Te llama.</h2>
-
+        <h2>La selva no se encuentra. Te llama.</h2>
       </div>
 
       <a href="" class="scroll-cue" (click)="scrollToSection('hero', $event)">
@@ -119,7 +117,6 @@
     <div class="particles"></div>
 
     <div class="hero-content reveal">
-
       <p>
         Lost Trip es una noche inmersiva de música, luces, visuales selváticos,
         niebla y acceso digital seguro. Comprás tu pase, confirmás tu entrada
@@ -212,6 +209,44 @@
           Tu entrada llega con un código único. En puerta se escanea y se valida
           en tiempo real.
         </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="lineup-section reveal" id="lineup">
+    <div class="section-title">
+      <span>LINEUP</span>
+      <h2>Los que llaman a la selva</h2>
+      <p>Algunos nombres ya despertaron. El artista invitado sigue escondido entre la jungla.</p>
+    </div>
+
+    <div class="lineup-grid" style="grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 26px;">
+      <article style="min-height: 430px; padding: 24px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; position: relative; background: radial-gradient(circle at top, rgba(25,255,136,.16), transparent 34%), linear-gradient(180deg, rgba(2,5,3,.18) 0%, rgba(2,5,3,.48) 45%, rgba(2,5,3,.96) 100%), url('/secuencia/frame-003.jpg') center/cover no-repeat; border-color: rgba(25,255,136,.22);">
+        <img src="/assets/lineup/dj-baru.svg" alt="DJ Baru" loading="lazy" decoding="async" style="position: absolute; left: 50%; bottom: 74px; width: min(86%, 255px); max-height: 290px; object-fit: contain; transform: translateX(-50%); filter: drop-shadow(0 22px 42px rgba(0,0,0,.75));">
+        <span style="position: relative; width: max-content; padding: 9px 16px; border-radius: 999px; background: #ffb84d; color: #021007; letter-spacing: 1.8px; font-size: 11px; box-shadow: 0 0 24px rgba(255,184,77,.25);">HOME DJ</span>
+        <h3 style="position: relative; margin-top: 18px; margin-bottom: 0; font-size: clamp(28px, 3vw, 38px); line-height: .9; text-shadow: 0 8px 24px rgba(0,0,0,.75);">DJ BARU</h3>
+      </article>
+
+      <article style="min-height: 430px; padding: 24px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; background: linear-gradient(180deg, rgba(2,5,3,.18) 0%, rgba(2,5,3,.46) 44%, rgba(2,5,3,.96) 100%), url('/secuencia/frame-006.jpg') center/cover no-repeat; border-color: rgba(25,255,136,.22);">
+        <span style="width: max-content; padding: 9px 16px; border-radius: 999px; background: #ffb84d; color: #021007; letter-spacing: 1.8px; font-size: 11px; box-shadow: 0 0 24px rgba(255,184,77,.25);">HOME DJ</span>
+        <h3 style="margin-top: 18px; margin-bottom: 0; font-size: clamp(28px, 3vw, 38px); line-height: .9; text-shadow: 0 8px 24px rgba(0,0,0,.75);">DJ VARGAS</h3>
+      </article>
+
+      <article style="min-height: 430px; padding: 24px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; background: linear-gradient(180deg, rgba(2,5,3,.18) 0%, rgba(2,5,3,.46) 44%, rgba(2,5,3,.96) 100%), url('/secuencia/frame-009.jpg') center/cover no-repeat; border-color: rgba(25,255,136,.22);">
+        <span style="width: max-content; padding: 9px 16px; border-radius: 999px; background: #ffb84d; color: #021007; letter-spacing: 1.8px; font-size: 11px; box-shadow: 0 0 24px rgba(255,184,77,.25);">MAIN DJ</span>
+        <h3 style="margin-top: 18px; margin-bottom: 0; font-size: clamp(28px, 3vw, 38px); line-height: .9; text-shadow: 0 8px 24px rgba(0,0,0,.75);">DJ FARI</h3>
+      </article>
+
+      <article style="min-height: 430px; padding: 24px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; position: relative; background: radial-gradient(circle at top, rgba(255,184,77,.16), transparent 34%), linear-gradient(180deg, rgba(2,5,3,.18) 0%, rgba(2,5,3,.48) 45%, rgba(2,5,3,.96) 100%), url('/secuencia/frame-012.jpg') center/cover no-repeat; border-color: rgba(25,255,136,.22);">
+        <img src="/assets/lineup/dj-yuno-ponte.svg" alt="DJ Junno Aponte" loading="lazy" decoding="async" style="position: absolute; left: 50%; bottom: 70px; width: min(94%, 310px); max-height: 300px; object-fit: contain; transform: translateX(-50%); filter: drop-shadow(0 22px 42px rgba(0,0,0,.78));">
+        <span style="position: relative; width: max-content; padding: 9px 16px; border-radius: 999px; background: #ffb84d; color: #021007; letter-spacing: 1.8px; font-size: 11px; box-shadow: 0 0 24px rgba(255,184,77,.25);">MAIN DJ</span>
+        <h3 style="position: relative; margin-top: 18px; margin-bottom: 0; font-size: clamp(28px, 3vw, 38px); line-height: .9; text-shadow: 0 8px 24px rgba(0,0,0,.75);">DJ JUNNO APONTE</h3>
+      </article>
+
+      <article style="min-height: 430px; padding: 24px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; position: relative; background: radial-gradient(circle at 50% 34%, rgba(25,255,136,.16), transparent 28%), linear-gradient(180deg, rgba(0,0,0,.28), rgba(0,0,0,.96)), #020503; border-color: rgba(25,255,136,.32);">
+        <div style="position: absolute; inset: 0; display: grid; place-items: center; color: rgba(255,255,255,.9); font-size: clamp(92px, 10vw, 150px); font-weight: 950; text-shadow: 0 0 42px rgba(25,255,136,.45);">?</div>
+        <span style="position: relative; width: max-content; padding: 9px 16px; border-radius: 999px; background: #ffb84d; color: #021007; letter-spacing: 1.8px; font-size: 11px; box-shadow: 0 0 24px rgba(255,184,77,.25);">PRÓXIMAMENTE</span>
+        <h3 style="position: relative; margin-top: 18px; margin-bottom: 0; font-size: clamp(28px, 3vw, 38px); line-height: .9; text-shadow: 0 8px 24px rgba(0,0,0,.75);">ARTISTA INVITADO</h3>
       </article>
     </div>
   </section>
