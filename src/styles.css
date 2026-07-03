@@ -25,10 +25,10 @@ app-root {
   background: #0b0b12;
 }
 
-/* ZAIRO LOST TRIP — official lineup system */
+/* ZAIRO LOST TRIP — official lineup, sharp image-first layout */
 .zairo-home .lineup-section {
-  position: relative;
-  overflow: hidden;
+  position: relative !important;
+  overflow: visible !important;
 }
 
 .zairo-home .lineup-section::before {
@@ -38,232 +38,213 @@ app-root {
   height: 460px;
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 0%, rgba(255, 184, 77, .14), transparent 36%),
-    radial-gradient(circle at 18% 24%, rgba(25, 255, 136, .11), transparent 32%),
-    radial-gradient(circle at 82% 30%, rgba(25, 255, 136, .08), transparent 30%);
-  opacity: .9;
+    radial-gradient(circle at 50% 0%, rgba(255, 184, 77, .12), transparent 36%),
+    radial-gradient(circle at 18% 24%, rgba(25, 255, 136, .09), transparent 32%),
+    radial-gradient(circle at 82% 30%, rgba(25, 255, 136, .07), transparent 30%);
 }
 
 .zairo-home .lineup-showcase {
-  position: relative;
-  z-index: 1;
-  width: min(1180px, 92vw);
-  margin: 0 auto;
+  position: relative !important;
+  z-index: 1 !important;
+  width: min(1180px, 92vw) !important;
+  margin: 0 auto 110px !important;
 }
 
 .zairo-home .lineup-official-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(18px, 2.3vw, 30px);
-  align-items: stretch;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 360px)) !important;
+  justify-content: center !important;
+  gap: clamp(18px, 2.3vw, 30px) !important;
+  align-items: start !important;
 }
 
 .zairo-home .lineup-art-card {
-  position: relative;
+  position: relative !important;
+  width: 100% !important;
   min-height: 0 !important;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1 / 1 !important;
   padding: 0 !important;
-  overflow: hidden;
-  border-radius: clamp(24px, 2.4vw, 34px);
-  border: 1px solid rgba(255, 184, 77, .34);
-  background: linear-gradient(180deg, #061107 0%, #020503 100%);
+  overflow: hidden !important;
+  border-radius: 26px !important;
+  border: 1px solid rgba(255, 184, 77, .38) !important;
+  background: #020503 !important;
   box-shadow:
-    0 30px 86px rgba(0, 0, 0, .58),
-    0 0 34px rgba(255, 184, 77, .13),
-    0 0 26px rgba(25, 255, 136, .1),
-    inset 0 0 0 1px rgba(255, 255, 255, .04);
-  isolation: isolate;
-  transform: translateZ(0);
-  transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+    0 28px 76px rgba(0, 0, 0, .58),
+    0 0 30px rgba(255, 184, 77, .12),
+    0 0 26px rgba(25, 255, 136, .1) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  isolation: isolate !important;
+  transform: none !important;
+  transition: border-color .28s ease, box-shadow .28s ease !important;
 }
 
-.zairo-home .lineup-art-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  border-radius: inherit;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 238, 170, .12),
-    inset 0 -34px 70px rgba(0, 0, 0, .18);
-}
-
+.zairo-home .lineup-art-card::before,
 .zairo-home .lineup-art-card::after {
-  content: "";
-  position: absolute;
-  inset: auto 18px 18px 18px;
-  height: 1px;
-  z-index: 3;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(255, 184, 77, .6), transparent);
-  opacity: .55;
+  display: none !important;
+  content: none !important;
 }
 
 .zairo-home .lineup-art-card:hover {
-  transform: translateY(-8px) translateZ(0);
-  border-color: rgba(255, 214, 116, .66);
+  transform: none !important;
+  border-color: rgba(255, 214, 116, .68) !important;
   box-shadow:
-    0 40px 100px rgba(0, 0, 0, .68),
-    0 0 44px rgba(25, 255, 136, .16),
-    0 0 50px rgba(255, 184, 77, .2),
-    inset 0 0 0 1px rgba(255, 255, 255, .06);
+    0 34px 90px rgba(0, 0, 0, .66),
+    0 0 40px rgba(25, 255, 136, .14),
+    0 0 42px rgba(255, 184, 77, .18) !important;
 }
 
 .zairo-home .lineup-art-card__image {
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-  display: block;
-  object-fit: contain;
-  object-position: center;
-  border-radius: inherit;
-  position: relative;
-  z-index: 1;
-  transform: none;
-  filter: none;
-  image-rendering: auto;
-  backface-visibility: hidden;
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  border-radius: inherit !important;
+  transform: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  image-rendering: auto !important;
+  backface-visibility: visible !important;
+  -webkit-font-smoothing: antialiased;
 }
 
 .zairo-home .lineup-card-badge {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 4;
-  width: max-content;
-  max-width: calc(100% - 32px);
-  padding: 8px 13px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #fff1a8, #ffb84d);
-  color: #021007;
-  font-size: 10px;
-  font-weight: 950;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  box-shadow:
-    0 0 24px rgba(255, 184, 77, .26),
-    inset 0 0 0 1px rgba(255, 255, 255, .28);
+  position: absolute !important;
+  top: 14px !important;
+  left: 14px !important;
+  z-index: 4 !important;
+  width: max-content !important;
+  max-width: calc(100% - 28px) !important;
+  padding: 7px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 184, 77, .92) !important;
+  color: #021007 !important;
+  font-size: 9px !important;
+  font-weight: 950 !important;
+  letter-spacing: 1.4px !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 0 18px rgba(255, 184, 77, .22) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .zairo-home .lineup-secondary-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(18px, 2.3vw, 30px);
-  margin-top: clamp(18px, 2.3vw, 30px);
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: clamp(18px, 2.3vw, 30px) !important;
+  margin-top: clamp(18px, 2.3vw, 30px) !important;
 }
 
 .zairo-home .lineup-support-card,
 .zairo-home .lineup-mystery-card {
-  position: relative;
+  position: relative !important;
   min-height: clamp(310px, 33vw, 420px) !important;
   padding: clamp(20px, 2.4vw, 28px) !important;
-  overflow: hidden;
-  border-radius: clamp(24px, 2.4vw, 34px);
-  border: 1px solid rgba(25, 255, 136, .2);
+  overflow: hidden !important;
+  border-radius: 28px !important;
+  border: 1px solid rgba(25, 255, 136, .24) !important;
   background:
-    radial-gradient(circle at 50% 18%, rgba(255, 184, 77, .15), transparent 34%),
-    linear-gradient(180deg, rgba(2, 5, 3, .18) 0%, rgba(2, 5, 3, .5) 48%, rgba(2, 5, 3, .96) 100%),
-    url('/secuencia/frame-012.jpg') center/cover no-repeat;
-  box-shadow: 0 26px 76px rgba(0, 0, 0, .5);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+    linear-gradient(180deg, rgba(2, 5, 3, .2) 0%, rgba(2, 5, 3, .55) 48%, rgba(2, 5, 3, .96) 100%),
+    url('/secuencia/frame-012.jpg') center/cover no-repeat !important;
+  box-shadow: 0 26px 76px rgba(0, 0, 0, .5) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
 }
 
 .zairo-home .lineup-support-card:hover,
 .zairo-home .lineup-mystery-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(25, 255, 136, .36);
-  box-shadow: 0 34px 88px rgba(0, 0, 0, .62), 0 0 36px rgba(25, 255, 136, .13);
+  transform: none !important;
+  border-color: rgba(25, 255, 136, .36) !important;
 }
 
 .zairo-home .lineup-support-card__image {
-  position: absolute;
-  left: 50%;
-  bottom: 72px;
-  width: min(88%, 320px);
-  max-height: 305px;
-  object-fit: contain;
-  transform: translateX(-50%);
-  filter: drop-shadow(0 22px 42px rgba(0, 0, 0, .76));
-  z-index: 1;
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 72px !important;
+  width: min(88%, 320px) !important;
+  max-height: 305px !important;
+  object-fit: contain !important;
+  transform: translateX(-50%) !important;
+  filter: drop-shadow(0 22px 42px rgba(0, 0, 0, .76)) !important;
+  z-index: 1 !important;
 }
 
 .zairo-home .lineup-support-card .lineup-card-badge,
 .zairo-home .lineup-mystery-card .lineup-card-badge {
-  position: relative;
-  top: auto;
-  left: auto;
-  z-index: 2;
-  margin-bottom: 16px;
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  z-index: 2 !important;
+  margin-bottom: 16px !important;
 }
 
 .zairo-home .lineup-support-card__name,
 .zairo-home .lineup-mystery-card__name {
-  position: relative;
-  z-index: 2;
-  margin: 0;
-  color: white;
-  font-size: clamp(28px, 3vw, 38px);
-  line-height: .95;
-  letter-spacing: -.7px;
-  text-shadow: 0 8px 24px rgba(0, 0, 0, .78);
+  position: relative !important;
+  z-index: 2 !important;
+  margin: 0 !important;
+  color: white !important;
+  font-size: clamp(28px, 3vw, 38px) !important;
+  line-height: .95 !important;
+  letter-spacing: -.7px !important;
+  text-shadow: 0 8px 24px rgba(0, 0, 0, .78) !important;
 }
 
 .zairo-home .lineup-mystery-card {
-  align-items: flex-start;
+  align-items: flex-start !important;
   background:
     radial-gradient(circle at 50% 34%, rgba(25, 255, 136, .16), transparent 28%),
     linear-gradient(180deg, rgba(0, 0, 0, .28), rgba(0, 0, 0, .96)),
-    #020503;
-  border-color: rgba(25, 255, 136, .32);
+    #020503 !important;
+  border-color: rgba(25, 255, 136, .32) !important;
 }
 
 .zairo-home .lineup-mystery-card__mark {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  color: rgba(255, 255, 255, .9);
-  font-size: clamp(92px, 10vw, 150px);
-  font-weight: 950;
-  text-shadow: 0 0 42px rgba(25, 255, 136, .45);
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  display: grid !important;
+  place-items: center !important;
+  color: rgba(255, 255, 255, .9) !important;
+  font-size: clamp(92px, 10vw, 150px) !important;
+  font-weight: 950 !important;
+  text-shadow: 0 0 42px rgba(25, 255, 136, .45) !important;
 }
 
 @media (max-width: 980px) {
   .zairo-home .lineup-official-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 360px)) !important;
   }
 
   .zairo-home .lineup-art-card:nth-child(3) {
-    grid-column: 1 / -1;
-    width: min(100%, 520px);
-    justify-self: center;
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
   }
 }
 
 @media (max-width: 720px) {
   .zairo-home .lineup-showcase {
-    width: min(420px, 92vw);
+    width: min(420px, 92vw) !important;
   }
 
   .zairo-home .lineup-official-grid,
   .zairo-home .lineup-secondary-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
   }
 
   .zairo-home .lineup-art-card {
-    border-radius: 28px;
-  }
-
-  .zairo-home .lineup-card-badge {
-    top: 14px;
-    left: 14px;
-    font-size: 9px;
+    border-radius: 24px !important;
   }
 }
