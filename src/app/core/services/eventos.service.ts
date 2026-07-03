@@ -52,8 +52,8 @@ export class EventosService {
     return this.http.patch<any>(`${this.apiUrl}/${id}/ubicacion-secreta`, data);
   }
 
-  enviarUbicacionManual(id: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/${id}/enviar-ubicacion`, {});
+  enviarUbicacionManual(id: number, idCompra?: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${id}/enviar-ubicacion`, idCompra ? { id_compra: idCompra } : {});
   }
 
   obtenerNotificacionesUbicacion(id: number): Observable<any[]> {

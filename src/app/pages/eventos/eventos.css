@@ -339,6 +339,25 @@ small {
   cursor: not-allowed;
 }
 
+.btn-enviar-individual {
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #07120b;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 12px;
+  background: linear-gradient(135deg, #c6ff57, #ffd60a);
+  white-space: nowrap;
+}
+
+.btn-enviar-individual:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #3a3f5c;
+  color: #cbd5e1;
+}
+
 .historial-ubicacion h3 {
   color: #c6ff57;
   font-size: 15px;

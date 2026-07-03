@@ -253,6 +253,49 @@
         </button>
       </div>
 
+      <div class="historial-ubicacion" *ngIf="previewUbicacion?.compradores?.length > 0">
+        <h3>Compradores pagados — enviar individual</h3>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Correo</th>
+                <th>Teléfono</th>
+                <th>Cant.</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of previewUbicacion.compradores">
+                <td>{{ c.correo_comprador }}</td>
+                <td>{{ c.telefono_comprador || '-' }}</td>
+                <td>{{ c.cantidad }}</td>
+                <td>
+                  <span
+                    class="badge"
+                    [ngClass]="{
+                      'activo': c.estado_envio === 'ENVIADO',
+                      'inactivo': c.estado_envio === 'ERROR'
+                    }">
+                    {{ c.estado_envio || 'NO ENVIADO' }}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    class="btn-enviar-individual"
+                    [disabled]="c._enviando || c.estado_envio === 'ENVIADO'"
+                    (click)="confirmarEnvioIndividual(c)">
+                    {{ c._enviando ? 'Enviando...' : (c.estado_envio === 'ENVIADO' ? 'Ya recibió' : 'Enviar solo a este') }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="historial-ubicacion" *ngIf="historialUbicacion.length > 0">
         <h3>Historial de envíos</h3>
 
