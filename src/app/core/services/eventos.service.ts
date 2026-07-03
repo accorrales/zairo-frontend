@@ -41,4 +41,26 @@ export class EventosService {
   obtenerEventoPorId(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
+
+  // ===== Ubicación secreta / notificaciones de ubicación (admin) =====
+
+  obtenerUbicacionPreview(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}/ubicacion-preview`);
+  }
+
+  actualizarUbicacionSecreta(id: number, data: any): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/${id}/ubicacion-secreta`, data);
+  }
+
+  enviarUbicacionManual(id: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${id}/enviar-ubicacion`, {});
+  }
+
+  obtenerNotificacionesUbicacion(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${id}/notificaciones-ubicacion`);
+  }
+
+  exportarCompradores(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${id}/exportar-compradores`);
+  }
 }
