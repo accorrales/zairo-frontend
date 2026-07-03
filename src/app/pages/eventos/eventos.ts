@@ -350,6 +350,34 @@ export class Eventos implements OnInit {
     });
   }
 
+  confirmarEnvioIndividual(comprador: any): void {
+    this.abrirConfirmacion(
+      'Enviar ubicación a este comprador',
+      `¿Enviar la ubicación secreta solo a ${comprador.correo_comprador}?`,
+      () => this.enviarUbicacionIndividual(comprador)
+    );
+  }
+
+  enviarUbicacionIndividual(comprador: any): void {
+    if (!this.eventoUbicacion) return;
+
+    comprador._enviando = true;
+    this.mensajeUbicacion = '';
+
+    this.eventosService.enviarUbicacionManual(this.eventoUbicacion.id_evento, comprador.id_compra).subscribe({
+      next: (res) => {
+        comprador._enviando = false;
+        this.mensajeUbicacion = res.message || 'Envío procesado';
+        this.cargarUbicacion();
+      },
+      error: (err) => {
+        console.error('Error al enviar ubicación individual', err);
+        comprador._enviando = false;
+        this.mensajeUbicacion = err?.error?.message || 'Error al enviar la ubicación a este comprador';
+      }
+    });
+  }
+
   exportarTelefonos(): void {
     if (!this.eventoUbicacion) return;
 

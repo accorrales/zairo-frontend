@@ -88,6 +88,38 @@
       </p>
     </section>
 
+    <!-- Ubicación secreta revelada: el backend solo manda estos campos si
+         el admin marcó el evento como "visible públicamente". -->
+    <section class="ubicacion-revelada" *ngIf="evento.ubicacion_secreta_nombre">
+      <div class="ubicacion-revelada-card">
+        <span class="ubicacion-tag">📍 UBICACIÓN REVELADA</span>
+
+        <h2>{{ evento.ubicacion_secreta_nombre }}</h2>
+
+        <p *ngIf="evento.ubicacion_secreta_direccion">
+          {{ evento.ubicacion_secreta_direccion }}
+        </p>
+
+        <div class="ubicacion-botones">
+          <a
+            *ngIf="evento.ubicacion_secreta_google_maps_url"
+            [href]="evento.ubicacion_secreta_google_maps_url"
+            target="_blank"
+            class="ubicacion-btn maps">
+            Abrir en Google Maps
+          </a>
+
+          <a
+            *ngIf="evento.ubicacion_secreta_waze_url"
+            [href]="evento.ubicacion_secreta_waze_url"
+            target="_blank"
+            class="ubicacion-btn waze">
+            Abrir en Waze
+          </a>
+        </div>
+      </div>
+    </section>
+
     <section class="tickets" id="entradas">
 
       <div class="section-title">
