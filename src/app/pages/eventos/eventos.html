@@ -124,6 +124,10 @@
                   Editar
                 </button>
 
+                <button class="btn-ubicacion" (click)="abrirUbicacion(e)">
+                  📍 Ubicación
+                </button>
+
                 <button
                   *ngIf="e.estado"
                   class="btn-danger"
@@ -165,3 +169,133 @@
   (confirmar)="confirmarAccion()"
   (cancelar)="cancelarAccion()">
 </app-confirm-dialog>
+
+<div class="overlay-ubicacion" *ngIf="panelUbicacionVisible">
+  <div class="panel-ubicacion">
+    <div class="panel-ubicacion-header">
+      <div>
+        <h2>📍 Ubicación secreta — {{ eventoUbicacion?.nombre }}</h2>
+        <p class="subtitulo">ZAIRO LOST TRIP · visible solo para compradores confirmados</p>
+      </div>
+      <button class="btn-cerrar" (click)="cerrarUbicacion()">✕</button>
+    </div>
+
+    <div class="panel-ubicacion-body" *ngIf="!cargandoUbicacion; else cargandoTpl">
+
+      <div class="stats-ubicacion" *ngIf="previewUbicacion">
+        <div class="stat-card">
+          <span class="stat-valor">{{ previewUbicacion.compradores_pagados }}</span>
+          <span class="stat-label">Compras pagadas</span>
+        </div>
+        <div class="stat-card stat-ok">
+          <span class="stat-valor">{{ previewUbicacion.ya_recibieron }}</span>
+          <span class="stat-label">Ya recibieron</span>
+        </div>
+        <div class="stat-card stat-pendiente">
+          <span class="stat-valor">{{ previewUbicacion.faltan_por_recibir }}</span>
+          <span class="stat-label">Faltan por recibir</span>
+        </div>
+        <div class="stat-card stat-error" *ngIf="previewUbicacion.con_error > 0">
+          <span class="stat-valor">{{ previewUbicacion.con_error }}</span>
+          <span class="stat-label">Con error</span>
+        </div>
+      </div>
+
+      <p class="info-envio" *ngIf="previewUbicacion?.ubicacion?.ubicacion_enviada_at">
+        Primer envío automático/manual: {{ formatearFechaHora(previewUbicacion.ubicacion.ubicacion_enviada_at) }}
+      </p>
+
+      <div class="form-grid form-ubicacion">
+        <input
+          type="text"
+          placeholder="Nombre del lugar"
+          [(ngModel)]="formUbicacion.ubicacion_secreta_nombre">
+
+        <input
+          type="text"
+          placeholder="Dirección"
+          [(ngModel)]="formUbicacion.ubicacion_secreta_direccion">
+
+        <input
+          type="text"
+          placeholder="Link de Google Maps"
+          [(ngModel)]="formUbicacion.ubicacion_secreta_google_maps_url">
+
+        <input
+          type="text"
+          placeholder="Link de Waze (opcional)"
+          [(ngModel)]="formUbicacion.ubicacion_secreta_waze_url">
+
+        <label class="check-linea">
+          <input type="checkbox" [(ngModel)]="formUbicacion.ubicacion_envio_habilitado">
+          Envío automático habilitado (3 días antes del evento)
+        </label>
+
+        <label class="check-linea">
+          <input type="checkbox" [(ngModel)]="formUbicacion.ubicacion_visible_publicamente">
+          Mostrar ubicación en la página pública del evento
+        </label>
+      </div>
+
+      <p class="mensaje-ubicacion" *ngIf="mensajeUbicacion">{{ mensajeUbicacion }}</p>
+
+      <div class="acciones-ubicacion">
+        <button class="btn-primary" [disabled]="guardandoUbicacion" (click)="guardarUbicacion()">
+          {{ guardandoUbicacion ? 'Guardando...' : 'Guardar ubicación' }}
+        </button>
+
+        <button class="btn-enviar" [disabled]="enviandoUbicacion" (click)="confirmarEnvioUbicacion()">
+          {{ enviandoUbicacion ? 'Enviando...' : '📧 Enviar ubicación ahora' }}
+        </button>
+
+        <button class="btn-secondary" (click)="exportarTelefonos()">
+          📲 Exportar teléfonos (WhatsApp manual)
+        </button>
+      </div>
+
+      <div class="historial-ubicacion" *ngIf="historialUbicacion.length > 0">
+        <h3>Historial de envíos</h3>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Correo</th>
+                <th>Canal</th>
+                <th>Estado</th>
+                <th>Enviado</th>
+                <th>Error</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let n of historialUbicacion">
+                <td>{{ n.correo_destino }}</td>
+                <td>{{ n.canal }}</td>
+                <td>
+                  <span
+                    class="badge"
+                    [ngClass]="{
+                      'activo': n.estado_envio === 'ENVIADO',
+                      'inactivo': n.estado_envio === 'ERROR'
+                    }">
+                    {{ n.estado_envio }}
+                  </span>
+                </td>
+                <td>{{ formatearFechaHora(n.enviado_at) }}</td>
+                <td class="error-texto">{{ n.error_mensaje || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="historial-vacio" *ngIf="historialUbicacion.length === 0">
+        Todavía no se ha enviado la ubicación a ningún comprador.
+      </div>
+    </div>
+
+    <ng-template #cargandoTpl>
+      <div class="estado-box">Cargando ubicación...</div>
+    </ng-template>
+  </div>
+</div>

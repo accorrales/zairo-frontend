@@ -172,3 +172,189 @@ small {
   background: rgba(239, 68, 68, 0.2);
   color: #f87171;
 }
+
+.btn-ubicacion {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #07120b;
+  cursor: pointer;
+  font-weight: 700;
+  background: linear-gradient(135deg, #c6ff57, #ffd60a);
+}
+
+/* ===== Panel de ubicación secreta (ZAIRO LOST TRIP) ===== */
+
+.overlay-ubicacion {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 16px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.panel-ubicacion {
+  width: 100%;
+  max-width: 760px;
+  background: linear-gradient(180deg, rgba(7, 18, 11, 0.98), rgba(3, 10, 6, 0.98));
+  border: 1px solid rgba(198, 255, 87, 0.25);
+  border-radius: 24px;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.5), 0 0 55px rgba(198, 255, 87, 0.08);
+  color: #ffffff;
+  padding: 28px;
+}
+
+.panel-ubicacion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(198, 255, 87, 0.16);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.panel-ubicacion-header h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.subtitulo {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #c6ff57;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.btn-cerrar {
+  background: transparent;
+  border: 1px solid rgba(198, 255, 87, 0.3);
+  color: #c6ff57;
+  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.stats-ubicacion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 130px;
+  background: #08130c;
+  border: 1px solid rgba(198, 255, 87, 0.2);
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+}
+
+.stat-valor {
+  display: block;
+  font-size: 26px;
+  font-weight: 900;
+  color: #c6ff57;
+}
+
+.stat-label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #8fa27d;
+  margin-top: 4px;
+}
+
+.stat-ok .stat-valor {
+  color: #4ade80;
+}
+
+.stat-pendiente .stat-valor {
+  color: #ffd60a;
+}
+
+.stat-error .stat-valor {
+  color: #f87171;
+}
+
+.info-envio {
+  font-size: 12px;
+  color: #8fa27d;
+  margin: 0 0 16px;
+}
+
+.form-ubicacion {
+  background: #08130c;
+  border: 1px solid rgba(198, 255, 87, 0.16);
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.check-linea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #d8e8ce;
+  min-width: 100%;
+}
+
+.mensaje-ubicacion {
+  font-size: 13px;
+  color: #c6ff57;
+  margin: 0 0 14px;
+}
+
+.acciones-ubicacion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.btn-enviar {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #07120b;
+  cursor: pointer;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffd60a, #c6ff57);
+}
+
+.btn-enviar:disabled,
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.historial-ubicacion h3 {
+  color: #c6ff57;
+  font-size: 15px;
+  margin: 0 0 10px;
+}
+
+.error-texto {
+  color: #f87171;
+  font-size: 12px;
+}
+
+.historial-vacio {
+  font-size: 13px;
+  color: #8fa27d;
+  padding: 14px;
+  background: #08130c;
+  border-radius: 12px;
+  border: 1px solid rgba(198, 255, 87, 0.12);
+}
