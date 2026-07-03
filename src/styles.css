@@ -25,109 +25,245 @@ app-root {
   background: #0b0b12;
 }
 
-/* ZAIRO LOST TRIP — lineup official DJ artwork */
-.zairo-home .lineup-section .lineup-grid.lineup-dj-grid {
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)) !important;
-  gap: 26px !important;
+/* ZAIRO LOST TRIP — official lineup system */
+.zairo-home .lineup-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.zairo-home .lineup-section::before {
+  content: "";
+  position: absolute;
+  inset: 4% 0 auto 0;
+  height: 460px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 184, 77, .14), transparent 36%),
+    radial-gradient(circle at 18% 24%, rgba(25, 255, 136, .11), transparent 32%),
+    radial-gradient(circle at 82% 30%, rgba(25, 255, 136, .08), transparent 30%);
+  opacity: .9;
+}
+
+.zairo-home .lineup-showcase {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, 92vw);
+  margin: 0 auto;
+}
+
+.zairo-home .lineup-official-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 2.3vw, 30px);
   align-items: stretch;
 }
 
-.zairo-home .lineup-section .dj-card {
-  min-height: auto !important;
+.zairo-home .lineup-art-card {
+  position: relative;
+  min-height: 0 !important;
   aspect-ratio: 1 / 1;
   padding: 0 !important;
-  position: relative !important;
-  overflow: hidden !important;
-  display: block !important;
-  border-radius: 34px !important;
-  border: 1px solid rgba(255, 184, 77, .32) !important;
-  background: linear-gradient(180deg, #061107 0%, #020503 100%) !important;
+  overflow: hidden;
+  border-radius: clamp(24px, 2.4vw, 34px);
+  border: 1px solid rgba(255, 184, 77, .34);
+  background: linear-gradient(180deg, #061107 0%, #020503 100%);
   box-shadow:
     0 30px 86px rgba(0, 0, 0, .58),
     0 0 34px rgba(255, 184, 77, .13),
-    0 0 28px rgba(25, 255, 136, .1),
-    inset 0 0 44px rgba(255, 184, 77, .05) !important;
+    0 0 26px rgba(25, 255, 136, .1),
+    inset 0 0 0 1px rgba(255, 255, 255, .04);
   isolation: isolate;
+  transform: translateZ(0);
+  transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
 }
 
-.zairo-home .lineup-section .dj-card::before {
+.zairo-home .lineup-art-card::before {
   content: "";
   position: absolute;
-  inset: -1px;
+  inset: 0;
   z-index: 2;
   pointer-events: none;
   border-radius: inherit;
-  background:
-    radial-gradient(circle at 50% 8%, rgba(255, 231, 135, .22), transparent 34%),
-    linear-gradient(180deg, transparent 72%, rgba(0, 0, 0, .36) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 238, 170, .12),
+    inset 0 -34px 70px rgba(0, 0, 0, .18);
 }
 
-.zairo-home .lineup-section .dj-card__art {
+.zairo-home .lineup-art-card::after {
+  content: "";
+  position: absolute;
+  inset: auto 18px 18px 18px;
+  height: 1px;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 184, 77, .6), transparent);
+  opacity: .55;
+}
+
+.zairo-home .lineup-art-card:hover {
+  transform: translateY(-8px) translateZ(0);
+  border-color: rgba(255, 214, 116, .66);
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, .68),
+    0 0 44px rgba(25, 255, 136, .16),
+    0 0 50px rgba(255, 184, 77, .2),
+    inset 0 0 0 1px rgba(255, 255, 255, .06);
+}
+
+.zairo-home .lineup-art-card__image {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  border-radius: inherit;
+  position: relative;
+  z-index: 1;
+  transform: none;
+  filter: none;
+  image-rendering: auto;
+  backface-visibility: hidden;
+}
+
+.zairo-home .lineup-card-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 4;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fff1a8, #ffb84d);
+  color: #021007;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  box-shadow:
+    0 0 24px rgba(255, 184, 77, .26),
+    inset 0 0 0 1px rgba(255, 255, 255, .28);
+}
+
+.zairo-home .lineup-secondary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(18px, 2.3vw, 30px);
+  margin-top: clamp(18px, 2.3vw, 30px);
+}
+
+.zairo-home .lineup-support-card,
+.zairo-home .lineup-mystery-card {
+  position: relative;
+  min-height: clamp(310px, 33vw, 420px) !important;
+  padding: clamp(20px, 2.4vw, 28px) !important;
+  overflow: hidden;
+  border-radius: clamp(24px, 2.4vw, 34px);
+  border: 1px solid rgba(25, 255, 136, .2);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 184, 77, .15), transparent 34%),
+    linear-gradient(180deg, rgba(2, 5, 3, .18) 0%, rgba(2, 5, 3, .5) 48%, rgba(2, 5, 3, .96) 100%),
+    url('/secuencia/frame-012.jpg') center/cover no-repeat;
+  box-shadow: 0 26px 76px rgba(0, 0, 0, .5);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+}
+
+.zairo-home .lineup-support-card:hover,
+.zairo-home .lineup-mystery-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(25, 255, 136, .36);
+  box-shadow: 0 34px 88px rgba(0, 0, 0, .62), 0 0 36px rgba(25, 255, 136, .13);
+}
+
+.zairo-home .lineup-support-card__image {
+  position: absolute;
+  left: 50%;
+  bottom: 72px;
+  width: min(88%, 320px);
+  max-height: 305px;
+  object-fit: contain;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 22px 42px rgba(0, 0, 0, .76));
+  z-index: 1;
+}
+
+.zairo-home .lineup-support-card .lineup-card-badge,
+.zairo-home .lineup-mystery-card .lineup-card-badge {
+  position: relative;
+  top: auto;
+  left: auto;
+  z-index: 2;
+  margin-bottom: 16px;
+}
+
+.zairo-home .lineup-support-card__name,
+.zairo-home .lineup-mystery-card__name {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  color: white;
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: .95;
+  letter-spacing: -.7px;
+  text-shadow: 0 8px 24px rgba(0, 0, 0, .78);
+}
+
+.zairo-home .lineup-mystery-card {
+  align-items: flex-start;
+  background:
+    radial-gradient(circle at 50% 34%, rgba(25, 255, 136, .16), transparent 28%),
+    linear-gradient(180deg, rgba(0, 0, 0, .28), rgba(0, 0, 0, .96)),
+    #020503;
+  border-color: rgba(25, 255, 136, .32);
+}
+
+.zairo-home .lineup-mystery-card__mark {
   position: absolute;
   inset: 0;
   z-index: 1;
-  overflow: hidden;
-  border-radius: inherit;
-  background: #020503;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, .9);
+  font-size: clamp(92px, 10vw, 150px);
+  font-weight: 950;
+  text-shadow: 0 0 42px rgba(25, 255, 136, .45);
 }
 
-.zairo-home .lineup-section .dj-card__image {
-  position: static !important;
-  inset: auto !important;
-  width: 100% !important;
-  height: 100% !important;
-  max-width: none !important;
-  max-height: none !important;
-  display: block !important;
-  object-fit: cover !important;
-  object-position: center center !important;
-  transform: none !important;
-  filter: none !important;
-  image-rendering: auto;
-}
-
-.zairo-home .lineup-section .dj-card__badge {
-  position: absolute !important;
-  left: 18px;
-  bottom: 18px;
-  z-index: 3 !important;
-  width: max-content !important;
-  padding: 8px 14px !important;
-  border-radius: 999px !important;
-  background: linear-gradient(135deg, #fff1a8, #ffb84d) !important;
-  color: #021007 !important;
-  font-size: 10px !important;
-  font-weight: 950 !important;
-  letter-spacing: 1.6px !important;
-  text-transform: uppercase !important;
-  box-shadow:
-    0 0 24px rgba(255, 184, 77, .28),
-    inset 0 0 0 1px rgba(255, 255, 255, .22) !important;
-}
-
-.zairo-home .lineup-section .dj-card:hover {
-  transform: translateY(-8px) scale(1.01) !important;
-  border-color: rgba(255, 184, 77, .52) !important;
-  box-shadow:
-    0 36px 96px rgba(0, 0, 0, .66),
-    0 0 38px rgba(25, 255, 136, .18),
-    0 0 46px rgba(255, 184, 77, .18) !important;
-}
-
-@media (max-width: 560px) {
-  .zairo-home .lineup-section .lineup-grid.lineup-dj-grid {
-    grid-template-columns: minmax(0, 1fr) !important;
-    gap: 20px !important;
-    justify-items: center;
+@media (max-width: 980px) {
+  .zairo-home .lineup-official-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .zairo-home .lineup-section .dj-card {
-    width: min(100%, 360px);
-    border-radius: 28px !important;
+  .zairo-home .lineup-art-card:nth-child(3) {
+    grid-column: 1 / -1;
+    width: min(100%, 520px);
+    justify-self: center;
+  }
+}
+
+@media (max-width: 720px) {
+  .zairo-home .lineup-showcase {
+    width: min(420px, 92vw);
   }
 
-  .zairo-home .lineup-section .dj-card__badge {
+  .zairo-home .lineup-official-grid,
+  .zairo-home .lineup-secondary-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .zairo-home .lineup-art-card {
+    border-radius: 28px;
+  }
+
+  .zairo-home .lineup-card-badge {
+    top: 14px;
     left: 14px;
-    bottom: 14px;
+    font-size: 9px;
   }
 }
