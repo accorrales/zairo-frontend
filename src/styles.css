@@ -218,3 +218,19 @@ app-root {
     border-radius: 24px !important;
   }
 }
+
+/* ZAIRO LOST TRIP — posiciones finales de las nubes del mapa de entradas */
+.lost-detail .venue-map .hotspot.zone-punch {
+  left: 17% !important;
+  top: 41% !important;
+}
+
+.lost-detail .venue-map .hotspot.zone-general {
+  left: 56% !important;
+  top: 58% !important;
+}
+
+.lost-detail .venue-map .hotspot.zone-soleo {
+  left: 87% !important;
+  top: 43.5% !important;
+}
