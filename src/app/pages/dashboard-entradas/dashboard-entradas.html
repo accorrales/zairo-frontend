@@ -42,6 +42,10 @@
           <span class="card-label">Dinero vendido</span>
           <strong class="card-value">{{ formatearMoneda(totales.total_dinero) }}</strong>
         </div>
+        <div class="card" *ngIf="totales.total_invalidadas > 0">
+          <span class="card-label">Entradas invalidadas</span>
+          <strong class="card-value">{{ totales.total_invalidadas }}</strong>
+        </div>
       </div>
 
       <!-- Desglose por tier -->
@@ -108,8 +112,13 @@
                       'agotado': e.estado === 'INVALIDADA',
                       'proximamente': e.estado === 'PENDIENTE'
                     }">
-                    {{ e.estado }}
+                    {{ e.estado || 'CONFIRMADA' }}
                   </span>
+                  <small
+                    class="estado-detalle"
+                    *ngIf="e.estado === 'INVALIDADA' && e.fecha_invalidacion">
+                    Invalidada: {{ formatearFecha(e.fecha_invalidacion) }}
+                  </small>
                 </td>
                 <td>{{ formatearFecha(e.fecha_compra) }}</td>
                 <td class="acciones">
