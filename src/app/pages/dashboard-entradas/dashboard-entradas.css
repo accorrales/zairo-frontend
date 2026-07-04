@@ -200,3 +200,10 @@ small {
   margin-top: 12px;
   color: #fca5a5;
 }
+
+.estado-detalle {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #9ca3af;
+}

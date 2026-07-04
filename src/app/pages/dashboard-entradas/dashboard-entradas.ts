@@ -23,9 +23,10 @@ export class DashboardEntradas implements OnInit {
   eventoSeleccionado: number | null = null;
 
   entradas: any[] = [];
-  totales: { total_entradas: number; total_dinero: number } = {
+  totales: { total_entradas: number; total_dinero: number; total_invalidadas: number } = {
     total_entradas: 0,
-    total_dinero: 0
+    total_dinero: 0,
+    total_invalidadas: 0
   };
   porTier: any[] = [];
 
@@ -68,7 +69,11 @@ export class DashboardEntradas implements OnInit {
     this.entradasService.obtenerPorEvento(this.eventoSeleccionado).subscribe({
       next: (data) => {
         this.entradas = data.entradas || [];
-        this.totales = data.totales || { total_entradas: 0, total_dinero: 0 };
+        this.totales = data.totales || {
+          total_entradas: 0,
+          total_dinero: 0,
+          total_invalidadas: 0
+        };
         this.porTier = data.por_tier || [];
         this.cargando = false;
       },
@@ -147,7 +152,7 @@ export class DashboardEntradas implements OnInit {
 
   limpiar(): void {
     this.entradas = [];
-    this.totales = { total_entradas: 0, total_dinero: 0 };
+    this.totales = { total_entradas: 0, total_dinero: 0, total_invalidadas: 0 };
     this.porTier = [];
     this.mensaje = '';
   }
