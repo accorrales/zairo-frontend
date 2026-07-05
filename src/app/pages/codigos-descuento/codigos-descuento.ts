@@ -37,6 +37,13 @@ export class CodigosDescuento implements OnInit {
     this.cargarCodigos();
   }
 
+  get topVendedores(): any[] {
+    return [...this.codigos]
+      .filter((c) => this.entradasVendidas(c) > 0)
+      .sort((a, b) => this.entradasVendidas(b) - this.entradasVendidas(a))
+      .slice(0, 3);
+  }
+
   formularioVacio() {
     return {
       codigo: '',
@@ -216,11 +223,26 @@ export class CodigosDescuento implements OnInit {
     return this.formatearMoneda(c.valor);
   }
 
+  entradasVendidas(c: any): number {
+    return Number(c.entradas_vendidas ?? c.usos_actuales ?? 0);
+  }
+
+  nombreVendedor(c: any): string {
+    return c.descripcion || c.codigo;
+  }
+
+  porcentajeTop(c: any): number {
+    const mayor = Math.max(...this.topVendedores.map((v) => this.entradasVendidas(v)), 1);
+    return Math.max(8, Math.round((this.entradasVendidas(c) / mayor) * 100));
+  }
+
   usosTexto(c: any): string {
+    const usos = this.entradasVendidas(c);
+
     if (c.usos_maximos === null || c.usos_maximos === undefined) {
-      return `${c.usos_actuales} / ∞`;
+      return `${usos} / ∞`;
     }
-    return `${c.usos_actuales} / ${c.usos_maximos}`;
+    return `${usos} / ${c.usos_maximos}`;
   }
 
   formatoInputFecha(fecha: string): string {
