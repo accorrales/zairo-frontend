@@ -565,6 +565,10 @@ export class PublicEventoDetalle implements OnInit {
   }
 
   private prepararVentanaWhatsapp(): Window | null {
+    if (this.esNavegadorInterno()) {
+      return null;
+    }
+
     try {
       return window.open('', '_blank');
     } catch (err) {
@@ -617,6 +621,11 @@ Voy a realizar el SINPE y enviar el comprobante por este chat.
   }
 
   private redireccionarAWhatsapp(url: string, ventana: Window | null): void {
+    if (this.esNavegadorInterno()) {
+      window.location.href = url;
+      return;
+    }
+
     try {
       if (ventana && !ventana.closed) {
         ventana.location.href = url;
@@ -631,6 +640,11 @@ Voy a realizar el SINPE y enviar el comprobante por este chat.
     if (!nuevaVentana) {
       window.location.href = url;
     }
+  }
+
+  private esNavegadorInterno(): boolean {
+    const ua = navigator.userAgent || '';
+    return /Instagram|FBAN|FBAV|FBIOS|FB_IAB|TikTok|Snapchat/i.test(ua);
   }
 
   formatearFecha(fecha: string): string {
