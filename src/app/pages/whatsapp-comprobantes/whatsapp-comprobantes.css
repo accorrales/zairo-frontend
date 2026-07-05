@@ -1,0 +1,369 @@
+.wa-page {
+  min-height: 100vh;
+  padding: 40px;
+  background:
+    radial-gradient(circle at top left, rgba(124, 58, 237, 0.28), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.2), transparent 30%),
+    #060712;
+  color: white;
+}
+
+.wa-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+}
+
+.wa-header span {
+  color: #34d399;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+}
+
+.wa-header h1 {
+  margin: 8px 0;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+}
+
+.wa-header p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+  max-width: 520px;
+}
+
+.wa-header button,
+.btn-sec,
+.btn-ghost {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #7c3aed, #10b981);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.wa-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.wa-filtros input,
+.wa-filtros select {
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  outline: none;
+}
+
+.wa-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.9rem;
+}
+
+.wa-mensaje {
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 18px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.wa-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.wa-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.wa-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(52, 211, 153, 0.5);
+}
+
+.wa-card.selected {
+  border-color: #34d399;
+}
+
+.wa-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.wa-card h3 {
+  margin: 4px 0;
+  font-size: 1.05rem;
+}
+
+.wa-sub {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  margin: 0 0 12px;
+}
+
+.wa-conf {
+  font-weight: 800;
+  color: #34d399;
+}
+
+.wa-montos {
+  display: flex;
+  gap: 14px;
+  margin: 10px 0;
+}
+
+.wa-montos > div {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.wa-montos small {
+  display: block;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.wa-montos .mismatch strong,
+.wa-detalle-grid .mismatch strong {
+  color: #f87171;
+}
+
+.wa-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.78rem;
+  margin: 6px 0;
+}
+
+.wa-fecha {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
+  margin: 6px 0 0;
+}
+
+/* Badges de estado */
+.badge {
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.badge-ok { background: rgba(16, 185, 129, 0.22); color: #34d399; }
+.badge-warn { background: rgba(245, 158, 11, 0.22); color: #fbbf24; }
+.badge-danger { background: rgba(239, 68, 68, 0.22); color: #f87171; }
+.badge-dup { background: rgba(124, 58, 237, 0.24); color: #c4b5fd; }
+.badge-neutral { background: rgba(255, 255, 255, 0.12); color: rgba(255, 255, 255, 0.75); }
+
+/* Overlay de detalle */
+.wa-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 50;
+}
+
+.wa-detalle {
+  width: min(560px, 100%);
+  height: 100%;
+  overflow-y: auto;
+  padding: 30px;
+  background: #0a0c1a;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.wa-cerrar {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: white;
+  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+}
+
+.wa-detalle h2 {
+  margin: 12px 0 4px;
+}
+
+.wa-detalle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.wa-detalle-grid > div {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.wa-detalle-grid small {
+  display: block;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.wa-detalle-grid strong {
+  font-size: 0.92rem;
+  word-break: break-word;
+}
+
+.wa-notas {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 0.85rem;
+  color: #fde68a;
+}
+
+.wa-comprobante {
+  margin: 18px 0;
+  text-align: center;
+}
+
+.wa-comprobante img {
+  max-width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.wa-pdf {
+  display: inline-block;
+  padding: 14px 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  text-decoration: none;
+}
+
+.wa-acciones {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 18px 0;
+}
+
+.btn-ok, .btn-danger {
+  flex: 1;
+  min-width: 130px;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  color: white;
+}
+
+.btn-ok { background: linear-gradient(135deg, #059669, #10b981); }
+.btn-danger { background: linear-gradient(135deg, #dc2626, #ef4444); }
+
+.wa-chat {
+  margin-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 16px;
+}
+
+.wa-chat-box {
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.wa-burbuja {
+  max-width: 80%;
+  padding: 9px 13px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.85rem;
+  align-self: flex-start;
+}
+
+.wa-burbuja.saliente {
+  align-self: flex-end;
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.wa-tipo {
+  display: block;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.wa-enviar {
+  display: flex;
+  gap: 8px;
+}
+
+.wa-enviar input {
+  flex: 1;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  outline: none;
+}
+
+.wa-enviar button {
+  padding: 11px 18px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7c3aed, #10b981);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .wa-page { padding: 22px; }
+  .wa-detalle { padding: 22px; }
+  .wa-detalle-grid { grid-template-columns: 1fr; }
+}

@@ -81,6 +81,11 @@
       Entradas
     </a>
 
+    <a *ngIf="tienePermiso(['admin'])" routerLink="/whatsapp-comprobantes" routerLinkActive="active">
+      <span>💬</span>
+      WhatsApp
+    </a>
+
     <a *ngIf="tienePermiso(['admin','entrada'])" routerLink="/admin/kiosk" routerLinkActive="active">
       <span>📱</span>
       KIOSK QR

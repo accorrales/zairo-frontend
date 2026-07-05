@@ -1,0 +1,131 @@
+<div class="wa-page">
+  <header class="wa-header">
+    <div>
+      <span>ZAIRO · WHATSAPP</span>
+      <h1>Comprobantes</h1>
+      <p>Validación asistida de pagos recibidos por WhatsApp. La confirmación siempre es manual.</p>
+    </div>
+    <button (click)="cargar()">Actualizar</button>
+  </header>
+
+  <div class="wa-filtros">
+    <input type="number" placeholder="Evento (id)" [(ngModel)]="filtros.evento" />
+    <select [(ngModel)]="filtros.estado">
+      <option value="">Todos los estados</option>
+      <option *ngFor="let e of estados" [value]="e">{{ e }}</option>
+    </select>
+    <input type="text" placeholder="Teléfono" [(ngModel)]="filtros.telefono" />
+    <input type="number" placeholder="Confianza mín." [(ngModel)]="filtros.confianza_min" />
+    <label class="wa-check">
+      <input type="checkbox" [(ngModel)]="filtros.pendientes" />
+      Solo pendientes
+    </label>
+    <button class="btn-sec" (click)="cargar()">Filtrar</button>
+    <button class="btn-ghost" (click)="limpiarFiltros()">Limpiar</button>
+  </div>
+
+  <p class="wa-mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+  <p class="wa-mensaje" *ngIf="cargando">Cargando comprobantes...</p>
+  <p class="wa-mensaje" *ngIf="!cargando && comprobantes.length === 0">No hay comprobantes con esos filtros.</p>
+
+  <div class="wa-grid">
+    <article
+      class="wa-card"
+      *ngFor="let c of comprobantes"
+      [class.selected]="seleccionado?.id === c.id"
+      (click)="seleccionar(c)">
+      <div class="wa-card-top">
+        <span class="badge" [ngClass]="claseEstado(c.validation_status)">{{ c.validation_status }}</span>
+        <span class="wa-conf" *ngIf="c.confidence_score !== null">{{ c.confidence_score }}%</span>
+      </div>
+
+      <h3>{{ c.evento || 'Evento sin asociar' }}</h3>
+      <p class="wa-sub">{{ c.contact_name || c.phone_number || 'Sin contacto' }}</p>
+
+      <div class="wa-montos">
+        <div>
+          <small>Esperado</small>
+          <strong>{{ money(c.monto_esperado) }}</strong>
+        </div>
+        <div [class.mismatch]="!montoCoincide(c) && c.detected_amount !== null">
+          <small>Detectado</small>
+          <strong>{{ c.detected_amount !== null ? money(c.detected_amount) : '—' }}</strong>
+        </div>
+      </div>
+
+      <p class="wa-meta">
+        <span *ngIf="c.detected_reference">Ref: {{ c.detected_reference }}</span>
+        <span *ngIf="c.detected_bank">{{ c.detected_bank }}</span>
+      </p>
+      <p class="wa-fecha">{{ fecha(c.created_at) }}</p>
+    </article>
+  </div>
+</div>
+
+<!-- Panel de detalle -->
+<div class="wa-overlay" *ngIf="seleccionado" (click)="cerrarDetalle()">
+  <aside class="wa-detalle" (click)="$event.stopPropagation()">
+    <button class="wa-cerrar" (click)="cerrarDetalle()">✕</button>
+
+    <span class="badge" [ngClass]="claseEstado(seleccionado.validation_status)">
+      {{ seleccionado.validation_status }}
+    </span>
+    <h2>{{ seleccionado.evento || 'Evento sin asociar' }}</h2>
+    <p class="wa-sub">
+      {{ seleccionado.contact_name || 'Sin nombre' }} · {{ seleccionado.phone_number }}
+    </p>
+
+    <div class="wa-detalle-grid">
+      <div><small>Compra</small><strong>#{{ seleccionado.compra_id || '—' }}</strong></div>
+      <div><small>Estado compra</small><strong>{{ seleccionado.estado_compra || '—' }}</strong></div>
+      <div><small>Correo</small><strong>{{ seleccionado.correo_comprador || '—' }}</strong></div>
+      <div><small>Confianza</small><strong>{{ seleccionado.confidence_score ?? '—' }}%</strong></div>
+      <div><small>Esperado</small><strong>{{ money(seleccionado.monto_esperado) }}</strong></div>
+      <div [class.mismatch]="!montoCoincide(seleccionado) && seleccionado.detected_amount !== null">
+        <small>Detectado</small>
+        <strong>{{ seleccionado.detected_amount !== null ? money(seleccionado.detected_amount) : '—' }}</strong>
+      </div>
+      <div><small>Fecha detectada</small><strong>{{ seleccionado.detected_date || '—' }}</strong></div>
+      <div><small>Referencia</small><strong>{{ seleccionado.detected_reference || '—' }}</strong></div>
+    </div>
+
+    <p class="wa-notas" *ngIf="seleccionado.validation_notes">
+      <strong>Notas:</strong> {{ seleccionado.validation_notes }}
+    </p>
+
+    <div class="wa-comprobante">
+      <img *ngIf="imagenUrl && !imagenEsPdf" [src]="imagenUrl" alt="Comprobante" />
+      <a *ngIf="imagenUrl && imagenEsPdf" [href]="imagenUrl" target="_blank" class="wa-pdf">
+        📄 Ver documento PDF
+      </a>
+      <p *ngIf="!imagenUrl" class="wa-sub">Sin imagen disponible.</p>
+    </div>
+
+    <div class="wa-acciones">
+      <button class="btn-ok" (click)="confirmar(seleccionado)">Confirmar compra</button>
+      <button class="btn-danger" (click)="rechazar(seleccionado)">Rechazar</button>
+      <button class="btn-sec" (click)="solicitarNuevo(seleccionado)">Solicitar nuevo</button>
+    </div>
+
+    <section class="wa-chat" *ngIf="seleccionado.conversation_id">
+      <h4>Conversación</h4>
+      <div class="wa-chat-box">
+        <div
+          *ngFor="let m of mensajes"
+          class="wa-burbuja"
+          [class.saliente]="m.direction === 'OUTBOUND'">
+          <span class="wa-tipo" *ngIf="m.message_type !== 'TEXT'">[{{ m.message_type }}]</span>
+          {{ m.body || '(sin texto)' }}
+        </div>
+      </div>
+      <div class="wa-enviar">
+        <input
+          type="text"
+          placeholder="Escribir mensaje..."
+          [(ngModel)]="nuevoMensaje"
+          (keyup.enter)="enviarMensaje()" />
+        <button (click)="enviarMensaje()">Enviar</button>
+      </div>
+    </section>
+  </aside>
+</div>
