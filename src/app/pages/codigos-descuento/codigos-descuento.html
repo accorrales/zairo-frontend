@@ -7,6 +7,39 @@
       [subtitle]="'Promociones aplicables a las entradas'">
     </app-header>
 
+    <div class="panel ranking-panel" *ngIf="topVendedores.length > 0">
+      <div class="panel-top">
+        <div>
+          <h2>Top 3 vendedores</h2>
+          <p class="panel-subtitle">
+            Ranking calculado con entradas pagadas y no invalidadas.
+          </p>
+        </div>
+      </div>
+
+      <div class="ranking-grid">
+        <article class="ranking-card" *ngFor="let vendedor of topVendedores; let i = index">
+          <div class="ranking-header">
+            <span class="ranking-position">#{{ i + 1 }}</span>
+            <span class="ranking-code">{{ vendedor.codigo }}</span>
+          </div>
+
+          <h3>{{ nombreVendedor(vendedor) }}</h3>
+
+          <div class="ranking-stats">
+            <strong>{{ entradasVendidas(vendedor) }}</strong>
+            <span>entradas vendidas</span>
+          </div>
+
+          <small>{{ formatearMoneda(vendedor.total_vendido || 0) }} en ventas válidas</small>
+
+          <div class="ranking-bar">
+            <span [style.width.%]="porcentajeTop(vendedor)"></span>
+          </div>
+        </article>
+      </div>
+    </div>
+
     <div class="panel">
       <div class="panel-top">
         <h2>{{ editando ? 'Editar código' : 'Nuevo código' }}</h2>
@@ -88,7 +121,8 @@
               <th>Descuento</th>
               <th>Evento</th>
               <th>Vigencia</th>
-              <th>Usos</th>
+              <th>Usos válidos</th>
+              <th>Ventas válidas</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -110,6 +144,10 @@
                 </small>
               </td>
               <td>{{ usosTexto(c) }}</td>
+              <td>
+                <strong>{{ formatearMoneda(c.total_vendido || 0) }}</strong><br>
+                <small>{{ entradasVendidas(c) }} entradas válidas</small>
+              </td>
               <td>
                 <span
                   class="badge"
