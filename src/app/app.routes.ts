@@ -121,6 +121,15 @@ export const routes: Routes = [
     path: 'admin/kiosk',
     loadComponent: () => import('./pages/admin-kiosk/admin-kiosk').then((m) => m.AdminKiosk)
   },
+  {
+    path: 'whatsapp-comprobantes',
+    loadComponent: () =>
+      import('./pages/whatsapp-comprobantes/whatsapp-comprobantes').then(
+        (m) => m.WhatsappComprobantes
+      ),
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin'] }
+  },
 
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'home' }
