@@ -530,6 +530,8 @@ export class PublicEventoDetalle implements OnInit {
       return;
     }
 
+    const ventanaWhatsapp = this.prepararVentanaWhatsapp();
+
     this.procesandoCompra = true;
     this.mensajeCompra = '';
 
@@ -550,18 +552,38 @@ export class PublicEventoDetalle implements OnInit {
     this.comprasService.crearCompra(data).subscribe({
       next: (response) => {
         this.procesandoCompra = false;
-        this.mensajeCompra = 'Compra creada correctamente. Continuá por WhatsApp para enviar el SINPE.';
-        this.abrirWhatsapp(response.compra);
+        this.mensajeCompra = 'Compra creada correctamente. Te estamos redirigiendo a WhatsApp para enviar el SINPE.';
+        this.abrirWhatsapp(response.compra, ventanaWhatsapp);
       },
       error: (err) => {
         console.error('Error creando compra', err);
+        this.cerrarVentanaWhatsapp(ventanaWhatsapp);
         this.procesandoCompra = false;
         this.mensajeCompra = err.error?.message || 'Ocurrió un error creando la compra.';
       }
     });
   }
 
-  abrirWhatsapp(compra: any): void {
+  private prepararVentanaWhatsapp(): Window | null {
+    try {
+      return window.open('', '_blank');
+    } catch (err) {
+      console.warn('No se pudo preparar la ventana de WhatsApp', err);
+      return null;
+    }
+  }
+
+  private cerrarVentanaWhatsapp(ventana: Window | null): void {
+    try {
+      if (ventana && !ventana.closed) {
+        ventana.close();
+      }
+    } catch (err) {
+      console.warn('No se pudo cerrar la ventana de WhatsApp', err);
+    }
+  }
+
+  abrirWhatsapp(compra: any, ventana?: Window | null): void {
     const personasTexto = this.personas
       .map((p, index) => {
         return `${index + 1}. ${p.nombre_completo.trim()} - Nacimiento: ${p.fecha_nacimiento}`;
@@ -591,7 +613,24 @@ Voy a realizar el SINPE y enviar el comprobante por este chat.
     `.trim();
 
     const url = `https://wa.me/50661518701?text=${encodeURIComponent(mensaje)}`;
-    window.open(url, '_blank');
+    this.redireccionarAWhatsapp(url, ventana || null);
+  }
+
+  private redireccionarAWhatsapp(url: string, ventana: Window | null): void {
+    try {
+      if (ventana && !ventana.closed) {
+        ventana.location.href = url;
+        return;
+      }
+    } catch (err) {
+      console.warn('No se pudo usar la ventana preparada de WhatsApp', err);
+    }
+
+    const nuevaVentana = window.open(url, '_blank');
+
+    if (!nuevaVentana) {
+      window.location.href = url;
+    }
   }
 
   formatearFecha(fecha: string): string {
