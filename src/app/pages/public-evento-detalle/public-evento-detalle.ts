@@ -515,7 +515,7 @@ export class PublicEventoDetalle implements OnInit {
       }
 
       if (!this.cumpleEdadMinima(p.fecha_nacimiento)) {
-        return 'Debes tener al menos 17 años cumplidos el día del evento para poder comprar esta entrada.';
+        return 'Debes tener más de 18 años para poder comprar esta entrada.';
       }
     }
 
