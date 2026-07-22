@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "postinstall": "node scripts/assemble-lineup-assets.mjs",
+    "prestart": "node scripts/assemble-lineup-assets.mjs",
     "prebuild": "node scripts/assemble-lineup-assets.mjs",
     "start": "ng serve",
     "build": "ng build",
