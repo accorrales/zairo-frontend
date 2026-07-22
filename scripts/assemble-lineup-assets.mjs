@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const sourceDir = join(root, 'scripts', 'assets', 'deeikel-hq');
 const outputDir = join(root, 'public', 'assets', 'lineup');
-const avifOutputPath = join(outputDir, 'deeikel-zairo-lineup.avif');
+const webpOutputPath = join(outputDir, 'deeikel-zairo-lineup.webp');
 const svgOutputPath = join(outputDir, 'deeikel-zairo-lineup.svg');
 
 const parts = (await readdir(sourceDir))
@@ -22,11 +22,11 @@ const base64 = (
   .join('')
   .replace(/\s+/g, '');
 
-const avif = Buffer.from(base64, 'base64');
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080"><image width="1080" height="1080" href="data:image/avif;base64,${base64}"/></svg>`;
+const webp = Buffer.from(base64, 'base64');
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1254" height="1254" viewBox="0 0 1254 1254"><image width="1254" height="1254" href="data:image/webp;base64,${base64}"/></svg>`;
 
 await mkdir(outputDir, { recursive: true });
-await writeFile(avifOutputPath, avif);
+await writeFile(webpOutputPath, webp);
 await writeFile(svgOutputPath, svg, 'utf8');
 
-console.log(`Generated ${avifOutputPath} and ${svgOutputPath}`);
+console.log(`Generated ${webpOutputPath} and ${svgOutputPath}`);
