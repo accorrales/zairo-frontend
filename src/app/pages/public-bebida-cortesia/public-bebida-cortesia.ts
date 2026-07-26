@@ -43,14 +43,14 @@ export class PublicBebidaCortesia implements OnInit {
       id: 'PUNCH_CLUB',
       nombre: 'Punch Club',
       detalle: 'Orange Black Tea Collins con gin orgánico',
-      imagen: '/assets/cortesias/punch-club-cortesia.png',
+      imagen: '/assets/cortesias/punch-club-cortesia.svg',
       clase: 'punch'
     },
     {
       id: 'SOLEO',
       nombre: 'Soleo',
       detalle: 'Sangría frizzante, fresca y lista para brindar',
-      imagen: '/assets/cortesias/soleo-cortesia.png',
+      imagen: 'https://sangriasoleo.com/img/producte-sangria-soleo-es.png',
       clase: 'soleo'
     }
   ];
