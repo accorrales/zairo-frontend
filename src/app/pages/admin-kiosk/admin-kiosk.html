@@ -110,6 +110,15 @@
             <strong>{{ entrada.entrada }}</strong>
           </div>
 
+          <div class="info-row principal" *ngIf="entrada.bebida_cortesia">
+            <span>🎁 Cortesía · entregar tiquete</span>
+            <strong>
+              {{ entrada.bebida_cortesia === 'PUNCH_CLUB'
+                ? 'PUNCH CLUB · TIQUETE NARANJA'
+                : 'SOLEO · TIQUETE ROJO' }}
+            </strong>
+          </div>
+
           <div class="info-row">
             <span>Estado</span>
             <strong>{{ entrada.estado }}</strong>
