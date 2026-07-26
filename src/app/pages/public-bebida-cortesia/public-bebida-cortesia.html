@@ -1,0 +1,96 @@
+<main class="cortesia-page">
+  <div class="jungle-light jungle-light--one"></div>
+  <div class="jungle-light jungle-light--two"></div>
+  <div class="texture"></div>
+
+  <header class="cortesia-nav">
+    <a class="brand" routerLink="/home" aria-label="Volver al inicio de ZAIRO">
+      <span class="brand-logo">
+        <img src="/assets/zairo-loader-logo.png" alt="ZAIRO">
+      </span>
+
+      <span class="brand-copy">
+        <strong>ZAIRO</strong>
+        <small>Lost Trip Experience</small>
+      </span>
+    </a>
+
+    <a class="volver" routerLink="/home">Volver</a>
+  </header>
+
+  <section class="loader-state" *ngIf="cargando">
+    <span class="loader"></span>
+    <strong>Preparando tu cortesía...</strong>
+  </section>
+
+  <section class="error-state" *ngIf="!cargando && mensajeError">
+    <span>⚠️</span>
+    <h1>{{ mensajeError }}</h1>
+    <a routerLink="/home">Volver a los eventos</a>
+  </section>
+
+  <section class="cortesia-content" *ngIf="!cargando && !mensajeError">
+    <div class="event-pill" *ngIf="evento">
+      <span>{{ evento.nombre }}</span>
+      <i></i>
+      <span>{{ formatearFecha(evento.fecha) }}</span>
+    </div>
+
+    <div class="headline">
+      <span class="eyebrow">CORTESÍA ESPECIAL ZAIRO</span>
+      <h1>Elegí tu bebida.</h1>
+      <p>
+        Comprá tu entrada después de elegir y recibí la bebida seleccionada cuando ingresés al evento.
+      </p>
+    </div>
+
+    <div class="bebidas-grid" aria-label="Bebidas de cortesía disponibles">
+      <button
+        type="button"
+        class="bebida-card"
+        *ngFor="let bebida of bebidas"
+        [ngClass]="[bebida.clase, seleccionando === bebida.id ? 'seleccionada' : '']"
+        [disabled]="!!seleccionando"
+        [attr.aria-pressed]="seleccionando === bebida.id"
+        (click)="seleccionarBebida(bebida)">
+
+        <span class="card-glow"></span>
+        <span class="promo-badge">GRATIS CON TU ENTRADA</span>
+
+        <span class="botella-wrap">
+          <img
+            [src]="bebida.imagen"
+            [alt]="'Botella de ' + bebida.nombre"
+            loading="eager"
+            decoding="async">
+        </span>
+
+        <span class="bebida-copy">
+          <small>ELEGIR</small>
+          <strong>{{ bebida.nombre }}</strong>
+          <span>{{ bebida.detalle }}</span>
+        </span>
+
+        <span class="elegir-btn">
+          {{ seleccionando === bebida.id ? 'Seleccionada · entrando...' : 'Quiero esta bebida' }}
+        </span>
+      </button>
+    </div>
+
+    <aside class="promo-info">
+      <span class="promo-icon">🎟️</span>
+      <div>
+        <strong>¿Cómo funciona?</strong>
+        <p>
+          Elegís una bebida, comprás la entrada en este momento y la cortesía queda ligada a cada QR de la compra.
+          En la entrada te darán un tiquete para canjearla en el bar.
+        </p>
+      </div>
+    </aside>
+
+    <p class="legal">
+      Una cortesía por entrada pagada. La bebida elegida se aplicará a todas las entradas incluidas en la misma compra.
+      Promoción exclusiva para mayores de 18 años y sujeta a disponibilidad.
+    </p>
+  </section>
+</main>
