@@ -101,6 +101,13 @@ export const routes: Routes = [
     data: { roles: ['admin'] }
   },
   {
+    path: 'evento/:id/cortesia/:codigo',
+    loadComponent: () =>
+      import('./pages/public-bebida-cortesia/public-bebida-cortesia').then(
+        (m) => m.PublicBebidaCortesia
+      )
+  },
+  {
     path: 'evento/:id/comprar',
     loadComponent: () =>
       import('./pages/public-evento-detalle/public-evento-detalle').then(
@@ -110,8 +117,8 @@ export const routes: Routes = [
   {
     path: 'evento/:id',
     loadComponent: () =>
-      import('./pages/public-bebida-cortesia/public-bebida-cortesia').then(
-        (m) => m.PublicBebidaCortesia
+      import('./pages/public-evento-detalle/public-evento-detalle').then(
+        (m) => m.PublicEventoDetalle
       )
   },
   {

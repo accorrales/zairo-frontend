@@ -7,6 +7,8 @@ import { environment } from '../../../environments/environment';
 interface SeleccionCortesia {
   id_evento: number;
   bebida: 'PUNCH_CLUB' | 'SOLEO';
+  codigo: string;
+  expira_en: number;
 }
 
 const CORTESIA_STORAGE_KEY = 'zairo_cortesia_seleccion';
@@ -21,7 +23,11 @@ export class ComprasEntradasService {
   crearCompra(data: any): Observable<any> {
     const seleccion = this.obtenerCortesia(Number(data?.id_evento));
     const payload = seleccion
-      ? { ...data, bebida_cortesia: seleccion.bebida }
+      ? {
+          ...data,
+          bebida_cortesia: seleccion.bebida,
+          codigo_cortesia: seleccion.codigo
+        }
       : data;
 
     return this.http.post(this.apiUrl, payload).pipe(
@@ -31,6 +37,13 @@ export class ComprasEntradasService {
         }
       })
     );
+  }
+
+  validarCodigoCortesia(idEvento: number, codigo: string): Observable<{ valido: boolean }> {
+    return this.http.post<{ valido: boolean }>(`${this.apiUrl}/cortesia/validar`, {
+      id_evento: idEvento,
+      codigo_cortesia: codigo
+    });
   }
 
   listarPendientes(): Observable<any[]> {
@@ -58,14 +71,24 @@ export class ComprasEntradasService {
 
       const seleccion = JSON.parse(guardada) as SeleccionCortesia;
       const bebidaValida = seleccion?.bebida === 'PUNCH_CLUB' || seleccion?.bebida === 'SOLEO';
+      const codigoValido = typeof seleccion?.codigo === 'string' && seleccion.codigo.length >= 20;
+      const noExpirada = Number(seleccion?.expira_en) > Date.now();
 
-      if (Number(seleccion?.id_evento) !== idEvento || !bebidaValida) {
+      if (
+        Number(seleccion?.id_evento) !== idEvento ||
+        !bebidaValida ||
+        !codigoValido ||
+        !noExpirada
+      ) {
+        this.limpiarCortesia();
         return null;
       }
 
       return {
         id_evento: Number(seleccion.id_evento),
-        bebida: seleccion.bebida
+        bebida: seleccion.bebida,
+        codigo: seleccion.codigo,
+        expira_en: Number(seleccion.expira_en)
       };
     } catch {
       this.limpiarCortesia();
