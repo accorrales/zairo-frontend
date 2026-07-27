@@ -3,7 +3,6 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 
-
 export const routes: Routes = [
   {
     path: 'login',
@@ -129,11 +128,15 @@ export const routes: Routes = [
 
   {
     path: 'admin/compras',
-    loadComponent: () => import('./pages/admin-compras/admin-compras').then((m) => m.AdminCompras)
+    loadComponent: () => import('./pages/admin-compras/admin-compras').then((m) => m.AdminCompras),
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin'] }
   },
   {
     path: 'admin/kiosk',
-    loadComponent: () => import('./pages/admin-kiosk/admin-kiosk').then((m) => m.AdminKiosk)
+    loadComponent: () => import('./pages/admin-kiosk/admin-kiosk').then((m) => m.AdminKiosk),
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin'] }
   },
   {
     path: 'whatsapp-comprobantes',
