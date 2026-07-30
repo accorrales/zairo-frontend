@@ -13,6 +13,8 @@ import { AuthService } from '../../core/services/auth.service';
 export class Sidebar {
   private authService = inject(AuthService);
 
+  menuAbierto = false;
+
   getRole(): string | null {
     return this.authService.getRole();
   }
@@ -20,5 +22,13 @@ export class Sidebar {
   tienePermiso(roles: string[]): boolean {
     const rol = this.getRole()?.toLowerCase();
     return rol ? roles.includes(rol) : false;
+  }
+
+  toggleMenu(): void {
+    this.menuAbierto = !this.menuAbierto;
+  }
+
+  cerrarMenuMovil(): void {
+    this.menuAbierto = false;
   }
 }
