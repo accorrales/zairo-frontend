@@ -1,0 +1,855 @@
+/*
+ * ZAIRO Admin — responsive mobile layer
+ * Loaded after the existing component styles. Every rule is limited to
+ * administrative component hosts and mobile/tablet breakpoints so the
+ * desktop experience and public event pages remain unchanged.
+ */
+
+:where(
+  app-dashboard,
+  app-empleados,
+  app-conceptos,
+  app-novedades,
+  app-planillas,
+  app-planilla-detalle,
+  app-reportes,
+  app-eventos,
+  app-departamentos,
+  app-usuarios,
+  app-evento-tiers,
+  app-codigos-descuento,
+  app-dashboard-entradas,
+  app-admin-compras,
+  app-admin-kiosk,
+  app-whatsapp-comprobantes
+) {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+app-sidebar .menu-toggle {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) .layout {
+    width: 100% !important;
+    min-width: 0 !important;
+    flex-direction: column !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) app-sidebar {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) :is(.content, .main-content, .page-content, .admin-content) {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding: clamp(12px, 3vw, 18px) !important;
+    overflow-x: hidden !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-admin-compras,
+    app-admin-kiosk,
+    app-whatsapp-comprobantes
+  ) :is(.panel, .card, .form-card, .table-card, .section-card, .summary-card, .compra-card) {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-admin-compras,
+    app-admin-kiosk,
+    app-whatsapp-comprobantes
+  ) :is(
+    .panel-top,
+    .page-header,
+    .admin-header,
+    .toolbar,
+    .filters-header,
+    .modal-header,
+    .compra-top,
+    .scanner-top,
+    .kiosk-header,
+    .historial-header
+  ) {
+    min-width: 0 !important;
+    flex-wrap: wrap !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) :is(
+    .form-grid,
+    .filter-grid,
+    .filters-grid,
+    .campos-grid,
+    .modal-grid,
+    .summary-grid,
+    .stats-grid
+  ) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    gap: 12px !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) :is(
+    .form-row,
+    .filters,
+    .filter-row,
+    .search-row,
+    .toolbar-actions,
+    .acciones-form,
+    .acciones-ubicacion
+  ) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    gap: 10px !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-admin-compras,
+    app-whatsapp-comprobantes
+  ) :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    font-size: 16px !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-admin-compras,
+    app-admin-kiosk,
+    app-whatsapp-comprobantes
+  ) button,
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-admin-compras,
+    app-admin-kiosk,
+    app-whatsapp-comprobantes
+  ) a[class^='btn-'],
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-admin-compras,
+    app-admin-kiosk,
+    app-whatsapp-comprobantes
+  ) a[class*=' btn-'] {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) .table-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) .table-wrapper table {
+    width: max-content !important;
+    min-width: 100% !important;
+    max-width: none !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) .table-wrapper :is(th, td) {
+    white-space: nowrap;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) .table-wrapper :is(td small, td .estado-detalle) {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) :is(.acciones, .action-buttons, .actions, .modal-actions) {
+    min-width: 150px;
+  }
+
+  app-confirm-dialog .overlay {
+    padding: 14px !important;
+  }
+
+  app-confirm-dialog .modal {
+    width: min(100%, 420px) !important;
+    max-width: calc(100vw - 28px) !important;
+    padding: 20px !important;
+  }
+
+  app-confirm-dialog .acciones {
+    flex-wrap: wrap !important;
+  }
+
+  /* Compact, touch-friendly admin navigation. */
+  app-sidebar .sidebar {
+    max-height: 100dvh;
+    overflow: visible !important;
+  }
+
+  app-sidebar .sidebar-top {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  app-sidebar .sidebar-top .brand {
+    min-width: 0;
+    margin-bottom: 0 !important;
+  }
+
+  app-sidebar .menu-toggle {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 9px 12px;
+    border: 1px solid rgba(198, 255, 87, .26);
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(198, 255, 87, .14), rgba(255, 214, 10, .08));
+    color: #f4ffe9;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  app-sidebar .menu-toggle-icon {
+    font-size: 17px;
+    line-height: 1;
+  }
+
+  app-sidebar .menu {
+    display: none !important;
+    flex-direction: column !important;
+    gap: 7px !important;
+    max-height: calc(100dvh - 88px);
+    margin-top: 12px;
+    padding: 6px 2px 4px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    scroll-snap-type: none !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  app-sidebar .menu.open {
+    display: flex !important;
+    animation: zairoAdminMenuIn .18s ease-out;
+  }
+
+  app-sidebar .menu a {
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 13px !important;
+    font-size: 13px !important;
+    white-space: normal !important;
+    scroll-snap-align: none !important;
+  }
+
+  app-sidebar .menu a:hover {
+    transform: none !important;
+  }
+
+  @keyframes zairoAdminMenuIn {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Eventos: secret-location modal and dense controls. */
+  app-eventos .overlay-ubicacion {
+    align-items: flex-start !important;
+    padding: 12px !important;
+  }
+
+  app-eventos .panel-ubicacion {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: calc(100dvh - 24px);
+    padding: 18px !important;
+    border-radius: 20px !important;
+    overflow-y: auto;
+  }
+
+  app-eventos .panel-ubicacion-header {
+    gap: 12px;
+  }
+
+  app-eventos .panel-ubicacion-header > div {
+    min-width: 0;
+  }
+
+  app-eventos .panel-ubicacion-header h2,
+  app-eventos .panel-ubicacion-header p {
+    overflow-wrap: anywhere;
+  }
+
+  app-eventos .stats-ubicacion {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  app-eventos .stat-card {
+    min-width: 0 !important;
+  }
+
+  /* Standalone purchase administration. */
+  app-admin-compras .admin-compras-page {
+    width: 100%;
+    min-width: 0;
+    padding: clamp(14px, 4vw, 24px) !important;
+  }
+
+  app-admin-compras .admin-header {
+    align-items: stretch !important;
+  }
+
+  app-admin-compras .admin-header button {
+    width: 100%;
+  }
+
+  app-admin-compras .compras-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  app-admin-compras :is(.compra-info p, .modal-info p, .persona-row p) {
+    overflow-wrap: anywhere;
+  }
+
+  app-admin-compras .modal-backdrop {
+    align-items: flex-start !important;
+    padding: 12px !important;
+    overflow-y: auto;
+  }
+
+  app-admin-compras .modal-compra {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: calc(100dvh - 24px) !important;
+    padding: 20px !important;
+    border-radius: 22px !important;
+  }
+
+  /* QR kiosk should remain usable in portrait orientation. */
+  app-admin-kiosk .kiosk-page {
+    width: 100%;
+    min-width: 0;
+    padding: clamp(10px, 3vw, 16px) !important;
+  }
+
+  app-admin-kiosk .kiosk-content {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  app-admin-kiosk .scanner-frame {
+    height: min(62dvh, 560px) !important;
+    min-height: 360px;
+  }
+
+  app-admin-kiosk .entrada-info,
+  app-admin-kiosk .info-row,
+  app-admin-kiosk .historial-item {
+    min-width: 0;
+  }
+
+  app-admin-kiosk .info-row strong,
+  app-admin-kiosk .historial-item span {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 600px) {
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) :is(.content, .main-content, .page-content, .admin-content) {
+    padding: 10px !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) :is(.panel, .form-card, .table-card, .section-card) {
+    padding: 14px !important;
+    border-radius: 18px !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) :is(.panel-top, .page-header, .toolbar, .filters-header) {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-admin-compras,
+    app-whatsapp-comprobantes
+  ) :is(
+    .acciones,
+    .action-buttons,
+    .actions,
+    .acciones-form,
+    .acciones-ubicacion,
+    .modal-actions
+  ) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    gap: 8px !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-admin-compras,
+    app-whatsapp-comprobantes
+  ) :is(
+    .acciones,
+    .action-buttons,
+    .actions,
+    .acciones-form,
+    .acciones-ubicacion,
+    .modal-actions
+  ) > :is(button, a) {
+    width: 100% !important;
+    min-width: 0 !important;
+    justify-content: center;
+    text-align: center;
+    white-space: normal !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) .cards {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  :where(
+    app-dashboard,
+    app-empleados,
+    app-conceptos,
+    app-novedades,
+    app-planillas,
+    app-planilla-detalle,
+    app-reportes,
+    app-eventos,
+    app-departamentos,
+    app-usuarios,
+    app-evento-tiers,
+    app-codigos-descuento,
+    app-dashboard-entradas,
+    app-whatsapp-comprobantes
+  ) :is(h1, h2, h3, p, label, strong, span) {
+    max-width: 100%;
+  }
+
+  app-sidebar .sidebar {
+    padding: 10px !important;
+  }
+
+  app-sidebar .sidebar-top {
+    gap: 8px;
+  }
+
+  app-sidebar .sidebar-top .brand-copy p {
+    max-width: 140px !important;
+  }
+
+  app-sidebar .menu-toggle {
+    padding: 8px 10px;
+  }
+
+  app-eventos .stats-ubicacion {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  app-eventos .panel-ubicacion {
+    padding: 14px !important;
+    border-radius: 16px !important;
+  }
+
+  app-eventos .panel-ubicacion-header h2 {
+    font-size: 17px !important;
+  }
+
+  app-admin-compras .compra-card {
+    padding: 18px !important;
+    border-radius: 20px !important;
+  }
+
+  app-admin-compras .compra-top {
+    flex-direction: column;
+  }
+
+  app-admin-compras .modal-header h2 {
+    font-size: 1.45rem !important;
+  }
+
+  app-admin-compras .persona-row {
+    align-items: flex-start;
+    padding: 13px !important;
+  }
+
+  app-admin-kiosk .kiosk-header {
+    padding: 13px !important;
+  }
+
+  app-admin-kiosk .scanner-panel,
+  app-admin-kiosk .result-panel {
+    padding: 13px !important;
+  }
+
+  app-admin-kiosk .scanner-frame {
+    height: min(58dvh, 500px) !important;
+    min-height: 320px;
+  }
+
+  app-admin-kiosk .scanner-toolbar {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  app-admin-kiosk .scan-box {
+    width: min(78vw, 280px) !important;
+    height: min(78vw, 280px) !important;
+  }
+}
+
+@media (max-width: 380px) {
+  app-sidebar .brand-copy p {
+    display: none;
+  }
+
+  app-sidebar .menu-toggle {
+    font-size: 0;
+  }
+
+  app-sidebar .menu-toggle-icon {
+    font-size: 18px;
+  }
+
+  app-admin-kiosk .scanner-frame {
+    min-height: 290px;
+  }
+}
