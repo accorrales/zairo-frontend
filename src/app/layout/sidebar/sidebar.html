@@ -2,17 +2,32 @@
   <div class="sidebar-glow"></div>
   <div class="sidebar-line"></div>
 
-  <div class="brand">
-    <div class="logo">
-      <img
-        src="/assets/zairo-loader-logo.png"
-        alt="ZAIRO">
+  <div class="sidebar-top">
+    <div class="brand">
+      <div class="logo">
+        <img
+          src="/assets/zairo-loader-logo.png"
+          alt="ZAIRO">
+      </div>
+
+      <div class="brand-copy">
+        <h2>ZAIRO</h2>
+        <p>WELCOME TO THE JUNGLE</p>
+      </div>
     </div>
 
-    <div class="brand-copy">
-      <h2>ZAIRO</h2>
-      <p>WELCOME TO THE JUNGLE</p>
-    </div>
+    <button
+      type="button"
+      class="menu-toggle"
+      aria-controls="admin-menu"
+      aria-label="Abrir o cerrar menú administrativo"
+      [attr.aria-expanded]="menuAbierto"
+      (click)="toggleMenu()">
+      <span class="menu-toggle-icon" aria-hidden="true">
+        {{ menuAbierto ? '✕' : '☰' }}
+      </span>
+      <span>{{ menuAbierto ? 'Cerrar' : 'Menú' }}</span>
+    </button>
   </div>
 
   <div class="theme-badge">
@@ -20,7 +35,11 @@
     <strong>Lost Trip Admin</strong>
   </div>
 
-  <nav class="menu">
+  <nav
+    id="admin-menu"
+    class="menu"
+    [class.open]="menuAbierto"
+    (click)="cerrarMenuMovil()">
     <a routerLink="/dashboard" routerLinkActive="active">
       <span>🏠</span>
       Dashboard
