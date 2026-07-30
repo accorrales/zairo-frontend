@@ -12,7 +12,8 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
-    canActivate: [authGuard]
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin', 'rrhh'] }
   },
 
   {
@@ -136,7 +137,7 @@ export const routes: Routes = [
     path: 'admin/kiosk',
     loadComponent: () => import('./pages/admin-kiosk/admin-kiosk').then((m) => m.AdminKiosk),
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin'] }
+    data: { roles: ['admin', 'entrada'] }
   },
   {
     path: 'whatsapp-comprobantes',
