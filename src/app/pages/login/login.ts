@@ -41,7 +41,9 @@ export class Login {
           resp?.user ||
           this.obtenerUsuarioLocal();
 
-        if (usuario?.rol === 'entrada') {
+        const rol = String(usuario?.rol || '').trim().toLowerCase();
+
+        if (rol === 'entrada') {
           this.router.navigate(['/admin/kiosk']);
           return;
         }
