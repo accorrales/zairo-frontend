@@ -6,8 +6,8 @@ export const roleGuard: CanActivateFn = (route) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const allowedRoles = (route.data?.['roles'] as string[] || [])
-    .map(r => r.toLowerCase().trim());
+  const allowedRoles = ((route.data?.['roles'] as string[]) || [])
+    .map((role) => role.toLowerCase().trim());
 
   const userRole = authService.getRole()?.toLowerCase().trim();
 
@@ -19,5 +19,9 @@ export const roleGuard: CanActivateFn = (route) => {
     return true;
   }
 
+  if (userRole === 'entrada') {
+    return router.createUrlTree(['/admin/kiosk']);
+  }
+
   return router.createUrlTree(['/dashboard']);
-};  
+};
