@@ -40,7 +40,7 @@
     class="menu"
     [class.open]="menuAbierto"
     (click)="cerrarMenuMovil()">
-    <a routerLink="/dashboard" routerLinkActive="active">
+    <a *ngIf="tienePermiso(['admin','rrhh'])" routerLink="/dashboard" routerLinkActive="active">
       <span>🏠</span>
       Dashboard
     </a>
