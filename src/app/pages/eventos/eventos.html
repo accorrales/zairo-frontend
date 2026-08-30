@@ -43,8 +43,13 @@
           [(ngModel)]="nuevoEvento.imagen">
 
         <select [(ngModel)]="nuevoEvento.estado">
-          <option [ngValue]="true">Activo</option>
-          <option [ngValue]="false">Inactivo</option>
+          <option [ngValue]="true">Venta activa</option>
+          <option [ngValue]="false">Venta inactiva</option>
+        </select>
+
+        <select [(ngModel)]="nuevoEvento.mostrar_en_home">
+          <option [ngValue]="true">Mostrar en Home como “Próximamente”</option>
+          <option [ngValue]="false">Ocultar del Home</option>
         </select>
 
         <div class="acciones-form">
@@ -76,7 +81,8 @@
               <th>Fecha</th>
               <th>Ubicación</th>
               <th>Precio base</th>
-              <th>Estado</th>
+              <th>Venta</th>
+              <th>Home</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -109,7 +115,18 @@
                     'activo': e.estado === true,
                     'inactivo': e.estado === false
                   }">
-                  {{ e.estado ? 'Activo' : 'Inactivo' }}
+                  {{ e.estado ? 'Activa' : 'Inactiva' }}
+                </span>
+              </td>
+
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'activo': e.mostrar_en_home === true,
+                    'inactivo': e.mostrar_en_home !== true
+                  }">
+                  {{ e.mostrar_en_home ? 'Visible' : 'Oculto' }}
                 </span>
               </td>
 
@@ -175,7 +192,7 @@
     <div class="panel-ubicacion-header">
       <div>
         <h2>📍 Ubicación secreta — {{ eventoUbicacion?.nombre }}</h2>
-        <p class="subtitulo">ZAIRO LOST TRIP · visible solo para compradores confirmados</p>
+        <p class="subtitulo">Datos privados del evento · visibles solo según la configuración definida</p>
       </div>
       <button class="btn-cerrar" (click)="cerrarUbicacion()">✕</button>
     </div>
