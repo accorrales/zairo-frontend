@@ -27,7 +27,8 @@ export class Eventos implements OnInit {
     ubicacion: '',
     precio: null as number | null,
     imagen: '',
-    estado: true
+    estado: true,
+    mostrar_en_home: false
   };
 
   editando = false;
@@ -86,7 +87,8 @@ export class Eventos implements OnInit {
       ubicacion: this.nuevoEvento.ubicacion,
       precio: this.nuevoEvento.precio || 0,
       imagen: this.nuevoEvento.imagen,
-      estado: this.nuevoEvento.estado
+      estado: this.nuevoEvento.estado,
+      mostrar_en_home: this.nuevoEvento.mostrar_en_home
     };
 
     if (this.editando && this.eventoEditandoId !== null) {
@@ -124,7 +126,8 @@ export class Eventos implements OnInit {
       ubicacion: evento.ubicacion || '',
       precio: Number(evento.precio || 0),
       imagen: evento.imagen || '',
-      estado: evento.estado
+      estado: evento.estado,
+      mostrar_en_home: !!evento.mostrar_en_home
     };
 
     this.editando = true;
@@ -213,7 +216,8 @@ export class Eventos implements OnInit {
       ubicacion: '',
       precio: null,
       imagen: '',
-      estado: true
+      estado: true,
+      mostrar_en_home: false
     };
 
     this.editando = false;
@@ -237,7 +241,7 @@ export class Eventos implements OnInit {
   }
 
   // ===========================================================
-  //  Ubicación secreta (ZAIRO LOST TRIP)
+  //  Ubicación secreta
   // ===========================================================
 
   abrirUbicacion(evento: any): void {

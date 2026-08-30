@@ -1,405 +1,306 @@
-<div class="intro-loader" *ngIf="loadingIntro">
-  <div class="intro-ring-wrap">
-    <img
-      src="/assets/zairo-loader-ring.png"
-      alt="Cargando ZAIRO"
-      class="intro-ring">
-
-    <div class="intro-ring-core">
-      <img
-        src="/assets/zairo-loader-logo.png"
-        alt="Logo ZAIRO"
-        class="intro-ring-logo">
-    </div>
-  </div>
-
-  <div class="intro-loader-copy">
-    <h2 class="intro-loader-kicker">WELCOME TO THE</h2>
-    <h2 class="intro-loader-title">JUNGLE</h2>
-  </div>
-</div>
-
-<div class="zairo-home">
-
-  <div class="site-jungle-bg" aria-hidden="true"></div>
+<div class="infamous-home">
+  <div class="inferno-noise" aria-hidden="true"></div>
+  <div class="inferno-glow inferno-glow--one" aria-hidden="true"></div>
+  <div class="inferno-glow inferno-glow--two" aria-hidden="true"></div>
 
   <header class="navbar">
-    <div class="brand" routerLink="/home">
-      <div class="logo-img">
-        <img
-          src="/assets/zairo-loader-logo.png"
-          alt="ZAIRO Lost Trip">
-      </div>
-
+    <a class="brand" routerLink="/home" aria-label="Inicio ZAIRO">
+      <img src="/assets/zairo-loader-logo.png" alt="ZAIRO">
       <div>
-        <h2>ZAIRO</h2>
-        <span>CLUB</span>
+        <strong>ZAIRO</strong>
+        <span>HALLOWEEN 2026</span>
       </div>
-    </div>
+    </a>
 
     <nav>
-      <a href="" (click)="scrollToSection('historia', $event)">El viaje</a>
-      <a href="" (click)="scrollToSection('como-funciona', $event)">Cómo funciona</a>
-      <a href="" (click)="scrollToSection('lineup', $event)">Lineup</a>
-      <a href="" class="nav-buy" (click)="scrollToSection('eventos', $event)">
-        Comprar
+      <a
+        href="https://www.instagram.com/zairo.cr/"
+        target="_blank"
+        rel="noopener noreferrer">
+        @ZAIRO.CR
       </a>
-      <a routerLink="/login" class="login-btn">Mi cuenta</a>
+      <a routerLink="/login" class="account-link">Mi cuenta</a>
     </nav>
   </header>
 
-  <!-- ENTRADA CINEMATOGRÁFICA CON SCROLL -->
-  <section class="scroll-sequence scroll-sequence-intro" #scrollSequence>
-    <div class="scroll-sequence-sticky">
-
-      <div class="scroll-sequence-fallback"></div>
-
-      <canvas #sequenceCanvas></canvas>
-
-      <div class="sequence-premium-overlay"></div>
-      <div class="sequence-noise"></div>
-      <div class="sequence-frame"></div>
-
-      <div class="sequence-orb sequence-orb-one"></div>
-      <div class="sequence-orb sequence-orb-two"></div>
-
-      <div class="sequence-fog sequence-fog-one"></div>
-      <div class="sequence-fog sequence-fog-two"></div>
-      <div class="sequence-fog sequence-fog-three"></div>
-
-      <div class="sequence-leaves sequence-leaves-left"></div>
-      <div class="sequence-leaves sequence-leaves-right"></div>
-
-      <div class="sequence-progress">
-        <div class="sequence-progress-top">
-          <span>ZAIRO LOST TRIP</span>
-          <strong class="sequence-progress-count">01 / 16</strong>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          ZAIRO PRESENTA · HALLOWEEN 2026
         </div>
 
-        <div class="sequence-progress-bar">
-          <i></i>
+        <div class="hero-title-wrap">
+          <span class="pre-title">31 · 10 · 26</span>
+          <h1>{{ halloween.titulo }}</h1>
+          <h2>{{ halloween.subtitulo }}</h2>
+        </div>
+
+        <p class="hero-line">
+          {{ halloween.frase }}
+        </p>
+
+        <div class="status-card" [class.status-card--live]="ventaAbierta">
+          <ng-container *ngIf="!cargando; else loadingStatus">
+            <ng-container *ngIf="ventaAbierta && proximoEvento; else teaserStatus">
+              <div class="status-kicker status-kicker--live">
+                <span></span>
+                ENTRADAS DISPONIBLES
+              </div>
+
+              <h3>{{ proximoEvento.nombre }}</h3>
+              <p>
+                Las puertas ya están abiertas. Entrá al evento para ver
+                entradas, precios y la información disponible.
+              </p>
+
+              <a
+                class="primary-cta"
+                [routerLink]="['/evento', proximoEvento.id_evento]">
+                Ver entradas
+              </a>
+            </ng-container>
+
+            <ng-template #teaserStatus>
+              <div class="status-kicker">
+                <span></span>
+                PRÓXIMAMENTE
+              </div>
+
+              <h3>Las puertas todavía están cerradas.</h3>
+              <p>
+                El evento ya puede vivir en el Home sin revelar ubicación,
+                precios, lineup ni entradas hasta que decidás activar la venta.
+              </p>
+
+              <div class="locked-cta" aria-disabled="true">
+                Información próximamente
+              </div>
+            </ng-template>
+          </ng-container>
+
+          <ng-template #loadingStatus>
+            <div class="status-kicker">
+              <span></span>
+              CARGANDO
+            </div>
+            <h3>Preparando el portal...</h3>
+          </ng-template>
+        </div>
+
+        <div class="countdown" aria-label="Cuenta regresiva">
+          <div>
+            <strong>{{ countdown.dias }}</strong>
+            <span>DÍAS</span>
+          </div>
+          <div>
+            <strong>{{ countdown.horas }}</strong>
+            <span>HRS</span>
+          </div>
+          <div>
+            <strong>{{ countdown.minutos }}</strong>
+            <span>MIN</span>
+          </div>
+          <div>
+            <strong>{{ countdown.segundos }}</strong>
+            <span>SEG</span>
+          </div>
         </div>
       </div>
 
-      <div class="scroll-sequence-copy">
-        <span>PORTAL ACCESS</span>
-        <h2>La selva no se encuentra. Te llama.</h2>
-      </div>
+      <div class="poster-column">
+        <div class="poster-aura" aria-hidden="true"></div>
 
-      <a href="" class="scroll-cue" (click)="scrollToSection('hero', $event)">
-        <span class="mouse"></span>
-        Scroll
-      </a>
-
-    </div>
-  </section>
-
-  <!-- HERO PRINCIPAL -->
-  <section class="hero" id="hero">
-    <div class="hero-bg">
-      <img
-        [src]="proximoEvento?.imagen || 'https://images.unsplash.com/photo-1511497584788-876760111969'"
-        alt="Lost Trip"
-        fetchpriority="high"
-        loading="eager"
-        decoding="async">
-    </div>
-
-    <div class="hero-video-fake"></div>
-    <div class="hero-shade"></div>
-
-    <div class="leaf leaf-1"></div>
-    <div class="leaf leaf-2"></div>
-    <div class="leaf leaf-3"></div>
-
-    <div class="jungle-fog fog-one"></div>
-    <div class="jungle-fog fog-two"></div>
-    <div class="particles"></div>
-
-    <div class="hero-content reveal">
-      <p>
-        Lost Trip es una noche inmersiva de música, luces, visuales selváticos,
-        niebla y acceso digital seguro. Comprás tu pase, confirmás tu entrada
-        y recibís un QR único para ingresar al viaje.
-      </p>
-
-      <div class="hero-actions">
-        <a href="" class="primary-btn" (click)="scrollToSection('eventos', $event)">
-          Comprar entrada
-        </a>
-        <a href="" class="secondary-btn" (click)="scrollToSection('como-funciona', $event)">
-          Cómo funciona
-        </a>
-      </div>
-
-      <div class="countdown" *ngIf="proximoEvento">
-        <div><strong>{{ countdown.dias }}</strong><span>Días</span></div>
-        <div><strong>{{ countdown.horas }}</strong><span>Horas</span></div>
-        <div><strong>{{ countdown.minutos }}</strong><span>Min</span></div>
-        <div><strong>{{ countdown.segundos }}</strong><span>Seg</span></div>
-      </div>
-    </div>
-
-    <div
-      class="ticket-3d"
-      *ngIf="proximoEvento"
-      [style.transform]="ticketTransform"
-      (mousemove)="moverTicket($event)"
-      (mouseleave)="resetTicket()">
-
-      <div class="ticket-top">
-        <span>ZAIRO PASS</span>
-        <small>OFFICIAL ACCESS</small>
-      </div>
-
-      <h3>{{ proximoEvento.nombre }}</h3>
-      <p>Welcome to the Jungle</p>
-
-      <div class="ticket-qr">
-        <span *ngFor="let x of ticketQrDots"></span>
-      </div>
-
-      <div class="ticket-meta">
-        <small>{{ formatearFecha(proximoEvento.fecha) }}</small>
-        <small>{{ proximoEvento.ubicacion || 'Secret Location' }}</small>
-      </div>
-
-      <a [routerLink]="['/evento', proximoEvento.id_evento]">Ver entradas</a>
-    </div>
-  </section>
-
-  <section class="trip-alert reveal">
-    <span>ACCESO LIMITADO</span>
-    <p>
-      La experiencia está diseñada para cupo limitado. Cada entrada confirmada
-      recibe un QR único para validación en puerta.
-    </p>
-  </section>
-
-  <section class="how-it-works reveal" id="como-funciona">
-    <div class="section-title">
-      <span>HOW IT WORKS</span>
-      <h2>Comprá tu pase en 3 pasos</h2>
-      <p>Un proceso simple, seguro y listo para entrar sin filas ni enredos.</p>
-    </div>
-
-    <div class="steps-grid">
-      <article>
-        <span>01</span>
-        <h3>Elegís tu entrada</h3>
-        <p>
-          Seleccionás el tipo de pase disponible para Lost Trip y completás
-          los datos de las personas que van a asistir.
-        </p>
-      </article>
-
-      <article>
-        <span>02</span>
-        <h3>Confirmás por WhatsApp</h3>
-        <p>
-          Enviás el comprobante de pago para que el equipo ZAIRO pueda validar
-          tu compra de forma segura.
-        </p>
-      </article>
-
-      <article>
-        <span>03</span>
-        <h3>Recibís tu QR oficial</h3>
-        <p>
-          Tu entrada llega con un código único. En puerta se escanea y se valida
-          en tiempo real.
-        </p>
-      </article>
-    </div>
-  </section>
-
-  <section class="lineup-section reveal" id="lineup">
-    <div class="section-title">
-      <span>LINEUP</span>
-      <h2>Los que llaman a la selva</h2>
-      <p>Algunos nombres ya despertaron. Deeikel se suma a la selva como artista invitado.</p>
-    </div>
-
-    <div class="lineup-showcase">
-      <div class="lineup-official-grid" aria-label="Lineup oficial ZAIRO">
-        <article class="lineup-art-card lineup-art-card--baru">
+        <div class="poster-frame">
           <img
-            src="/assets/lineup/baru-zairo-lineup.png"
-            alt="DJ Baru - ZAIRO LOST TRIP"
-            class="lineup-art-card__image"
-            width="1254"
-            height="1254"
-            loading="lazy"
-            decoding="async">
-        </article>
-
-        <article class="lineup-art-card lineup-art-card--vargas">
-          <img
-            src="/assets/lineup/vargas-zairo-lineup.png"
-            alt="DJ Vargas - ZAIRO LOST TRIP"
-            class="lineup-art-card__image"
-            width="1254"
-            height="1254"
-            loading="lazy"
-            decoding="async">
-        </article>
-
-        <article class="lineup-art-card lineup-art-card--fari">
-          <img
-            src="/assets/lineup/fari-zairo-lineup.png"
-            alt="DJ Fari - ZAIRO LOST TRIP"
-            class="lineup-art-card__image"
-            width="1254"
-            height="1254"
-            loading="lazy"
-            decoding="async">
-        </article>
-
-        <article class="lineup-art-card lineup-art-card--junno">
-          <img
-            src="/assets/lineup/junno-zairo-lineup.png"
-            alt="DJ Junno Aponte - ZAIRO LOST TRIP"
-            class="lineup-art-card__image"
-            width="1254"
-            height="1254"
-            loading="lazy"
-            decoding="async">
-        </article>
-      </div>
-
-      <div class="lineup-secondary-grid">
-        <article class="lineup-art-card lineup-art-card--deeikel">
-          <img
-            src="/assets/lineup/deeikel-line-up.png"
-            alt="Deeikel - Artista invitado ZAIRO LOST TRIP"
-            class="lineup-art-card__image"
-            width="1080"
-            height="1080"
-            loading="lazy"
-            decoding="async">
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="secret-location reveal" id="ubicacion">
-    <div class="map-card">
-      <div class="map-grid"></div>
-      <div class="map-pulse"></div>
-
-      <div class="coordinates">
-        <span>LOCATION DROP</span>
-        <h2>Ubicación revelada a compradores</h2>
-        <p>La dirección oficial se comparte únicamente con entradas confirmadas.</p>
-      </div>
-    </div>
-
-    <div class="location-copy">
-      <span>SAFE ACCESS</span>
-      <h2>Más control. Mejor experiencia.</h2>
-      <p>
-        ZAIRO maneja acceso digital, QR único, validación en puerta y comunicación
-        directa por WhatsApp para que cada viajero llegue con su entrada confirmada.
-      </p>
-
-      <div class="location-points">
-        <div>QR único por persona</div>
-        <div>Validación anti duplicado</div>
-        <div>Soporte antes del evento</div>
-        <div>Cupo limitado</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="ticket-types reveal">
-    <div class="section-title">
-      <span>ACCESS LEVELS</span>
-      <h2>Tipos de entrada</h2>
-    </div>
-
-    <div class="ticket-types-grid">
-      <article>
-        <span>ZONA</span>
-        <h3>GENERAL</h3>
-        <p>Acceso oficial al viaje.</p>
-      </article>
-
-      <article class="featured">
-        <span>ZONA </span>
-        <h3>PUNCH CLUB</h3>
-        <p>Para quienes quieren vivir la experiencia completa.</p>
-      </article>
-
-      <article>
-        <span>ZONA </span>
-        <h3>SOLEO</h3>
-        <p>Cupo limitado para grupos y comunidad ZAIRO que quieren vivir la fiesta al máximo.</p>
-      </article>
-    </div>
-  </section>
-
-  <section id="eventos" class="events-section">
-    <div class="section-title reveal">
-      <span>ENTRADAS OFICIALES</span>
-      <h2>Elegí tu pase al Lost Trip</h2>
-      <p>Seleccioná el evento y comprá tu entrada digital con QR oficial ZAIRO.</p>
-    </div>
-
-    <div *ngIf="cargando" class="estado">
-      Cargando experiencias ZAIRO...
-    </div>
-
-    <div class="events-grid" *ngIf="!cargando && eventos.length > 0">
-      <article class="event-card reveal" *ngFor="let e of eventos; trackBy: trackByEventoId">
-        <div class="image-wrap">
-          <img
-            [src]="e.imagen || 'https://images.unsplash.com/photo-1511497584788-876760111969'"
-            alt="Imagen del evento"
-            loading="lazy"
+            *ngIf="imagenPrincipal; else posterFallback"
+            [src]="imagenPrincipal"
+            [alt]="nombreEventoActivo + ' - Halloween 2026'"
+            fetchpriority="high"
+            loading="eager"
             decoding="async">
 
-          <div class="date-badge">{{ formatearFecha(e.fecha) }}</div>
+          <ng-template #posterFallback>
+            <div class="poster-fallback">
+              <div class="blood-moon"></div>
+              <div class="hell-gate">
+                <span></span>
+              </div>
+              <div class="fallback-copy">
+                <small>ZAIRO PRESENTA</small>
+                <strong>INFAMOUS</strong>
+                <span>EL DESPERTAR DEL INFIERNO</span>
+                <em>31.10.26</em>
+              </div>
+            </div>
+          </ng-template>
         </div>
 
-        <div class="event-info">
-          <span class="event-tag">LOST TRIP</span>
-          <h3>{{ e.nombre }}</h3>
+        <div class="poster-meta">
+          <span>HALLOWEEN 2026</span>
+          <strong>{{ formatearFecha(fechaPrincipal) }}</strong>
+        </div>
+      </div>
+    </section>
 
-          <p>
-            {{ e.descripcion || 'Lost Trip: una experiencia ZAIRO con música, comunidad y acceso digital.' }}
-          </p>
+    <section class="date-band">
+      <div>
+        <span>SAVE THE DATE</span>
+        <strong>{{ formatearFecha(fechaPrincipal) }}</strong>
+      </div>
 
-          <div class="meta">
-            <span>📍 {{ e.ubicacion || 'Ubicación por anunciar' }}</span>
-            <span>🎟️ Desde {{ formatearMoneda(e.precio) }}</span>
+      <div class="date-band-center">
+        <span>PRÓXIMA EXPERIENCIA</span>
+        <strong>INFAMOUS</strong>
+      </div>
+
+      <div class="date-band-right">
+        <span>FOLLOW THE SIGNAL</span>
+        <strong>@ZAIRO.CR</strong>
+      </div>
+    </section>
+
+    <section class="mystery-section" *ngIf="!ventaAbierta">
+      <div class="section-number">01</div>
+
+      <div class="mystery-copy">
+        <span>THE GATE IS CLOSED</span>
+        <h2>No todo se revela de una vez.</h2>
+        <p>
+          Mientras la venta esté inactiva, el Home muestra únicamente la
+          identidad visual, el nombre y la fecha del próximo evento. El resto
+          permanece bloqueado.
+        </p>
+      </div>
+
+      <div class="mystery-list">
+        <div>
+          <span>01</span>
+          <p>Ubicación</p>
+          <strong>CLASIFICADA</strong>
+        </div>
+        <div>
+          <span>02</span>
+          <p>Entradas</p>
+          <strong>BLOQUEADAS</strong>
+        </div>
+        <div>
+          <span>03</span>
+          <p>Lineup</p>
+          <strong>NO REVELADO</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="active-event-section" *ngIf="ventaAbierta && proximoEvento">
+      <div class="section-heading">
+        <span>EVENTO ACTIVO</span>
+        <h2>La puerta ya se abrió.</h2>
+        <p>
+          {{ proximoEvento.descripcion || 'La próxima experiencia ZAIRO ya tiene entradas disponibles.' }}
+        </p>
+      </div>
+
+      <article class="active-event-card">
+        <div class="active-event-image">
+          <img
+            [src]="proximoEvento.imagen"
+            [alt]="proximoEvento.nombre"
+            loading="lazy"
+            decoding="async"
+            *ngIf="proximoEvento.imagen">
+
+          <div class="active-event-date">
+            {{ formatearFecha(proximoEvento.fecha) }}
+          </div>
+        </div>
+
+        <div class="active-event-info">
+          <span>ENTRADAS OFICIALES</span>
+          <h3>{{ proximoEvento.nombre }}</h3>
+          <p>{{ formatearFechaLarga(proximoEvento.fecha) }}</p>
+
+          <div class="event-meta">
+            <div>
+              <small>UBICACIÓN</small>
+              <strong>{{ proximoEvento.ubicacion || 'Por anunciar' }}</strong>
+            </div>
+            <div>
+              <small>DESDE</small>
+              <strong>{{ formatearMoneda(proximoEvento.precio) }}</strong>
+            </div>
           </div>
 
-          <a class="buy-btn" [routerLink]="['/evento', e.id_evento]">
-            Ver entradas
+          <a
+            class="primary-cta"
+            [routerLink]="['/evento', proximoEvento.id_evento]">
+            Comprar entrada
           </a>
         </div>
       </article>
+    </section>
+
+    <section class="more-events" *ngIf="eventosAdicionales.length > 0">
+      <div class="section-heading">
+        <span>PRÓXIMAS EXPERIENCIAS</span>
+        <h2>Lo que viene después.</h2>
+      </div>
+
+      <div class="events-grid">
+        <article
+          class="event-card"
+          *ngFor="let e of eventosAdicionales; trackBy: trackByEventoId"
+          [class.event-card--teaser]="e.estado !== true">
+
+          <div class="event-card-image">
+            <img
+              *ngIf="e.imagen"
+              [src]="e.imagen"
+              [alt]="e.nombre"
+              loading="lazy"
+              decoding="async">
+
+            <span>{{ formatearFecha(e.fecha) }}</span>
+          </div>
+
+          <div class="event-card-body">
+            <small>{{ e.estado ? 'VENTA ACTIVA' : 'PRÓXIMAMENTE' }}</small>
+            <h3>{{ e.nombre }}</h3>
+
+            <ng-container *ngIf="e.estado; else cardLocked">
+              <p>{{ e.descripcion || 'Experiencia ZAIRO' }}</p>
+              <a [routerLink]="['/evento', e.id_evento]">Ver entradas</a>
+            </ng-container>
+
+            <ng-template #cardLocked>
+              <p>Información bloqueada hasta la apertura oficial.</p>
+              <span class="mini-lock">CERRADO</span>
+            </ng-template>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-brand">
+      <img src="/assets/zairo-loader-logo.png" alt="ZAIRO">
+      <div>
+        <strong>ZAIRO</strong>
+        <span>Occidente · Costa Rica</span>
+      </div>
     </div>
 
-    <div *ngIf="!cargando && eventos.length === 0" class="estado">
-      No hay eventos activos por el momento.
-    </div>
-  </section>
+    <p>
+      INFAMOUS · EL DESPERTAR DEL INFIERNO · HALLOWEEN 2026
+    </p>
 
-  <section class="final-cta reveal">
-    <span>ZAIRO LOST TRIP</span>
-    <h2>El próximo viaje empieza con tu entrada.</h2>
-    <a href="" (click)="scrollToSection('eventos', $event)">
-      Comprar ahora
+    <a
+      href="https://www.instagram.com/zairo.cr/"
+      target="_blank"
+      rel="noopener noreferrer">
+      @ZAIRO.CR
     </a>
-  </section>
-
-  <a class="whatsapp-float" [href]="whatsappUrl" target="_blank">
-    WhatsApp
-  </a>
-
-  <a class="mobile-buy-bar" href="" (click)="scrollToSection('eventos', $event)">
-    Comprar entrada
-  </a>
-
+  </footer>
 </div>
