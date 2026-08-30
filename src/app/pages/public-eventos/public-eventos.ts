@@ -17,6 +17,8 @@ export class PublicEventos implements OnInit, OnDestroy {
   eventos: any[] = [];
   cargando = true;
 
+  readonly infamousFlyer = '/assets/infamous/infamous-flyer.webp';
+
   readonly halloween = {
     titulo: 'INFAMOUS',
     subtitulo: 'EL DESPERTAR DEL INFIERNO',
@@ -77,7 +79,11 @@ export class PublicEventos implements OnInit, OnDestroy {
   }
 
   get imagenPrincipal(): string {
-    return this.proximoEvento?.imagen || '';
+    if (!this.ventaAbierta) {
+      return this.infamousFlyer;
+    }
+
+    return this.proximoEvento?.imagen || this.infamousFlyer;
   }
 
   get fechaPrincipal(): string {
