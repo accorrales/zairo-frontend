@@ -1,0 +1,180 @@
+:host {
+  display: block;
+  color: #f6f1f2;
+  font-family: 'Segoe UI',sans-serif;
+}
+
+section {
+  padding: 90px 0;
+}
+
+.heading {
+  margin-bottom: 34px;
+}
+
+span,.heading>span {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #ff7e91;
+}
+
+h2 {
+  font-size: clamp(32px,4vw,60px);
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin: 18px 0;
+}
+
+p {
+  color: #c4b9bd;
+  line-height: 1.8;
+  max-width: 430px;
+}
+
+.artists {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 20px;
+}
+
+article {
+  position: relative;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  border: 1px solid #ffffff25;
+  border-radius: 4px 40px 4px 4px;
+  background: #131115;
+}
+
+article img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  filter: saturate(.55);
+  transition: transform .6s,filter .6s;
+}
+
+article:hover img {
+  transform: scale(1.04);
+  filter: saturate(1);
+}
+
+.artist-caption {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 50px 24px 24px;
+  background: linear-gradient(transparent,#08080bea);
+}
+
+.artist-caption small {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #e4c5ce;
+}
+
+h3 {
+  font-size: clamp(26px,4vw,42px);
+  margin: 8px 0 0;
+  letter-spacing: 2px;
+}
+
+.pending {
+  height: 100%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  background: radial-gradient(ellipse,#60112370,transparent 65%),linear-gradient(145deg,#ffffff0b,transparent);
+}
+
+.pending span {
+  font-size: 120px;
+  color: #ffffff20;
+}
+
+.pending small {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #c4b9bd;
+}
+
+.story {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  align-items: center;
+  border-top: 1px solid #ffffff20;
+}
+
+.story-copy {
+  padding-right: 20px;
+}
+
+.story-copy>small {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #c4b9bd;
+}
+
+.story figure {
+  margin: 0;
+  position: relative;
+}
+
+.story img {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  border: 1px solid #ffffff25;
+  border-radius: 80px 4px 4px 4px;
+}
+
+.story .second {
+  margin-top: 100px;
+}
+
+.story figcaption {
+  font-size: 11px;
+  color: #c4b9bd;
+  line-height: 1.6;
+  margin-top: 12px;
+}
+
+@media (max-width:700px) {
+  section {
+    padding: 60px 0;
+  }
+
+  .artists {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 12px;
+  }
+
+  .artist-caption {
+    padding: 40px 14px 18px;
+  }
+
+  .story {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .story-copy {
+    grid-column: 1/-1;
+    padding: 0;
+  }
+
+  .story .second {
+    margin-top: 60px;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  article img {
+    transition: none;
+  }
+
+  article:hover img {
+    transform: none;
+  }
+}
