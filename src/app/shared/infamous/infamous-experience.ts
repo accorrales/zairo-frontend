@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 export const INFAMOUS_ASSETS = '/assets/infamous/v2/';
 export function isInfamous(event: any): boolean {
@@ -13,20 +13,57 @@ export function isInfamous(event: any): boolean {
   template: `
     <div class="film">
       <img [src]="assets + 'portal.webp'" alt="Un portal de cristal rojo se abre en una catedral oscura" fetchpriority="high">
-      <video *ngIf="playVideo && !failed" [src]="assets + 'hero.mp4'" autoplay muted loop playsinline preload="none" [muted]="true" (error)="failed = true" aria-label="Película visual de INFAMOUS"></video>
-      <button *ngIf="!failed" type="button" (click)="toggle()" [attr.aria-pressed]="playVideo">{{ playVideo ? 'Pausar visual' : 'Reproducir visual' }}</button>
+      <video #film *ngIf="playVideo && !failed" [src]="assets + 'hero.mp4'" [poster]="assets + 'portal.webp'" autoplay muted loop playsinline preload="metadata" [muted]="true" (playing)="playing = true" (pause)="playing = false" (error)="failed = true; playing = false" aria-label="Película visual de INFAMOUS"></video>
+      <button type="button" (click)="toggle()" [attr.aria-pressed]="playing">{{ playing ? 'Pausar visual' : failed ? 'Reintentar visual' : 'Reproducir visual' }}</button>
     </div>`,
   styles: [`:host{display:block;height:100%}.film{height:100%;position:relative;background:#09090b;overflow:hidden}.film img,.film video{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}.film button{position:absolute;bottom:24px;right:24px;z-index:3;color:#fff;border:1px solid #ffffff60;background:#09090bd9;padding:12px 18px;border-radius:30px;font:inherit;font-size:12px;cursor:pointer}.film button:focus-visible{outline:3px solid #ff667e;outline-offset:4px}`]
 })
 export class InfamousFilm implements OnInit {
   readonly assets = INFAMOUS_ASSETS;
   playVideo = false;
+  playing = false;
   failed = false;
-  // Toggling removes the video element, which also stops downloading on mobile.
+  @ViewChild('film') film?: ElementRef<HTMLVideoElement>;
   ngOnInit(): void {
-    this.playVideo = typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(min-width: 900px) and (prefers-reduced-motion: no-preference)').matches;
+    this.playVideo = typeof window !== 'undefined' && typeof window.matchMedia === 'function' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
-  toggle(): void { this.playVideo = !this.playVideo; }
+  toggle(): void {
+    if (this.playing) {
+      this.playVideo = false;
+      this.playing = false;
+      return;
+    }
+    this.failed = false;
+    this.playVideo = true;
+    // If autoplay was blocked, reuse the element during this user gesture.
+    this.film?.nativeElement.play()?.catch(() => { this.playing = false; });
+  }
+}
+
+@Component({
+  selector: 'app-infamous-intro',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <section class="intro-film" aria-labelledby="intro-film-title">
+      <div class="intro-copy"><span>LA PRIMERA SEÑAL / FILM OFICIAL</span><h2 id="intro-film-title">Todo empieza<br>con un despertar.</h2><p>Entrá al universo de INFAMOUS. Mirá la introducción y dejá que la noche tome forma.</p><small>EL DESPERTAR DE LAS ALMAS</small></div>
+      <div class="intro-screen">
+        <video #intro [src]="assets + 'intro.mp4'" [poster]="assets + 'intro-poster.webp'" playsinline controls preload="none" (playing)="started = true; failed = false" (error)="failed = true" aria-label="Introducción oficial de INFAMOUS, El despertar de las almas"></video>
+        <button *ngIf="!started" type="button" (click)="play(intro)">{{ failed ? 'Reintentar intro' : 'Ver intro' }} <span aria-hidden="true">▶</span></button>
+        <p *ngIf="failed" class="intro-error" role="status">No se pudo reproducir el intro. Tocá Reintentar intro para volver a cargarlo.</p>
+      </div>
+    </section>`,
+  styleUrl: './infamous-intro.css'
+})
+export class InfamousIntro {
+  readonly assets = INFAMOUS_ASSETS;
+  started = false;
+  failed = false;
+  play(video: HTMLVideoElement): void {
+    if (this.failed) video.load();
+    this.failed = false;
+    video.play()?.catch(() => { this.failed = true; });
+  }
 }
 
 @Component({

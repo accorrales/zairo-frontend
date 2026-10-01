@@ -1,8 +1,8 @@
 <div class="infamous-home">
-  <a class="skip-link" href="#experiencia">Saltar al contenido</a>
+  <a class="skip-link" [routerLink]="['/home']" fragment="experiencia">Saltar al contenido</a>
   <header class="navbar">
     <a class="brand" routerLink="/home" aria-label="Inicio ZAIRO"><img src="/assets/infamous/v2/zairo-mark.webp" alt="ZAIRO"><span>ZAIRO<small>AFTER DARK EXPERIENCES</small></span></a>
-    <nav aria-label="Navegación principal"><a href="#lineup" *ngIf="esInfamous">Lineup</a><a href="#experiencia">La experiencia</a><a routerLink="/login">Mi cuenta ↗</a></nav>
+    <nav aria-label="Navegación principal"><a [routerLink]="['/home']" fragment="lineup" (click)="irASeccion('lineup', $event)" *ngIf="esInfamous">Lineup</a><a [routerLink]="['/home']" fragment="experiencia" (click)="irASeccion('experiencia', $event)">La experiencia</a><a routerLink="/login">Mi cuenta ↗</a></nav>
   </header>
   <main>
     <section class="hero" aria-labelledby="hero-title">
@@ -29,6 +29,7 @@
     </section>
     <div class="content" id="experiencia">
       <section class="intro"><span class="eyebrow">UN UNIVERSO ZAIRO</span><h2>{{ esInfamous ? 'La noche se transforma. Vos también.' : nombreEventoActivo }}</h2><p>{{ proximoEvento?.descripcion || 'Negro profundo. Cristal encendido. Música que atraviesa las sombras. Una experiencia creada para sentir Halloween desde otro lugar.' }}</p></section>
+      <app-infamous-intro *ngIf="esInfamous"></app-infamous-intro>
       <app-infamous-experience *ngIf="esInfamous"></app-infamous-experience>
       <section class="ticket-invite">
         <div><span class="eyebrow">03 / TU LUGAR EN LA NOCHE</span><h2>Elegí cómo vivirla.</h2><p>Explorá las zonas, consultá la tarifa disponible y reservá tu entrada. El plano definitivo se revelará próximamente.</p></div>

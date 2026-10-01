@@ -13,6 +13,12 @@ describe('PublicEventos dynamic experience', () => {
     return fixture;
   }
   afterEach(() => TestBed.resetTestingModule());
+  it('uses Angular route fragments for the two section links', () => {
+    const fixture = create([event]);
+    const links = fixture.nativeElement.querySelectorAll('nav a');
+    expect(links[0].getAttribute('href')).toBe('/home#lineup');
+    expect(links[1].getAttribute('href')).toBe('/home#experiencia');
+  });
   it('normalizes the backend envelope, filters old events and links to the real event', () => {
     const fixture = create({ data: [{ ...event, id_evento: 1, fecha: '2000-01-01' }, event] });
     expect(fixture.componentInstance.eventos.length).toBe(1);

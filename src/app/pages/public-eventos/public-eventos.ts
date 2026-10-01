@@ -2,12 +2,12 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { EventosService } from '../../core/services/eventos.service';
-import { InfamousExperience, InfamousFilm, isInfamous } from '../../shared/infamous/infamous-experience';
+import { InfamousExperience, InfamousFilm, InfamousIntro, isInfamous } from '../../shared/infamous/infamous-experience';
 
 @Component({
   selector: 'app-public-eventos',
   standalone: true,
-  imports: [CommonModule, RouterLink, InfamousExperience, InfamousFilm],
+  imports: [CommonModule, RouterLink, InfamousExperience, InfamousFilm, InfamousIntro],
   templateUrl: './public-eventos.html',
   styleUrl: './public-eventos.css'
 })
@@ -83,6 +83,14 @@ export class PublicEventos implements OnInit, OnDestroy {
 
   get esInfamous(): boolean {
     return !this.proximoEvento || isInfamous(this.proximoEvento);
+  }
+
+  irASeccion(id: string, event: MouseEvent): void {
+    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    const section = document.getElementById(id);
+    if (!section) return;
+    const reduced = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    section.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
   }
 
   get imagenPrincipal(): string {

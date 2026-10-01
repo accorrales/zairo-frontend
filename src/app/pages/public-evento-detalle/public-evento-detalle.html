@@ -1,6 +1,6 @@
 <div class="lost-detail">
 
-  <a class="skip-link" href="#entradas">Saltar a las entradas</a>
+  <a class="skip-link" href="#entradas" (click)="$event.preventDefault(); irAEntradas()">Saltar a las entradas</a>
   <div class="intro-loader" *ngIf="cargando" role="status" aria-label="Cargando evento">
     <img class="loader-logo" src="/assets/infamous/v2/zairo-mark.webp" alt="ZAIRO">
     <p class="loader-copy">Abriendo el portal…</p>

@@ -8,7 +8,7 @@ Trabajo sobre `feat/infamous-home-redesign-v2`, partiendo de `17bb6072058247b3d1
 - El Home sigue consultando `obtenerEventosActivos()`, normalizando las respuestas array, `eventos` o `data`, filtrando fechas pasadas y ordenando por fecha. Fecha, nombre, ubicación, links y estado de venta usan el evento del backend.
 - El universo visual INFAMOUS se muestra si el próximo evento tiene INFAMOUS en su nombre o si todavía no hay un evento publicado. Otro evento usa su nombre, descripción e imagen y no recibe este lineup. La fecha de fallback sigue siendo el 31 de octubre de 2026; no permite comprar por sí sola.
 - Subtítulo: **El despertar de las almas**. El detalle comparte las fotos y las escenas del Home y conserva la ubicación secreta únicamente cuando viene publicada por el backend.
-- Video: H.264, 720 × 1280, 24 fps, sin audio, inicio progresivo. De 21.429.285 a 1.298.513 bytes. En escritorio inicia silenciado; en móvil o con movimiento reducido comienza con imagen. Tiene control para pausar/reproducir y respaldo ante un error de video.
+- Video: H.264, 720 × 1280, 24 fps, sin audio, inicio progresivo. De 21.429.285 a 1.298.513 bytes. Inicia silenciado en escritorio y móvil; con movimiento reducido comienza con imagen y permite reproducción manual. Tiene control para pausar/reproducir y respaldo ante un error de video.
 - Fotos: 4BES, JUNNO, VARGAS, BARU y JOAO. JUNE queda con retrato por revelar porque su carpeta no contiene imágenes. Los nombres siguen las carpetas del pack.
 - Accesibilidad básica: navegación semántica, enlaces para saltar contenido, estados de carga/error, foco visible, etiquetas asociadas a los campos, selección de zona con `aria-pressed` y respeto de movimiento reducido.
 
@@ -92,3 +92,10 @@ Revisar escritorio/móvil, video y pausa, lineup, cuenta regresiva, zona disponi
 Para comprobar el build: `npm run build`. Para pruebas públicas: usar el comando de 11 pruebas de arriba. La suite completa seguirá mostrando el test previo del título hasta que se actualice por separado.
 
 Para volver a la rama que se encontró inicialmente en esa copia local: `git switch fix/security-dependencies`. Esta tarea se trabajó en una carpeta separada y no cambió esa copia.
+
+## Ajuste de navegación y nuevo intro
+
+- Lineup y La experiencia usan fragmentos del router; también funcionan al repetir el mismo enlace sin recargar la página. Ambos quedan visibles a 320 px.
+- Intro oficial añadido después de la presentación, antes del lineup: video vertical de 30,68 segundos, 720 × 1280, con audio y controles nativos. Carga al tocar Ver intro (preload none). Original: intro infamous.mp4.mp4, 111.460.714 bytes; versión web: 3.678.783 bytes. Poster extraído del mismo video.
+- Comprobación real en Edge a 1440, 390 y 320 px: autoplay silenciado del hero, pausa/reproducción, enlaces repetidos, intro completo y ausencia de desbordamiento o errores JavaScript. Movimiento reducido y reproducción manual comprobados.
+- Compilación directa Angular AOT aprobada. En esta sesión el build y el runner habitual de tests quedaron bloqueados por permisos de lectura de carpetas superiores del entorno; esta limitación no confirma un fallo de código. La comprobación de navegador utilizó una previsualización AOT de revisión. Las cifras de tests/build anteriores corresponden a la entrega anterior.
