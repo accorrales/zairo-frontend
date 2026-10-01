@@ -2,6 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { InfamousExperience, InfamousFilm, isInfamous } from '../../shared/infamous/infamous-experience';
+import { EventZoneSelector } from '../../shared/event-zone-selector/event-zone-selector';
 
 import { EventosService } from '../../core/services/eventos.service';
 import { EntradaTiersService } from '../../core/services/entrada-tiers.service';
@@ -11,7 +13,7 @@ import { CodigosDescuentoService } from '../../core/services/codigos-descuento.s
 @Component({
   selector: 'app-public-evento-detalle',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, InfamousExperience, InfamousFilm, EventZoneSelector],
   templateUrl: './public-evento-detalle.html',
   styleUrl: './public-evento-detalle.css'
 })
@@ -27,17 +29,11 @@ export class PublicEventoDetalle implements OnInit {
   tiers: any[] = [];
 
   zonas: any[] = [];
-  zonasConMapa: any[] = [];
-  zonasSinMapa: any[] = [];
   zonaSeleccionada: any = null;
 
-  /** Imagen del plano del lugar. Guardala en public/assets/ con este nombre. */
-  planoImagen = '/assets/plano-lost-trip.jpg';
-
-  /** Se pone en false si la imagen del plano no carga, para mostrar el respaldo. */
-  planoDisponible = true;
-
   cargando = true;
+  errorCarga = '';
+  get esInfamous(): boolean { return isInfamous(this.evento); }
 
   tierSeleccionado: any = null;
   cantidad = 1;
@@ -81,18 +77,6 @@ export class PublicEventoDetalle implements OnInit {
     { clave: 'general',   nombre: 'Zona General',    icono: '🎟️', keywords: ['general'] }
   ];
 
-  /**
-   * Posición (en % del plano) del marcador de cada zona. Ajustá x/y si
-   * querés mover un punto sobre la imagen (0,0 = arriba-izquierda).
-   */
-  private posicionesMapa: Record<string, { x: number; y: number }> = {
-    general:   { x: 56, y: 58 },
-    punch:     { x: 17, y: 41 },
-    soleo:     { x: 87, y: 27 },
-    vip:       { x: 87, y: 72 },
-    palco:     { x: 13, y: 72 },
-    backstage: { x: 56, y: 13 }
-  };
 
   private regexFase =
     /\b(tier|fase|phase|etapa|preventa|pre-?venta|early\s*-?\s*bird|earlybird)\b\s*\.?\s*([ivxlc]+|\d+)?/i;
@@ -110,6 +94,13 @@ export class PublicEventoDetalle implements OnInit {
   }
 
   cargarDatos(): void {
+    this.errorCarga = '';
+    this.cargando = true;
+    this.tiers = [];
+    this.zonas = [];
+    this.zonaSeleccionada = null;
+    this.tierSeleccionado = null;
+    this.quitarCodigo();
     this.eventosService.obtenerEventoPorId(this.idEvento).subscribe({
       next: (evento) => {
         this.evento = evento;
@@ -117,6 +108,7 @@ export class PublicEventoDetalle implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar evento', err);
+        this.errorCarga = 'No pudimos cargar el evento. Volvé a intentarlo.';
         this.cargando = false;
       }
     });
@@ -136,6 +128,7 @@ export class PublicEventoDetalle implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar tiers', err);
+        this.errorCarga = 'No pudimos consultar las entradas. Volvé a intentarlo.';
         this.cargando = false;
       }
     });
@@ -200,7 +193,6 @@ export class PublicEventoDetalle implements OnInit {
           nombre,
           icono,
           descripcion: tier.descripcion || '',
-          pos: this.posicionesMapa[clave] || null,
           fases: []
         });
         orden.push(clave);
@@ -213,13 +205,20 @@ export class PublicEventoDetalle implements OnInit {
     zonas.forEach((z) => this.calcularFasesZona(z));
 
     this.zonas = zonas;
-    this.zonasConMapa = zonas.filter((z) => z.pos);
-    this.zonasSinMapa = zonas.filter((z) => !z.pos);
 
     // Mantener la zona seleccionada si todavía existe tras recargar.
     if (this.zonaSeleccionada) {
       this.zonaSeleccionada =
         zonas.find((z) => z.clave === this.zonaSeleccionada.clave) || null;
+    }
+    if (this.tierSeleccionado) {
+      const actual = this.zonaSeleccionada?.faseActual;
+      if (this.evento?.estado === true && actual?.id_tier === this.tierSeleccionado.id_tier) {
+        this.tierSeleccionado = actual;
+      } else {
+        this.tierSeleccionado = null;
+      }
+      this.quitarCodigo();
     }
   }
 
@@ -295,8 +294,10 @@ export class PublicEventoDetalle implements OnInit {
     if (!zona) return;
 
     this.zonaSeleccionada = zona;
+    this.tierSeleccionado = null;
     this.mensajeCompra = '';
 
+    this.quitarCodigo();
     if (zona.faseActual) {
       this.seleccionarTier(zona.faseActual);
     } else {
@@ -316,11 +317,6 @@ export class PublicEventoDetalle implements OnInit {
 
   trackByTierId(_index: number, fase: any): unknown {
     return fase?.id_tier ?? _index;
-  }
-
-  /** La imagen del plano falló: ocultamos el <img> y mostramos el respaldo. */
-  onPlanoError(): void {
-    this.planoDisponible = false;
   }
 
   textoBotonZona(zona: any): string {
@@ -371,7 +367,8 @@ export class PublicEventoDetalle implements OnInit {
     if (!el) return;
 
     const y = el.getBoundingClientRect().top + window.pageYOffset - 90;
-    window.scrollTo({ top: y, behavior: 'smooth' });
+    const reducedMotion = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: y, behavior: reducedMotion ? 'auto' : 'smooth' });
   }
 
   // ===========================================================
@@ -379,7 +376,7 @@ export class PublicEventoDetalle implements OnInit {
   // ===========================================================
 
   seleccionarTier(tier: any): void {
-    if (tier.disponibilidad !== 'DISPONIBLE') return;
+    if (this.evento?.estado !== true || tier.disponibilidad !== 'DISPONIBLE') return;
 
     this.tierSeleccionado = tier;
     this.actualizarPersonas();
@@ -496,6 +493,7 @@ export class PublicEventoDetalle implements OnInit {
 
   validarCompra(): string | null {
     if (!this.tierSeleccionado) return 'Seleccioná un tipo de entrada.';
+    if (this.evento?.estado !== true || this.tierSeleccionado.disponibilidad !== 'DISPONIBLE') return 'Esta entrada no está disponible para compra.';
     if (!this.correoComprador.trim()) return 'Ingresá un correo electrónico.';
     if (!this.telefonoComprador.trim()) return 'Ingresá un número de teléfono.';
     if (!this.personas.length) return 'Agregá al menos una persona.';

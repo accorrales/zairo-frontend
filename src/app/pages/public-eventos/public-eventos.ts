@@ -2,11 +2,12 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { EventosService } from '../../core/services/eventos.service';
+import { InfamousExperience, InfamousFilm, isInfamous } from '../../shared/infamous/infamous-experience';
 
 @Component({
   selector: 'app-public-eventos',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, InfamousExperience, InfamousFilm],
   templateUrl: './public-eventos.html',
   styleUrl: './public-eventos.css'
 })
@@ -16,12 +17,13 @@ export class PublicEventos implements OnInit, OnDestroy {
 
   eventos: any[] = [];
   cargando = true;
+  errorCarga = false;
 
   readonly infamousFlyer = '/assets/infamous/infamous-flyer.webp';
 
   readonly halloween = {
     titulo: 'INFAMOUS',
-    subtitulo: 'EL DESPERTAR DEL INFIERNO',
+    subtitulo: 'El despertar de las almas',
     fecha: '2026-10-31T20:00:00-06:00',
     frase: 'Una noche donde los pecados serán permitidos.'
   };
@@ -57,6 +59,7 @@ export class PublicEventos implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('ERROR CARGANDO EVENTOS:', error);
+        this.errorCarga = true;
         this.eventos = [];
         this.cargando = false;
         this.iniciarCountdown();
@@ -76,6 +79,10 @@ export class PublicEventos implements OnInit, OnDestroy {
 
   get ventaAbierta(): boolean {
     return this.proximoEvento?.estado === true;
+  }
+
+  get esInfamous(): boolean {
+    return !this.proximoEvento || isInfamous(this.proximoEvento);
   }
 
   get imagenPrincipal(): string {

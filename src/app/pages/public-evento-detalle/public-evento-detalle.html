@@ -1,41 +1,27 @@
 <div class="lost-detail">
 
-  <div class="intro-loader" *ngIf="cargando">
-    <div class="intro-ring-wrap">
-      <img
-        src="/assets/zairo-loader-ring.png"
-        alt="Cargando ZAIRO"
-        class="intro-ring">
-
-      <div class="intro-ring-core">
-        <img
-          src="/assets/zairo-loader-logo.png"
-          alt="Logo ZAIRO"
-          class="intro-ring-logo">
-      </div>
-    </div>
-
-    <div class="intro-loader-copy">
-      <h2 class="intro-loader-kicker">WELCOME TO THE</h2>
-      <h2 class="intro-loader-title">JUNGLE</h2>
-    </div>
+  <a class="skip-link" href="#entradas">Saltar a las entradas</a>
+  <div class="intro-loader" *ngIf="cargando" role="status" aria-label="Cargando evento">
+    <img class="loader-logo" src="/assets/infamous/v2/zairo-mark.webp" alt="ZAIRO">
+    <p class="loader-copy">Abriendo el portal…</p>
   </div>
 
+  <div class="load-error" *ngIf="!cargando && (errorCarga || !evento)" role="alert"><p>{{ errorCarga || 'Evento no encontrado.' }}</p><button *ngIf="idEvento" (click)="cargarDatos()">Reintentar</button><a routerLink="/home">Volver al Home</a></div>
   <ng-container *ngIf="!cargando && evento">
 
     <header class="lost-nav">
-      <div class="brand" routerLink="/home">
+      <a class="brand" routerLink="/home" aria-label="Inicio ZAIRO">
         <div class="logo-img">
           <img
-            src="/assets/zairo-loader-logo.png"
-            alt="ZAIRO Lost Trip">
+            src="/assets/infamous/v2/zairo-mark.webp"
+            alt="ZAIRO">
         </div>
 
         <div>
           <h2>ZAIRO</h2>
-          <span>Lost Trip</span>
+          <span>{{ evento.nombre }}</span>
         </div>
-      </div>
+      </a>
 
       <a routerLink="/home" class="nav-btn">Volver</a>
     </header>
@@ -43,9 +29,10 @@
     <section class="hero">
 
       <div class="hero-bg">
+        <app-infamous-film *ngIf="esInfamous"></app-infamous-film>
         <img
-          [src]="evento.imagen || 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3'"
-          alt="Lost Trip"
+          *ngIf="!esInfamous" [src]="evento.imagen || '/assets/infamous/v2/portal.webp'"
+          [alt]="evento.nombre"
           fetchpriority="high"
           loading="eager"
           decoding="async">
@@ -57,9 +44,10 @@
         <span class="tag">ZAIRO PRESENTS</span>
 
         <h1>{{ evento.nombre }}</h1>
+        <h2 class="event-subtitle" *ngIf="esInfamous">El despertar de las almas</h2>
 
         <p>
-          {{ evento.descripcion || 'Una experiencia premium lejos de la ciudad, entre naturaleza, música, luces y energía salvaje.' }}
+          {{ evento.descripcion || 'Una noche de música, cristal y sombras. Cruzá el umbral de la próxima experiencia ZAIRO.' }}
         </p>
 
         <div class="hero-info">
@@ -79,12 +67,12 @@
 
     <section class="experience-card">
       <div>
-        <span>LOST TRIP EXPERIENCE</span>
-        <h2>Una noche fuera de la ciudad.</h2>
+        <span>EXPERIENCIA ZAIRO</span>
+        <h2>Una noche en otra dimensión.</h2>
       </div>
 
       <p>
-        Música, ambiente jungle, producción visual, acceso digital y confirmación oficial por WhatsApp.
+        Música, producción visual, acceso digital y confirmación oficial por WhatsApp.
       </p>
     </section>
 
@@ -104,7 +92,7 @@
           <a
             *ngIf="evento.ubicacion_secreta_google_maps_url"
             [href]="evento.ubicacion_secreta_google_maps_url"
-            target="_blank"
+            target="_blank" rel="noopener noreferrer"
             class="ubicacion-btn maps">
             Abrir en Google Maps
           </a>
@@ -112,7 +100,7 @@
           <a
             *ngIf="evento.ubicacion_secreta_waze_url"
             [href]="evento.ubicacion_secreta_waze_url"
-            target="_blank"
+            target="_blank" rel="noopener noreferrer"
             class="ubicacion-btn waze">
             Abrir en Waze
           </a>
@@ -125,75 +113,11 @@
       <div class="section-title">
         <span>MAPA DEL EVENTO</span>
         <h2>Elegí tu zona</h2>
-        <p>Tocá una zona del mapa para ver su precio y comprar. Los precios suben por fases.</p>
+        <p>Elegí una zona para consultar sus fases y la tarifa disponible. Tu selección se conecta con la entrada oficial.</p>
       </div>
 
-      <div class="venue-map" *ngIf="zonas.length > 0; else sinTiers">
-
-        <div class="plano" [class.plano--sin-img]="!planoDisponible">
-          <img
-            class="plano-img"
-            [src]="planoImagen"
-            (error)="onPlanoError()"
-            alt="Plano del lugar — Lost Trip by ZAIRO">
-
-          <div class="hotspots">
-            <button
-              class="hotspot"
-              *ngFor="let z of zonasConMapa; trackBy: trackByClave"
-              [ngClass]="'zone-' + z.clave"
-              [class.selected]="esZonaSeleccionada(z)"
-              [class.no-disp]="z.estado !== 'DISPONIBLE'"
-              [style.left.%]="z.pos.x"
-              [style.top.%]="z.pos.y"
-              (click)="seleccionarZona(z)">
-
-              <span class="hotspot-dot"></span>
-
-              <span class="hotspot-card">
-                <span class="hotspot-nombre">{{ z.nombre }}</span>
-                <span class="hotspot-precio">{{ formatearMoneda(z.precioActual) }}</span>
-                <span
-                  class="status"
-                  [ngClass]="{
-                    'disponible': z.estado === 'DISPONIBLE',
-                    'proximamente': z.estado === 'PROXIMAMENTE',
-                    'cerrado': z.estado === 'CERRADO',
-                    'agotado': z.estado === 'AGOTADO',
-                    'desactivado': z.estado === 'DESACTIVADO'
-                  }">
-                  {{ z.estado }}
-                </span>
-              </span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Zonas sin posición en el plano (si las hubiera) -->
-        <div class="zones-row" *ngIf="zonasSinMapa.length">
-          <button
-            class="zone-area"
-            *ngFor="let z of zonasSinMapa; trackBy: trackByClave"
-            [ngClass]="'zone-' + z.clave"
-            [class.selected]="esZonaSeleccionada(z)"
-            [class.no-disp]="z.estado !== 'DISPONIBLE'"
-            (click)="seleccionarZona(z)">
-
-            <span class="zone-icono">{{ z.icono }}</span>
-            <span class="zone-nombre">{{ z.nombre }}</span>
-            <span class="zone-precio">{{ formatearMoneda(z.precioActual) }}</span>
-            <span class="zone-fases" *ngIf="z.multiFase">↑ Precio por fases</span>
-          </button>
-        </div>
-
-        <p class="map-hint">👆 Tocá una zona del plano para ver el precio y comprar.</p>
-      </div>
-
-      <ng-template #sinTiers>
-        <div class="empty">
-          Este evento todavía no tiene entradas disponibles.
-        </div>
-      </ng-template>
+      <app-event-zone-selector [zones]="zonas" [selectedKey]="zonaSeleccionada?.clave || null" [imageUrl]="evento.mapa_imagen_url || null" (zoneSelected)="seleccionarZona($event)"></app-event-zone-selector>
+      <p class="sale-notice" *ngIf="evento.estado !== true">La venta de este evento todavía no está abierta.</p>
 
       <!-- Detalle de la zona seleccionada -->
       <div class="zone-detail" id="zona-detalle" *ngIf="zonaSeleccionada">
@@ -202,7 +126,7 @@
           <div class="map-head-info">
             <span class="map-now-label">Zona seleccionada</span>
             <h3>{{ zonaSeleccionada.icono }} {{ zonaSeleccionada.nombre }}</h3>
-            <p>{{ zonaSeleccionada.descripcion || 'Entrada oficial para Lost Trip by ZAIRO.' }}</p>
+            <p>{{ zonaSeleccionada.descripcion || 'Entrada oficial para esta experiencia ZAIRO.' }}</p>
           </div>
 
           <span
@@ -271,7 +195,7 @@
 
         <button
           class="select-btn"
-          [disabled]="zonaSeleccionada.estado !== 'DISPONIBLE'"
+          [disabled]="evento.estado !== true || zonaSeleccionada.estado !== 'DISPONIBLE' || !tierSeleccionado"
           (click)="irACheckout()">
           {{ textoBotonZona(zonaSeleccionada) }}
         </button>
@@ -297,8 +221,8 @@
         <div class="form-grid">
 
           <div class="form-group">
-            <label>Cantidad de entradas (máximo {{ maxEntradas }})</label>
-            <select
+            <label for="ticket-quantity">Cantidad de entradas (máximo {{ maxEntradas }})</label>
+            <select id="ticket-quantity"
               [(ngModel)]="cantidad"
               (ngModelChange)="actualizarPersonas()">
               <option *ngFor="let n of opcionesCantidad" [ngValue]="n">
@@ -308,17 +232,17 @@
           </div>
 
           <div class="form-group">
-            <label>Correo electrónico</label>
+            <label for="buyer-email">Correo electrónico</label>
             <input
-              type="email"
+              id="buyer-email" autocomplete="email" type="email"
               [(ngModel)]="correoComprador"
               placeholder="correo@gmail.com">
           </div>
 
           <div class="form-group full">
-            <label>Teléfono</label>
+            <label for="buyer-phone">Teléfono</label>
             <input
-              type="text"
+              id="buyer-phone" autocomplete="tel" type="tel"
               [(ngModel)]="telefonoComprador"
               placeholder="88888888">
           </div>
@@ -334,20 +258,20 @@
             <h3>Persona {{ i + 1 }}</h3>
 
             <div class="form-group">
-              <label>Nombre completo</label>
+              <label [attr.for]="'attendee-name-' + i">Nombre completo</label>
               <input
                 type="text"
-                [(ngModel)]="persona.nombre_completo"
+                [id]="'attendee-name-' + i" autocomplete="name" [(ngModel)]="persona.nombre_completo"
                 placeholder="Nombre completo">
             </div>
 
             <div class="form-group">
-              <label>Fecha de nacimiento</label>
+              <label [attr.for]="'attendee-birth-' + i">Fecha de nacimiento</label>
 
               <div class="date-box">
                 <span>📅</span>
                 <input
-                  type="date"
+                  [id]="'attendee-birth-' + i" type="date"
                   [(ngModel)]="persona.fecha_nacimiento">
               </div>
             </div>
@@ -363,11 +287,11 @@
         </div>
 
         <div class="form-group full promo-box">
-          <label>Código de descuento (opcional)</label>
+          <label for="discount-code">Código de descuento (opcional)</label>
           <div class="promo-row">
             <input
               type="text"
-              [(ngModel)]="codigoDescuento"
+              id="discount-code" [(ngModel)]="codigoDescuento"
               [disabled]="codigoAplicado"
               placeholder="Ej. VERANO2026"
               (ngModelChange)="onCodigoChange()">
@@ -421,13 +345,13 @@
           <strong>{{ formatearMoneda(calcularTotal()) }}</strong>
         </div>
 
-        <div class="mensaje" *ngIf="mensajeCompra">
+        <div class="mensaje" *ngIf="mensajeCompra" role="status" aria-live="polite">
           {{ mensajeCompra }}
         </div>
 
         <button
           class="confirm-btn"
-          [disabled]="procesandoCompra"
+          [disabled]="procesandoCompra || evento.estado !== true || tierSeleccionado.disponibilidad !== 'DISPONIBLE'"
           (click)="crearCompraPendiente()">
           {{ procesandoCompra ? 'Procesando...' : 'Continuar por WhatsApp' }}
         </button>
@@ -435,6 +359,7 @@
       </div>
 
     </section>
+    <div class="detail-experience"><app-infamous-experience *ngIf="esInfamous"></app-infamous-experience></div>
 
   </ng-container>
 
