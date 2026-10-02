@@ -38,11 +38,11 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
     const general = fixture.componentInstance.zonas.find(z => z.clave === 'general');
     expect(general.fases.length).toBe(2);
     expect(general.faseActual.id_tier).toBe(2);
-    expect(fixture.nativeElement.textContent).toContain('VISTA CONCEPTUAL');
+    expect(fixture.nativeElement.textContent).toContain('PLANO DEL EVENTO');
   }, 15000);
   it('selects a real tier through the reusable selector and clears it for an unavailable zone', () => {
     const fixture = create();
-    const buttons = fixture.nativeElement.querySelectorAll('app-event-zone-selector button');
+    const buttons = fixture.nativeElement.querySelectorAll('app-event-zone-selector .zones button');
     buttons[0].click(); fixture.detectChanges();
     const component = fixture.componentInstance;
     expect(component.tierSeleccionado.id_tier).toBe(2);
@@ -76,5 +76,31 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
     component.tiers = component.tiers.map(t => ({ ...t, disponibilidad: 'AGOTADO' }));
     component.agruparPorZona();
     expect(component.tierSeleccionado).toBeNull();
+  });
+  it('shows one current price per zone and updates the same zone to its next available tier', () => {
+    const fixture = create(); const component = fixture.componentInstance;
+    component.seleccionarZona(component.zonas.find(z => z.clave === 'general'));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.phase-track')).toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('.zones button').length).toBe(3);
+    component.codigoAplicado = true;
+    component.tiers = [
+      { id_tier: 2, nombre: 'General Tier 2', precio: 7000, disponibilidad: 'CERRADO' },
+      { id_tier: 7, nombre: 'General Tier 3', precio: 8000, disponibilidad: 'DISPONIBLE' }
+    ];
+    component.agruparPorZona(); fixture.detectChanges();
+    expect(component.zonaSeleccionada.clave).toBe('general');
+    expect(component.tierSeleccionado.id_tier).toBe(7);
+    expect(component.zonaSeleccionada.precioActual).toBe(8000);
+    expect(component.codigoAplicado).toBe(false);
+    expect(fixture.nativeElement.querySelectorAll('.zones button').length).toBe(1);
+    expect(fixture.nativeElement.querySelector('.zones').textContent).not.toContain('7.000');
+  });
+  it('selects the live General tier directly from the supplied map', () => {
+    const fixture = create();
+    expect(fixture.nativeElement.querySelector('.venue img').getAttribute('src')).toContain('event-map.webp');
+    fixture.nativeElement.querySelector('.map-zone.general').click(); fixture.detectChanges();
+    expect(fixture.componentInstance.tierSeleccionado.id_tier).toBe(2);
+    expect(fixture.nativeElement.querySelector('.map-zone.general').getAttribute('aria-pressed')).toBe('true');
   });
 });

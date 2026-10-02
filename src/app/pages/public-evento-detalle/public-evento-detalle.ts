@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +17,7 @@ import { CodigosDescuentoService } from '../../core/services/codigos-descuento.s
   templateUrl: './public-evento-detalle.html',
   styleUrl: './public-evento-detalle.css'
 })
-export class PublicEventoDetalle implements OnInit {
+export class PublicEventoDetalle implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private eventosService = inject(EventosService);
   private tiersService = inject(EntradaTiersService);
@@ -34,6 +34,8 @@ export class PublicEventoDetalle implements OnInit {
   cargando = true;
   errorCarga = '';
   get esInfamous(): boolean { return isInfamous(this.evento); }
+  get mapaImagen(): string | null { return this.evento?.mapa_imagen_url || (this.esInfamous ? '/assets/infamous/v2/event-map.webp' : null); }
+  private refreshTiers?: ReturnType<typeof setInterval>;
 
   tierSeleccionado: any = null;
   cantidad = 1;
@@ -91,7 +93,13 @@ export class PublicEventoDetalle implements OnInit {
 
     this.idEvento = Number(id);
     this.cargarDatos();
+    // The backend remains authoritative for dates, stock and the current tier.
+    this.refreshTiers = setInterval(() => {
+      if (!this.cargando && !this.procesandoCompra && document.visibilityState === 'visible') this.cargarTiers();
+    }, 60_000);
   }
+
+  ngOnDestroy(): void { clearInterval(this.refreshTiers); }
 
   cargarDatos(): void {
     this.errorCarga = '';
@@ -213,12 +221,17 @@ export class PublicEventoDetalle implements OnInit {
     }
     if (this.tierSeleccionado) {
       const actual = this.zonaSeleccionada?.faseActual;
-      if (this.evento?.estado === true && actual?.id_tier === this.tierSeleccionado.id_tier) {
+      if (this.evento?.estado === true && actual) {
+        const cambio = actual.id_tier !== this.tierSeleccionado.id_tier || Number(actual.precio) !== Number(this.tierSeleccionado.precio);
         this.tierSeleccionado = actual;
+        if (cambio) {
+          this.quitarCodigo();
+          this.mensajeCompra = 'La tarifa de tu zona se actualizó. Revisá el total antes de continuar.';
+        }
       } else {
         this.tierSeleccionado = null;
+        this.quitarCodigo();
       }
-      this.quitarCodigo();
     }
   }
 

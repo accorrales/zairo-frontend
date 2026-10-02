@@ -113,10 +113,10 @@
       <div class="section-title">
         <span>MAPA DEL EVENTO</span>
         <h2>Elegí tu zona</h2>
-        <p>Elegí una zona para consultar sus fases y la tarifa disponible. Tu selección se conecta con la entrada oficial.</p>
+        <p>Elegí General o VIP. Cada zona muestra únicamente su tarifa vigente, confirmada por la venta oficial.</p>
       </div>
 
-      <app-event-zone-selector [zones]="zonas" [selectedKey]="zonaSeleccionada?.clave || null" [imageUrl]="evento.mapa_imagen_url || null" (zoneSelected)="seleccionarZona($event)"></app-event-zone-selector>
+      <app-event-zone-selector [zones]="zonas" [selectedKey]="zonaSeleccionada?.clave || null" [imageUrl]="mapaImagen" [interactiveMap]="esInfamous && !evento.mapa_imagen_url" (zoneSelected)="seleccionarZona($event)"></app-event-zone-selector>
       <p class="sale-notice" *ngIf="evento.estado !== true">La venta de este evento todavía no está abierta.</p>
 
       <!-- Detalle de la zona seleccionada -->
@@ -142,7 +142,7 @@
           </span>
         </div>
 
-        <div class="map-now">
+        <div class="map-now" *ngIf="zonaSeleccionada.estado === 'DISPONIBLE'">
           <div class="map-now-price">
             <span class="map-now-label">
               {{ zonaSeleccionada.estado === 'DISPONIBLE' ? 'Precio actual' : 'Precio' }}
@@ -150,37 +150,6 @@
             <div class="price">{{ formatearMoneda(zonaSeleccionada.precioActual) }}</div>
           </div>
 
-          <div class="map-now-tags">
-            <span class="save-pill" *ngIf="porcentajeAhorro(zonaSeleccionada) > 0">
-              Ahorrás {{ porcentajeAhorro(zonaSeleccionada) }}%
-            </span>
-            <span class="rise-pill" *ngIf="zonaSeleccionada.siguienteFase">
-              ↑ Luego sube a {{ formatearMoneda(zonaSeleccionada.siguienteFase.precio) }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Línea de tiempo de precios por fase (zonas que cambian de precio) -->
-        <div
-          class="phase-track"
-          *ngIf="zonaSeleccionada.multiFase"
-          [style.--progreso]="zonaSeleccionada.progreso + '%'"
-          [style.--edge]="(50 / zonaSeleccionada.fases.length) + '%'">
-          <div class="phase-rail">
-            <div class="phase-rail-fill"></div>
-          </div>
-
-          <div class="phase-nodes">
-            <div
-              class="phase-node"
-              *ngFor="let f of zonaSeleccionada.fases; trackBy: trackByTierId"
-              [ngClass]="'is-' + f.estadoMapa">
-              <div class="phase-dot"></div>
-              <span class="phase-label">{{ f.etiquetaFase }}</span>
-              <span class="phase-price">{{ formatearMoneda(f.precio) }}</span>
-              <span class="phase-when">{{ etiquetaCuandoFase(f) }}</span>
-            </div>
-          </div>
         </div>
 
         <div class="map-meta" *ngIf="zonaSeleccionada.faseActual">

@@ -93,6 +93,6 @@ export class InfamousExperience {
   readonly artists = [
     { name: '4BES', image: '4bes.webp' }, { name: 'JUNNO', image: 'junno.webp' },
     { name: 'VARGAS', image: 'vargas.webp' }, { name: 'BARU', image: 'baru.webp' },
-    { name: 'JOAO', image: 'joao.webp' }, { name: 'JUNE', image: null }
+    { name: 'JOAO', image: 'joao.webp' }, { name: 'JUNE', image: 'june.webp' }
   ];
 }

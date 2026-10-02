@@ -52,6 +52,14 @@
   min-height: 260px;
 }
 
+.map-zone {position:absolute;transform:translate(-50%,-50%);min-width:90px;min-height:48px;padding:8px 12px;display:grid;gap:4px;color:#fff;background:#150409e8;border:1px solid #ff7188;border-radius:12px;box-shadow:0 0 24px #fa244345;font:inherit;cursor:pointer;text-align:center}
+.map-zone.general {left:36%;top:48%}
+.map-zone.vip {left:79%;top:48%}
+.map-zone span {font-size:13px;font-weight:700;letter-spacing:1px}
+.map-zone small {font-size:11px}
+.map-zone:hover,.map-zone.selected {background:#8b1233;outline:2px solid #ffbbc8;outline-offset:3px}
+.map-zone:focus-visible {outline:3px solid #fff;outline-offset:4px}
+
 .stage {
   position: absolute;
   top: 25px;
@@ -206,6 +214,10 @@
   .map-shell {
     padding: 16px;
   }
+  .venue.with-image {min-height:0}
+  .map-zone {min-width:64px;padding:6px;max-width:42%}
+  .map-zone span {font-size:10px;letter-spacing:0}
+  .map-zone small {font-size:9px;overflow-wrap:anywhere}
 
   .venue {
     height: 280px;

@@ -32,7 +32,7 @@
       <app-infamous-intro *ngIf="esInfamous"></app-infamous-intro>
       <app-infamous-experience *ngIf="esInfamous"></app-infamous-experience>
       <section class="ticket-invite">
-        <div><span class="eyebrow">03 / TU LUGAR EN LA NOCHE</span><h2>Elegí cómo vivirla.</h2><p>Explorá las zonas, consultá la tarifa disponible y reservá tu entrada. El plano definitivo se revelará próximamente.</p></div>
+        <div><span class="eyebrow">03 / TU LUGAR EN LA NOCHE</span><h2>Elegí cómo vivirla.</h2><p>Explorá las zonas, consultá la tarifa disponible y reservá tu entrada. Descubrí el mapa del evento y elegí General o VIP.</p></div>
         <div class="ticket-glass"><span>ENTRADAS OFICIALES / ZAIRO</span><h3>{{ nombreEventoActivo }}</h3><p>{{ proximoEvento?.ubicacion || 'Ubicación por revelar' }}</p><a *ngIf="ventaAbierta" class="primary-cta" [routerLink]="['/evento', proximoEvento.id_evento]">Explorar zonas y entradas ↗</a><span *ngIf="!ventaAbierta" class="locked-cta">{{ errorCarga ? 'Venta sin confirmar' : 'Entradas próximamente' }}</span><small>La disponibilidad y los precios se confirman al elegir tu zona.</small></div>
       </section>
       <section class="more-events" *ngIf="eventosAdicionales.length"><span class="eyebrow">PRÓXIMAS EXPERIENCIAS</span><h2>La señal continúa.</h2><div class="events-grid"><article *ngFor="let e of eventosAdicionales; trackBy: trackByEventoId"><img *ngIf="e.imagen" [src]="e.imagen" [alt]="e.nombre" loading="lazy"><div><small>{{ formatearFecha(e.fecha) }}</small><h3>{{ e.nombre }}</h3><p>{{ e.ubicacion || 'Ubicación por anunciar' }}</p><a *ngIf="e.estado === true" [routerLink]="['/evento', e.id_evento]">Ver entradas ↗</a><span *ngIf="e.estado !== true">Próximamente</span></div></article></div></section>
