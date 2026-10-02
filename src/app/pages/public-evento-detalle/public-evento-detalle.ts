@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { InfamousExperience, InfamousFilm, isInfamous } from '../../shared/infamous/infamous-experience';
 import { EventZoneSelector } from '../../shared/event-zone-selector/event-zone-selector';
+import { ageAtEvent } from '../../shared/event-age';
 
 import { EventosService } from '../../core/services/eventos.service';
 import { EntradaTiersService } from '../../core/services/entrada-tiers.service';
@@ -428,18 +429,8 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
   }
 
   cumpleEdadMinima(fechaNacimiento: string): boolean {
-    if (!fechaNacimiento || !this.evento?.fecha) return false;
-
-    const nacimiento = new Date(fechaNacimiento);
-    const fechaEvento = new Date(this.evento.fecha);
-
-    const fechaCumple17 = new Date(nacimiento);
-    fechaCumple17.setFullYear(fechaCumple17.getFullYear() + 17);
-
-    fechaCumple17.setHours(0, 0, 0, 0);
-    fechaEvento.setHours(0, 0, 0, 0);
-
-    return fechaCumple17 <= fechaEvento;
+    const age = ageAtEvent(fechaNacimiento, this.evento?.fecha);
+    return age !== null && age >= 16;
   }
 
   calcularSubtotal(): number {
@@ -526,7 +517,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
       }
 
       if (!this.cumpleEdadMinima(p.fecha_nacimiento)) {
-        return 'Debes tener más de 18 años para poder comprar esta entrada.';
+        return 'Para ingresar debés tener 16 años cumplidos. Si sos menor de 16, necesitás comprar tu entrada con un acompañante mayor de 18 años.';
       }
     }
 

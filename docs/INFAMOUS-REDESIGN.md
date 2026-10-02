@@ -69,7 +69,7 @@ Retratos limitados a 960 × 1200 conservando proporción y orientación; WebP ca
 
 - Los avisos CommonJS de `canvg`, `core-js`, `raf`, `rgbcolor` y `html2canvas` pertenecen a las dependencias existentes de generación de documentos; no se modificaron esas dependencias.
 - La instalación informó scripts pendientes de aprobación de paquetes existentes. No impidió compilar ni ejecutar las pruebas.
-- La regla de edad existente calcula 17 años, mientras el mensaje dice más de 18. Se conserva la regla previa; confirmar con el responsable la edad mínima antes de cambiarla.
+- La validación de edad fue ajustada a 16 años cumplidos para la fecha del evento en frontend y backend.
 - Falta el retrato de JUNE y el contrato/plano real del recinto. El diseño muestra explícitamente estos pendientes.
 
 ## Probar localmente
@@ -107,3 +107,7 @@ Para volver a la rama que se encontró inicialmente en esa copia local: `git swi
 - Cada zona agrupa sus tiers internamente y muestra únicamente el precio DISPONIBLE actual. Se eliminó la línea de fases, precios futuros y mensajes de ahorro. No se inventan precios, fechas ni cupos.
 - Disponibilidad consultada cada 60 segundos mientras la página está visible y no procesa una compra; el temporizador se limpia al salir. Cambiar el tier mantiene la zona seleccionada, usa el nuevo id_tier, elimina descuentos anteriores y avisa para revisar el total. Si no queda un tier disponible se oculta el checkout.
 - Compilador Angular directo (app y specs): aprobado. Build y tests estándar intentados, bloqueados por Access is denied al resolver carpetas superiores del entorno. Pruebas de navegador con backend simulado comprueban General de 6000 a 8000, VIP de 12000 a 15000, renovación automática y payload del tier vigente; no se hace una compra real.
+
+## Validación de edad
+
+Se aceptan asistentes con 16 años cumplidos al día del evento en Costa Rica. Menores de 16 no pueden completar la compra; solo al ingresar su fecha aparece el aviso de edad y acompañante mayor de 18. La referencia al acompañante es informativa y no desbloquea la compra, según la confirmación del usuario. Se validan fechas del calendario y se evita adelantar el cumpleaños por zona horaria. Backend: 7 pruebas aprobadas con base de datos simulada. Angular app/specs compilados; formulario comprobado en Edge a 1440 y 390 px, sin compras reales.
