@@ -19,7 +19,7 @@ export class PublicEventos implements OnInit, OnDestroy {
   cargando = true;
   errorCarga = false;
 
-  readonly infamousFlyer = '/assets/infamous/infamous-flyer.webp';
+  readonly infamousFlyer = '/assets/infamous/infamous-flyer-official.jpg';
 
   readonly halloween = {
     titulo: 'INFAMOUS',

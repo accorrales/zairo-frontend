@@ -29,6 +29,10 @@
     </section>
     <div class="content" id="experiencia">
       <section class="intro"><span class="eyebrow">UN UNIVERSO ZAIRO</span><h2>{{ esInfamous ? 'La noche se transforma. Vos también.' : nombreEventoActivo }}</h2><p>{{ proximoEvento?.descripcion || 'Negro profundo. Cristal encendido. Música que atraviesa las sombras. Una experiencia creada para sentir Halloween desde otro lugar.' }}</p></section>
+      <section class="official-poster" *ngIf="esInfamous" aria-labelledby="official-poster-title">
+        <div><span class="eyebrow">INFAMOUS / FLYER OFICIAL</span><h2 id="official-poster-title">El despertar de las almas.</h2></div>
+        <figure><img [src]="infamousFlyer" alt="Flyer oficial de INFAMOUS: 31 de octubre, live show de 4BES y lineup JUNE, JUNNO, JOAO, BARU y VARGAS" width="1280" height="1600" loading="lazy" decoding="async"></figure>
+      </section>
       <app-infamous-intro *ngIf="esInfamous"></app-infamous-intro>
       <app-infamous-experience *ngIf="esInfamous"></app-infamous-experience>
       <section class="ticket-invite">
