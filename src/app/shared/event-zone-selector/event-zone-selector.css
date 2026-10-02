@@ -52,12 +52,12 @@
   min-height: 260px;
 }
 
-.map-zone {position:absolute;transform:translate(-50%,-50%);min-width:90px;min-height:48px;padding:8px 12px;display:grid;gap:4px;color:#fff;background:#150409e8;border:1px solid #ff7188;border-radius:12px;box-shadow:0 0 24px #fa244345;font:inherit;cursor:pointer;text-align:center}
+.map-zone {position:absolute;transform:translate(-50%,-50%);min-width:90px;min-height:48px;padding:8px 12px;display:grid;gap:4px;color:#fff;background:transparent;border:1px solid #ff7188;border-radius:12px;text-shadow:0 1px 4px #000,0 0 8px #000;font:inherit;cursor:pointer;text-align:center}
 .map-zone.general {left:36%;top:48%}
 .map-zone.vip {left:79%;top:48%}
 .map-zone span {font-size:13px;font-weight:700;letter-spacing:1px}
 .map-zone small {font-size:11px}
-.map-zone:hover,.map-zone.selected {background:#8b1233;outline:2px solid #ffbbc8;outline-offset:3px}
+.map-zone:hover,.map-zone.selected {background:transparent;outline:2px solid #ffbbc8;outline-offset:3px}
 .map-zone:focus-visible {outline:3px solid #fff;outline-offset:4px}
 
 .stage {
@@ -147,7 +147,7 @@
   font: inherit;
   text-align: left;
   color: white;
-  background: #ffffff07;
+  background: transparent;
   border: 1px solid #ffffff30;
   border-radius: 14px;
   padding: 20px;
@@ -160,7 +160,7 @@
 
 .zones button:hover,.zones button.selected {
   border-color: #ff7188;
-  background: #ae1c3e20;
+  background: transparent;
 }
 
 .zones button:focus-visible {
