@@ -49,7 +49,7 @@ export class InfamousFilm implements OnInit {
     <section class="intro-film" aria-labelledby="intro-film-title">
       <div class="intro-copy"><span>LA PRIMERA SEÑAL / FILM OFICIAL</span><h2 id="intro-film-title">Todo empieza<br>con un despertar.</h2><p>Entrá al universo de INFAMOUS. Mirá la introducción y dejá que la noche tome forma.</p><small>EL DESPERTAR DE LAS ALMAS</small></div>
       <div class="intro-screen">
-        <video #intro [src]="assets + 'intro.mp4'" [poster]="assets + 'intro-poster.webp'" playsinline controls preload="none" (playing)="started = true; failed = false" (error)="failed = true" aria-label="Introducción oficial de INFAMOUS, El despertar de las almas"></video>
+        <video #intro [src]="assets + 'VIdeo4bes.mp4'" [poster]="assets + 'VIdeo4bes-poster.webp'" playsinline controls preload="none" (playing)="started = true; failed = false" (error)="failed = true" aria-label="Introducción oficial de INFAMOUS, El despertar de las almas"></video>
         <button *ngIf="!started" type="button" (click)="play(intro)">{{ failed ? 'Reintentar intro' : 'Ver intro' }} <span aria-hidden="true">▶</span></button>
         <p *ngIf="failed" class="intro-error" role="status">No se pudo reproducir el intro. Tocá Reintentar intro para volver a cargarlo.</p>
       </div>
