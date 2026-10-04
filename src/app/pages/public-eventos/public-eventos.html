@@ -6,7 +6,7 @@
   </header>
   <main>
     <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-media"><app-infamous-film *ngIf="esInfamous; else eventImage"></app-infamous-film><ng-template #eventImage><img [src]="imagenPrincipal" [alt]="nombreEventoActivo" fetchpriority="high"></ng-template></div>
+      <div class="hero-media"><app-infamous-film *ngIf="esInfamous; else eventImage" videoFile="VIdeo4bes.mp4"></app-infamous-film><ng-template #eventImage><img [src]="imagenPrincipal" [alt]="nombreEventoActivo" fetchpriority="high"></ng-template></div>
       <div class="hero-shade" aria-hidden="true"></div>
       <div class="hero-copy">
         <span class="eyebrow">ZAIRO PRESENTA / {{ esInfamous ? 'HALLOWEEN 2026' : 'PRÓXIMA EXPERIENCIA' }}</span>
