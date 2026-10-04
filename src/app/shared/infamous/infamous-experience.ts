@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 
 export const INFAMOUS_ASSETS = '/assets/infamous/v2/';
 export function isInfamous(event: any): boolean {
@@ -13,12 +13,13 @@ export function isInfamous(event: any): boolean {
   template: `
     <div class="film">
       <img [src]="assets + 'portal.webp'" alt="Un portal de cristal rojo se abre en una catedral oscura" fetchpriority="high">
-      <video #film *ngIf="playVideo && !failed" [src]="assets + 'hero.mp4'" [poster]="assets + 'portal.webp'" autoplay muted loop playsinline preload="metadata" [muted]="true" (playing)="playing = true" (pause)="playing = false" (error)="failed = true; playing = false" aria-label="Película visual de INFAMOUS"></video>
+      <video #film *ngIf="playVideo && !failed" [src]="assets + videoFile" [poster]="assets + 'portal.webp'" autoplay muted loop playsinline preload="metadata" [muted]="true" (playing)="playing = true" (pause)="playing = false" (error)="failed = true; playing = false" aria-label="Película visual de INFAMOUS"></video>
       <button type="button" (click)="toggle()" [attr.aria-pressed]="playing">{{ playing ? 'Pausar visual' : failed ? 'Reintentar visual' : 'Reproducir visual' }}</button>
     </div>`,
   styles: [`:host{display:block;height:100%}.film{height:100%;position:relative;background:#09090b;overflow:hidden}.film img,.film video{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}.film button{position:absolute;bottom:24px;right:24px;z-index:3;color:#fff;border:1px solid #ffffff60;background:#09090bd9;padding:12px 18px;border-radius:30px;font:inherit;font-size:12px;cursor:pointer}.film button:focus-visible{outline:3px solid #ff667e;outline-offset:4px}`]
 })
 export class InfamousFilm implements OnInit {
+  @Input() videoFile = 'hero.mp4';
   readonly assets = INFAMOUS_ASSETS;
   playVideo = false;
   playing = false;
