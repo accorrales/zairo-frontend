@@ -13,6 +13,16 @@ describe('PublicEventos dynamic experience', () => {
     return fixture;
   }
   afterEach(() => TestBed.resetTestingModule());
+  it('loads the supplied 4BES film in the Home intro with sound and manual controls', () => {
+    const fixture = create([event]);
+    const video = fixture.nativeElement.querySelector('app-infamous-intro video') as HTMLVideoElement;
+    expect(video.getAttribute('src')).toBe('/assets/infamous/v2/VIdeo4bes.mp4');
+    expect(video.getAttribute('poster')).toBe('/assets/infamous/v2/VIdeo4bes-poster.webp');
+    expect(video.controls).toBe(true);
+    expect(video.muted).toBe(false);
+    expect(video.autoplay).toBe(false);
+    expect(video.preload).toBe('none');
+  });
   it('uses Angular route fragments for the two section links', () => {
     const fixture = create([event]);
     const links = fixture.nativeElement.querySelectorAll('nav a');
