@@ -547,7 +547,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
     const hayMenorDeEdad = this.personas.some((p) => this.esMenorPermitido(p.fecha_nacimiento));
 
     if (hayMenorDeEdad && !this.tieneAdultoResponsableEnCompra()) {
-      return 'Si alguna persona tiene 16 o 17 años, la compra debe incluir también la entrada de al menos una persona mayor de 18 años que será su adulto responsable e ingresará con ella al evento.';
+      return 'Si alguna persona tiene 16 o 17 años, la compra debe incluir también la entrada de al menos una persona 18 años o más que será su adulto responsable e ingresará con ella al evento.';
     }
 
     return null;
