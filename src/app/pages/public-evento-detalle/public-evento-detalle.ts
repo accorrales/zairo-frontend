@@ -428,9 +428,26 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
     }
   }
 
+  edadEnEvento(fechaNacimiento: string): number | null {
+    return ageAtEvent(fechaNacimiento, this.evento?.fecha);
+  }
+
   cumpleEdadMinima(fechaNacimiento: string): boolean {
-    const age = ageAtEvent(fechaNacimiento, this.evento?.fecha);
+    const age = this.edadEnEvento(fechaNacimiento);
     return age !== null && age >= 16;
+  }
+
+  esMenorPermitido(fechaNacimiento: string): boolean {
+    const age = this.edadEnEvento(fechaNacimiento);
+    return age !== null && age >= 16 && age < 18;
+  }
+
+  tieneAdultoResponsableEnCompra(): boolean {
+    return this.personas.some((persona) => {
+      if (!persona?.fecha_nacimiento) return false;
+      const age = this.edadEnEvento(persona.fecha_nacimiento);
+      return age !== null && age >= 18;
+    });
   }
 
   calcularSubtotal(): number {
@@ -516,9 +533,21 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
         return `Ingresá la fecha de nacimiento de la persona ${i + 1}.`;
       }
 
-      if (!this.cumpleEdadMinima(p.fecha_nacimiento)) {
-        return 'Para ingresar debés tener 16 años cumplidos. Si sos menor de 16, necesitás comprar tu entrada con un acompañante mayor de 18 años.';
+      const edad = this.edadEnEvento(p.fecha_nacimiento);
+
+      if (edad === null || edad < 0) {
+        return `La fecha de nacimiento de la persona ${i + 1} no es válida.`;
       }
+
+      if (edad < 16) {
+        return 'El evento es únicamente para personas de 16 años o más. Las personas menores de 16 años no pueden comprar entrada ni ingresar al evento.';
+      }
+    }
+
+    const hayMenorDeEdad = this.personas.some((p) => this.esMenorPermitido(p.fecha_nacimiento));
+
+    if (hayMenorDeEdad && !this.tieneAdultoResponsableEnCompra()) {
+      return 'Si alguna persona tiene 16 o 17 años, la compra debe incluir también la entrada de al menos una persona 18 años o más que será su adulto responsable e ingresará con ella al evento.';
     }
 
     return null;

@@ -56,6 +56,24 @@
           <span>🎟️ Cupo limitado</span>
         </div>
 
+        <section class="access-rules" *ngIf="esInfamous" aria-label="Información importante del evento">
+          <div class="access-rule">
+            <span class="access-rule-icon" aria-hidden="true">🕗</span>
+            <div>
+              <strong>Horarios de ingreso</strong>
+              <p>Puertas: 8:00 p. m. · Cierre de ingreso: 11:00 p. m. · Finalización: 5:00 a. m.</p>
+            </div>
+          </div>
+
+          <div class="access-rule">
+            <span class="access-rule-icon" aria-hidden="true">🔞</span>
+            <div>
+              <strong>Ingreso de menores de edad</strong>
+              <p>El evento es para personas de 16 años o más. Quienes tengan 16 o 17 años deben comprar su entrada junto con al menos una persona 18 años o más e ingresar acompañados por ese adulto responsable. Menores de 16 años no pueden ingresar.</p>
+            </div>
+          </div>
+        </section>
+
         <button
           class="primary-btn"
           (click)="irAEntradas()">
@@ -248,7 +266,13 @@
             <div
               class="edad-warning"
               *ngIf="persona.fecha_nacimiento && !cumpleEdadMinima(persona.fecha_nacimiento)">
-              Para ingresar debés tener 16 años cumplidos. Si sos menor de 16, necesitás comprar tu entrada con un acompañante mayor de 18 años.
+              El evento es únicamente para personas de 16 años o más. Menores de 16 años no pueden comprar entrada ni ingresar.
+            </div>
+
+            <div
+              class="edad-warning edad-warning--minor"
+              *ngIf="persona.fecha_nacimiento && esMenorPermitido(persona.fecha_nacimiento) && !tieneAdultoResponsableEnCompra()">
+              Si tenés 16 o 17 años, esta compra debe incluir también la entrada de una persona 18 años o más. El día del evento deberán ingresar juntos.
             </div>
 
           </div>

@@ -1336,3 +1336,47 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible {
   letter-spacing: 3px;
   color: #f0c7d2;
 }
+
+
+/* Información crítica de acceso para INFAMOUS */
+.access-rules {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+  max-width: 760px;
+}
+
+.access-rule {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+  padding: 15px 16px;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 16px;
+  background: rgba(8,8,10,.66);
+  backdrop-filter: blur(12px);
+}
+
+.access-rule-icon {
+  flex: 0 0 auto;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.access-rule strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #fff;
+}
+
+.access-rule p {
+  margin: 0;
+  color: rgba(255,255,255,.78);
+  line-height: 1.5;
+}
+
+.edad-warning--minor {
+  background: rgba(245,158,11,.12);
+  border-color: rgba(245,158,11,.28);
+  color: #fde7b0;
+}
