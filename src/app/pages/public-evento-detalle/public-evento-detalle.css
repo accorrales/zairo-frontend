@@ -1346,6 +1346,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible {
   max-width: 760px;
 }
 
+.access-rules--footer {
+  width: 88%;
+  max-width: 1200px;
+  margin: 36px auto 60px;
+}
+
+.access-rules--footer .access-rule {
+  border-color: rgba(255, 113, 136, .32);
+}
+
 .access-rule {
   display: flex;
   gap: 13px;
