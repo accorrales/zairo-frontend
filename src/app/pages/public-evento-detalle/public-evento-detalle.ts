@@ -46,6 +46,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
   /** Opciones del selector de cantidad (1..maxEntradas). */
   opcionesCantidad: number[] = Array.from({ length: this.maxEntradas }, (_, i) => i + 1);
 
+  nombreComprador = '';
   correoComprador = '';
   telefonoComprador = '';
 
@@ -334,7 +335,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
   }
 
   textoBotonZona(zona: any): string {
-    if (zona.estado === 'DISPONIBLE') return 'Comprar a este precio';
+    if (zona.estado === 'DISPONIBLE') return 'Comprar entrada';
     if (zona.estado === 'PROXIMAMENTE') return 'Próximamente';
     if (zona.estado === 'AGOTADO') return 'Agotado';
     if (zona.estado === 'CERRADO') return 'Ventas cerradas';
@@ -515,6 +516,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
   validarCompra(): string | null {
     if (!this.tierSeleccionado) return 'Seleccioná un tipo de entrada.';
     if (this.evento?.estado !== true || this.tierSeleccionado.disponibilidad !== 'DISPONIBLE') return 'Esta entrada no está disponible para compra.';
+    if (!this.nombreComprador.trim()) return 'Ingresá el nombre de quien realizará el SINPE.';
     if (!this.correoComprador.trim()) return 'Ingresá un correo electrónico.';
     if (!this.telefonoComprador.trim()) return 'Ingresá un número de teléfono.';
     if (!this.personas.length) return 'Agregá al menos una persona.';
@@ -638,13 +640,19 @@ Cantidad: ${this.cantidad}${
         : ''
     }
 Total: ${this.formatearMoneda(this.calcularTotal())}
+Nombre de quien realiza el SINPE: ${this.nombreComprador.trim()}
 Correo: ${this.correoComprador.trim()}
 Teléfono: ${this.telefonoComprador.trim()}
 
 Personas:
 ${personasTexto}
 
-Voy a realizar el SINPE y enviar el comprobante por este chat.
+Datos para realizar el SINPE Móvil:
+Número: 61518701
+A nombre de: Ander Baruc Corrales Araya
+Detalle del comprobante: ${this.nombreComprador.trim()}
+
+Voy a realizar el SINPE a ese número, colocar el nombre indicado en el detalle del comprobante y enviar el comprobante por este chat.
     `.trim();
 
     const url = `https://wa.me/50661518701?text=${encodeURIComponent(mensaje)}`;
