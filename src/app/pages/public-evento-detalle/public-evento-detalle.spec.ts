@@ -32,6 +32,36 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
     return fixture;
   }
   afterEach(() => { vi.restoreAllMocks(); createPurchase.mockClear(); TestBed.resetTestingModule(); });
+  it('places the age-access notice only at the end and labels the available purchase action', () => {
+    const fixture = create();
+    const component = fixture.componentInstance;
+    component.seleccionarZona(component.zonas.find(z => z.clave === 'general'));
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    const notices = element.querySelectorAll('.access-rules--footer');
+    expect(notices.length).toBe(1);
+    expect(element.querySelector('.hero .access-rule strong')?.textContent).toContain('Horarios');
+    expect(element.querySelector('.hero')?.textContent).not.toContain('Ingreso de menores de edad');
+    expect(element.querySelector('.select-btn')?.textContent?.trim()).toBe('Comprar entrada');
+    expect(element.lastElementChild?.classList.contains('access-rules--footer')).toBe(true);
+  });
+  it('requires the SINPE payer name and includes their name and payment instructions in WhatsApp', () => {
+    const fixture = create();
+    const component = fixture.componentInstance;
+    component.seleccionarZona(component.zonas.find(z => z.clave === 'general'));
+    component.correoComprador = 'test@example.com';
+    component.telefonoComprador = '88888888';
+    component.personas = [{ nombre_completo: 'Persona Ejemplo', fecha_nacimiento: '2000-01-01' }];
+    expect(component.validarCompra()).toContain('nombre de quien realizará el SINPE');
+    component.nombreComprador = 'Cliente Prueba';
+    expect(component.validarCompra()).toBeNull();
+    const redirect = vi.spyOn(component as any, 'redireccionarAWhatsapp').mockImplementation(() => {});
+    component.abrirWhatsapp({ id_compra: 123 }, null);
+    const message = decodeURIComponent((redirect.mock.calls[0][0] as string).split('?text=')[1]);
+    expect(message).toContain('Número: 61518701');
+    expect(message).toContain('A nombre de: Ander Baruc Corrales Araya');
+    expect(message).toContain('Detalle del comprobante: Cliente Prueba');
+  });
   it('keeps sold out and future phases while excluding disabled tiers', () => {
     const fixture = create();
     expect(fixture.componentInstance.tiers.map(t => t.id_tier)).toEqual([1, 2, 3, 6]);
