@@ -65,13 +65,6 @@
             </div>
           </div>
 
-          <div class="access-rule">
-            <span class="access-rule-icon" aria-hidden="true">🔞</span>
-            <div>
-              <strong>Ingreso de menores de edad</strong>
-              <p>El evento es para personas de 16 años o más. Quienes tengan 16 o 17 años deben comprar su entrada junto con al menos una persona 18 años o más e ingresar acompañados por ese adulto responsable. Menores de 16 años no pueden ingresar.</p>
-            </div>
-          </div>
         </section>
 
         <button
@@ -203,6 +196,12 @@
             <strong>{{ zonaSeleccionada?.nombre || tierSeleccionado.nombre }}</strong>
           </div>
           <div class="selected-price">{{ formatearMoneda(tierSeleccionado.precio) }} c/u</div>
+        </div>
+
+        <div class="form-group full">
+          <label for="buyer-name">Nombre completo de quien realiza el SINPE</label>
+          <input id="buyer-name" type="text" autocomplete="name"
+            [(ngModel)]="nombreComprador" placeholder="Nombre de la persona que realiza el pago">
         </div>
 
         <div class="form-grid">
@@ -353,6 +352,15 @@
 
     </section>
     <div class="detail-experience"><app-infamous-experience *ngIf="esInfamous"></app-infamous-experience></div>
+    <section class="access-rules" *ngIf="esInfamous" aria-label="Información de ingreso de menores de edad">
+      <div class="access-rule">
+        <span class="access-rule-icon" aria-hidden="true">🔞</span>
+        <div>
+          <strong>Ingreso de menores de edad</strong>
+          <p>El evento es para personas de 16 años o más. Quienes tengan 16 o 17 años deben comprar su entrada junto con al menos una persona 18 años o más e ingresar acompañados por ese adulto responsable. Menores de 16 años no pueden ingresar.</p>
+        </div>
+      </div>
+    </section>
 
   </ng-container>
 
