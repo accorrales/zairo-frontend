@@ -130,6 +130,15 @@
       <app-event-zone-selector [zones]="zonas" [selectedKey]="zonaSeleccionada?.clave || null" [imageUrl]="mapaImagen" [interactiveMap]="esInfamous && !evento.mapa_imagen_url" (zoneSelected)="seleccionarZona($event)"></app-event-zone-selector>
       <p class="sale-notice" *ngIf="evento.estado !== true">La venta de este evento todavía no está abierta.</p>
 
+      <div class="zone-detail" *ngIf="promociones.length">
+        <h3>Promociones por paquete</h3>
+        <div class="map-now" *ngFor="let promo of promociones">
+          <div><strong>{{ promo.nombre }}</strong><p>{{ promo.descripcion }}</p>
+          <div class="price">{{ promo.entradas_por_paquete }} entradas por {{ formatearMoneda(promo.precio) }}</div></div>
+          <button class="select-btn" [disabled]="evento.estado !== true || promo.disponibilidad !== 'DISPONIBLE'" (click)="seleccionarPromocion(promo)">
+            {{ promo.disponibilidad === 'DISPONIBLE' ? 'Elegir promoción' : promo.disponibilidad }}</button>
+        </div>
+      </div>
       <!-- Detalle de la zona seleccionada -->
       <div class="zone-detail" id="zona-detalle" *ngIf="zonaSeleccionada">
 
@@ -164,10 +173,6 @@
         </div>
 
         <div class="map-meta" *ngIf="zonaSeleccionada.faseActual">
-          <span>
-            🎟️ Cupo:
-            {{ zonaSeleccionada.faseActual.cantidad_disponible === null ? 'Ilimitado' : zonaSeleccionada.faseActual.cantidad_disponible }}
-          </span>
           <span *ngIf="zonaSeleccionada.faseActual.fecha_fin">
             ⏳ Esta tarifa vence el {{ zonaSeleccionada.faseActual.fecha_fin | date:'dd/MM/yyyy HH:mm' }}
           </span>
@@ -195,7 +200,7 @@
             <span class="selected-label">Zona seleccionada</span>
             <strong>{{ zonaSeleccionada?.nombre || tierSeleccionado.nombre }}</strong>
           </div>
-          <div class="selected-price">{{ formatearMoneda(tierSeleccionado.precio) }} c/u</div>
+          <div class="selected-price">{{ formatearMoneda(tierSeleccionado.precio) }} {{ tamanoPaquete > 1 ? 'por paquete de ' + tamanoPaquete : 'por entrada' }}</div>
         </div>
 
         <div class="form-group full">
@@ -207,12 +212,12 @@
         <div class="form-grid">
 
           <div class="form-group">
-            <label for="ticket-quantity">Cantidad de entradas (máximo {{ maxEntradas }})</label>
+            <label for="ticket-quantity">{{ tamanoPaquete > 1 ? 'Paquetes de ' + tamanoPaquete + ' entradas' : 'Cantidad de entradas' }}</label>
             <select id="ticket-quantity"
               [(ngModel)]="cantidad"
               (ngModelChange)="actualizarPersonas()">
               <option *ngFor="let n of opcionesCantidad" [ngValue]="n">
-                {{ n }} {{ n === 1 ? 'entrada' : 'entradas' }}
+                {{ tamanoPaquete > 1 ? (n / tamanoPaquete) + ' paquetes · ' : '' }}{{ n }} {{ n === 1 ? 'entrada' : 'entradas' }}
               </option>
             </select>
           </div>
@@ -278,7 +283,7 @@
 
         </div>
 
-        <div class="form-group full promo-box">
+        <div class="form-group full promo-box" *ngIf="tamanoPaquete === 1">
           <label for="discount-code">Código de descuento (opcional)</label>
           <div class="promo-row">
             <input
@@ -318,7 +323,7 @@
           <div class="total-detail">
             <span *ngIf="!codigoAplicado">Total</span>
             <span *ngIf="codigoAplicado">Subtotal</span>
-            <small>{{ cantidad }} × {{ formatearMoneda(tierSeleccionado.precio) }}</small>
+            <small>{{ cantidad / tamanoPaquete }} {{ tamanoPaquete > 1 ? 'paquetes' : 'entradas' }} × {{ formatearMoneda(tierSeleccionado.precio) }} · {{ cantidad }} personas</small>
           </div>
           <strong>{{ formatearMoneda(calcularSubtotal()) }}</strong>
         </div>

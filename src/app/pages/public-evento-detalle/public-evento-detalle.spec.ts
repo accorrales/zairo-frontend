@@ -27,7 +27,7 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
       { provide: CodigosDescuentoService, useValue: {} }
     ] });
     const fixture = TestBed.createComponent(PublicEventoDetalle);
-    fixture.detectChanges();
+    fixture.changeDetectorRef.markForCheck(); fixture.detectChanges();
     vi.spyOn(fixture.componentInstance, 'irA').mockImplementation(() => {});
     return fixture;
   }
@@ -36,14 +36,14 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
     const fixture = create();
     const component = fixture.componentInstance;
     component.seleccionarZona(component.zonas.find(z => z.clave === 'general'));
-    fixture.detectChanges();
+    fixture.changeDetectorRef.markForCheck(); fixture.detectChanges();
     const element = fixture.nativeElement as HTMLElement;
     const notices = element.querySelectorAll('.access-rules--footer');
     expect(notices.length).toBe(1);
     expect(element.querySelector('.hero .access-rule strong')?.textContent).toContain('Horarios');
     expect(element.querySelector('.hero')?.textContent).not.toContain('Ingreso de menores de edad');
     expect(element.querySelector('.select-btn')?.textContent?.trim()).toBe('Comprar entrada');
-    expect(element.lastElementChild?.classList.contains('access-rules--footer')).toBe(true);
+    expect(element.querySelector('.lost-detail')?.lastElementChild?.classList.contains('access-rules--footer')).toBe(true);
   });
   it('requires the SINPE payer name and includes their name and payment instructions in WhatsApp', () => {
     const fixture = create();
@@ -73,12 +73,12 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
   it('selects a real tier through the reusable selector and clears it for an unavailable zone', () => {
     const fixture = create();
     const buttons = fixture.nativeElement.querySelectorAll('app-event-zone-selector .zones button');
-    buttons[0].click(); fixture.detectChanges();
+    buttons[0].click(); fixture.changeDetectorRef.markForCheck(); fixture.detectChanges();
     const component = fixture.componentInstance;
     expect(component.tierSeleccionado.id_tier).toBe(2);
     expect(fixture.nativeElement.querySelector('#checkout')).not.toBeNull();
     component.codigoAplicado = true; component.descuentoAplicado = 1000;
-    buttons[1].click(); fixture.detectChanges();
+    buttons[1].click(); fixture.changeDetectorRef.markForCheck(); fixture.detectChanges();
     expect(component.tierSeleccionado).toBeNull();
     expect(component.codigoAplicado).toBe(false);
     expect(fixture.nativeElement.querySelector('#checkout')).toBeNull();
@@ -110,7 +110,7 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
   it('shows one current price per zone and updates the same zone to its next available tier', () => {
     const fixture = create(); const component = fixture.componentInstance;
     component.seleccionarZona(component.zonas.find(z => z.clave === 'general'));
-    fixture.detectChanges();
+    fixture.changeDetectorRef.markForCheck(); fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.phase-track')).toBeNull();
     expect(fixture.nativeElement.querySelectorAll('.zones button').length).toBe(3);
     component.codigoAplicado = true;
@@ -118,7 +118,7 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
       { id_tier: 2, nombre: 'General Tier 2', precio: 7000, disponibilidad: 'CERRADO' },
       { id_tier: 7, nombre: 'General Tier 3', precio: 8000, disponibilidad: 'DISPONIBLE' }
     ];
-    component.agruparPorZona(); fixture.detectChanges();
+    component.agruparPorZona(); fixture.changeDetectorRef.markForCheck(); fixture.detectChanges();
     expect(component.zonaSeleccionada.clave).toBe('general');
     expect(component.tierSeleccionado.id_tier).toBe(7);
     expect(component.zonaSeleccionada.precioActual).toBe(8000);
@@ -129,8 +129,25 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
   it('selects the live General tier directly from the supplied map', () => {
     const fixture = create();
     expect(fixture.nativeElement.querySelector('.venue img').getAttribute('src')).toContain('event-map.webp');
-    fixture.nativeElement.querySelector('.map-zone.general').click(); fixture.detectChanges();
+    fixture.nativeElement.querySelector('.map-zone.general').click(); fixture.changeDetectorRef.markForCheck(); fixture.detectChanges();
     expect(fixture.componentInstance.tierSeleccionado.id_tier).toBe(2);
     expect(fixture.nativeElement.querySelector('.map-zone.general').getAttribute('aria-pressed')).toBe('true');
+  });
+  it('prices a four-person package once, maintains person fields and hides inventory', () => {
+    const fixture = create(); const component = fixture.componentInstance;
+    const promo = {id_tier:20,nombre:'Promo General 4',precio:20000,entradas_por_paquete:4,estado:true,disponibilidad:'DISPONIBLE',cantidad_disponible:123};
+    component.tiers.push(promo); component.agruparPorZona();
+    expect(component.zonas.find(z=>z.clave==='general').fases.map((t:any)=>t.id_tier)).not.toContain(20);
+    component.seleccionarPromocion(promo); fixture.changeDetectorRef.markForCheck(); fixture.detectChanges();
+    expect(component.cantidad).toBe(4); expect(component.personas.length).toBe(4);
+    expect(component.calcularSubtotal()).toBe(20000);
+    expect(component.opcionesCantidad).toEqual([4,8]);
+    expect(fixture.nativeElement.querySelector('#discount-code')).toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain('123');
+    component.cantidad=8;component.actualizarPersonas();
+    expect(component.personas.length).toBe(8);expect(component.calcularSubtotal()).toBe(40000);
+    component.agruparPorZona();expect(component.tierSeleccionado.id_tier).toBe(20);
+    component.seleccionarZona(component.zonas.find(z=>z.clave==='general'));
+    expect(component.cantidad).toBe(1);expect(component.calcularSubtotal()).toBe(7000);
   });
 });

@@ -16,7 +16,12 @@
         </a>
       </div>
 
+      <button type="button" class="btn-info" (click)="usarPromoCuatro()">Configurar 4 entradas por ₡20.000</button>
+      <p>El precio es por paquete. El cupo limita paquetes, no personas. Las compras pendientes reservan cupo; al rechazarlas se libera. El inventario no se muestra al público.</p>
       <div class="form-grid">
+        <label>Entradas por paquete
+          <input type="number" min="1" max="10" step="1" [(ngModel)]="nuevoTier.entradas_por_paquete">
+        </label>
         <input
           type="text"
           placeholder="Nombre del tier"
@@ -29,7 +34,7 @@
 
         <input
           type="number"
-          placeholder="Precio"
+          placeholder="Precio total del paquete" aria-label="Precio total del paquete"
           [(ngModel)]="nuevoTier.precio">
 
         <input
@@ -42,7 +47,7 @@
 
         <input
           type="number"
-          placeholder="Cantidad disponible"
+          placeholder="Paquetes disponibles (entradas si es individual)" aria-label="Paquetes disponibles" min="0" step="1"
           [(ngModel)]="nuevoTier.cantidad_disponible">
 
         <select [(ngModel)]="nuevoTier.estado">
@@ -76,7 +81,8 @@
             <tr>
               <th>ID</th>
               <th>Nombre</th>
-              <th>Precio</th>
+              <th>Precio por paquete</th>
+              <th>Entradas por paquete</th>
               <th>Inicio</th>
               <th>Fin</th>
               <th>Cupo</th>
@@ -94,6 +100,7 @@
                 <small>{{ t.descripcion || '-' }}</small>
               </td>
               <td>{{ formatearMoneda(t.precio) }}</td>
+              <td>{{ t.entradas_por_paquete || 1 }}</td>
               <td>{{ t.fecha_inicio ? (t.fecha_inicio | date:'dd/MM/yyyy HH:mm') : 'Sin inicio' }}</td>
               <td>{{ t.fecha_fin ? (t.fecha_fin | date:'dd/MM/yyyy HH:mm') : 'Sin fin' }}</td>
               <td>{{ t.cantidad_disponible === null ? 'Ilimitado' : t.cantidad_disponible }}</td>
