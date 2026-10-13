@@ -22,8 +22,7 @@ export class EntradasConfirmadasService {
     return this.http.patch<any>(`${this.apiUrl}/detalle/${idDetalle}/revalidar`, {});
   }
 
-  /** URL directa para descargar el reporte CSV del evento. */
-  urlReporteCsv(idEvento: number): string {
-    return `${this.apiUrl}/evento/${idEvento}/reporte.csv`;
+  descargarReporteCsv(idEvento: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/evento/${idEvento}/reporte.csv`, { responseType: 'blob' });
   }
 }

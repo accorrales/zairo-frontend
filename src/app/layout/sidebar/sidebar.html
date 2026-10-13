@@ -40,7 +40,7 @@
     class="menu"
     [class.open]="menuAbierto"
     (click)="cerrarMenuMovil()">
-    <a *ngIf="tienePermiso(['admin','rrhh'])" routerLink="/dashboard" routerLinkActive="active">
+    <a *ngIf="tienePermiso(['admin','rrhh','contabilidad'])" routerLink="/dashboard" routerLinkActive="active">
       <span>🏠</span>
       Dashboard
     </a>
@@ -50,17 +50,17 @@
       Usuarios
     </a>
 
-    <a *ngIf="tienePermiso(['admin','rrhh'])" routerLink="/empleados" routerLinkActive="active">
+    <a *ngIf="tienePermiso(['admin','rrhh','contabilidad'])" routerLink="/empleados" routerLinkActive="active">
       <span>👥</span>
       Empleados
     </a>
 
-    <a *ngIf="tienePermiso(['admin','rrhh'])" routerLink="/conceptos" routerLinkActive="active">
+    <a *ngIf="tienePermiso(['admin','rrhh','contabilidad'])" routerLink="/conceptos" routerLinkActive="active">
       <span>🧾</span>
       Conceptos
     </a>
 
-    <a *ngIf="tienePermiso(['admin','rrhh'])" routerLink="/novedades" routerLinkActive="active">
+    <a *ngIf="tienePermiso(['admin','rrhh','contabilidad'])" routerLink="/novedades" routerLinkActive="active">
       <span>⚡</span>
       Novedades
     </a>
@@ -80,12 +80,12 @@
       Eventos
     </a>
 
-    <a *ngIf="tienePermiso(['admin','rrhh'])" routerLink="/departamentos" routerLinkActive="active">
+    <a *ngIf="tienePermiso(['admin','rrhh','contabilidad'])" routerLink="/departamentos" routerLinkActive="active">
       <span>🏢</span>
       Departamentos
     </a>
 
-    <a *ngIf="tienePermiso(['admin'])" routerLink="/admin/compras" routerLinkActive="active">
+    <a *ngIf="tienePermiso(['admin','contabilidad'])" routerLink="/admin/compras" routerLinkActive="active">
       <span>🎟️</span>
       Compras
     </a>
@@ -95,7 +95,7 @@
       Códigos
     </a>
 
-    <a *ngIf="tienePermiso(['admin'])" routerLink="/dashboard-entradas" routerLinkActive="active">
+    <a *ngIf="tienePermiso(['admin','contabilidad'])" routerLink="/dashboard-entradas" routerLinkActive="active">
       <span>📋</span>
       Entradas
     </a>

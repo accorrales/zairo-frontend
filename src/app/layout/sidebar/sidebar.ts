@@ -20,7 +20,7 @@ export class Sidebar {
   }
 
   tienePermiso(roles: string[]): boolean {
-    const rol = this.getRole()?.toLowerCase();
+    const rol = this.getRole()?.trim().toLowerCase();
     return rol ? roles.includes(rol) : false;
   }
 
