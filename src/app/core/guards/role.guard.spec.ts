@@ -16,11 +16,12 @@ describe('role navigation', () => {
     return TestBed.runInInjectionContext(() => roleGuard(route, {} as RouterStateSnapshot));
   }
   it('allows accounting to enter every financial module', () => {
-    for (const path of ['dashboard', 'empleados', 'departamentos', 'conceptos', 'novedades', 'planillas', 'planillas/:id/detalle', 'reportes', 'admin/compras', 'dashboard-entradas']) expect(check(path)).toBe(true);
+    for (const path of ['dashboard', 'empleados', 'departamentos', 'conceptos', 'novedades', 'planillas', 'planillas/:id/detalle', 'reportes', 'dashboard-entradas']) expect(check(path)).toBe(true);
   });
   it('redirects accounting away from users to an allowed route', () => {
     expect(TestBed.inject(Router).serializeUrl(check('usuarios') as UrlTree)).toBe('/dashboard');
     expect(check('dashboard')).toBe(true);
+    expect(TestBed.inject(Router).serializeUrl(check('admin/compras') as UrlTree)).toBe('/dashboard');
   });
   it('does not loop for viewers or unknown roles', () => {
     role = 'visor';

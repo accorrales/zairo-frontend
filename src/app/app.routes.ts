@@ -131,7 +131,7 @@ export const routes: Routes = [
     path: 'admin/compras',
     loadComponent: () => import('./pages/admin-compras/admin-compras').then((m) => m.AdminCompras),
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'contabilidad'] }
+    data: { roles: ['admin'] }
   },
   {
     path: 'admin/kiosk',
