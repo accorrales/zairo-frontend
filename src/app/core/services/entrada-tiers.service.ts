@@ -14,6 +14,10 @@ export class EntradaTiersService {
     return this.http.get<any[]>(`${this.apiUrl}/evento/${idEvento}`);
   }
   
+  obtenerTiersAdmin(idEvento: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admin/evento/${idEvento}`);
+  }
+
   crearTier(data: any): Observable<any> {
     return this.http.post<any>(this.apiUrl, data);
   }

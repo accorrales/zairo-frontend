@@ -30,6 +30,7 @@ export class EventoTiers implements OnInit {
     fecha_inicio: '',
     fecha_fin: '',
     cantidad_disponible: null as number | null,
+    entradas_por_paquete: 1,
     estado: true
   };
 
@@ -55,7 +56,7 @@ export class EventoTiers implements OnInit {
   }
 
   cargarTiers(): void {
-    this.tiersService.obtenerTiersPorEvento(this.idEvento).subscribe({
+    this.tiersService.obtenerTiersAdmin(this.idEvento).subscribe({
       next: (data) => {
         this.tiers = data;
       },
@@ -72,6 +73,9 @@ export class EventoTiers implements OnInit {
       return;
     }
 
+    const size = Number(this.nuevoTier.entradas_por_paquete);
+    const stock = this.nuevoTier.cantidad_disponible;
+    if (!Number.isInteger(size) || size < 1 || size > 10 || (size > 1 && stock === null) || (stock !== null && (!Number.isInteger(Number(stock)) || Number(stock) < 0))) { alert('Revisá las entradas por paquete (1 a 10) y el límite de paquetes de la promoción.'); return; }
     const payload = {
       id_evento: this.idEvento,
       nombre: this.nuevoTier.nombre,
@@ -80,6 +84,7 @@ export class EventoTiers implements OnInit {
       fecha_inicio: this.nuevoTier.fecha_inicio || null,
       fecha_fin: this.nuevoTier.fecha_fin || null,
       cantidad_disponible: this.nuevoTier.cantidad_disponible,
+      entradas_por_paquete: Number(this.nuevoTier.entradas_por_paquete),
       estado: this.nuevoTier.estado
     };
 
@@ -110,6 +115,15 @@ export class EventoTiers implements OnInit {
     });
   }
 
+  usarPromoCuatro(): void {
+    this.resetFormulario();
+    this.nuevoTier.nombre = 'Promo General · 4 entradas';
+    this.nuevoTier.descripcion = 'Paquete de 4 entradas generales por ₡20.000';
+    this.nuevoTier.entradas_por_paquete = 4;
+    this.nuevoTier.precio = 20000;
+    this.nuevoTier.estado = false;
+  }
+
   editarTier(tier: any): void {
     this.nuevoTier = {
       id_evento: tier.id_evento,
@@ -119,6 +133,7 @@ export class EventoTiers implements OnInit {
       fecha_inicio: this.formatoInputFecha(tier.fecha_inicio),
       fecha_fin: this.formatoInputFecha(tier.fecha_fin),
       cantidad_disponible: tier.cantidad_disponible,
+      entradas_por_paquete: Number(tier.entradas_por_paquete || 1),
       estado: tier.estado
     };
 
@@ -177,7 +192,8 @@ export class EventoTiers implements OnInit {
       fecha_inicio: '',
       fecha_fin: '',
       cantidad_disponible: null,
-      estado: true
+      entradas_por_paquete: 1,
+    estado: true
     };
 
     this.editando = false;

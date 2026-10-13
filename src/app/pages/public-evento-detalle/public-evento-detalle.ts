@@ -44,7 +44,10 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
   /** Máximo de entradas que una persona puede comprar en una sola compra. */
   maxEntradas = 10;
   /** Opciones del selector de cantidad (1..maxEntradas). */
-  opcionesCantidad: number[] = Array.from({ length: this.maxEntradas }, (_, i) => i + 1);
+  get tamanoPaquete(): number { return Number(this.tierSeleccionado?.entradas_por_paquete || 1); }
+  get opcionesCantidad(): number[] { return Array.from({ length: Math.floor(this.maxEntradas / this.tamanoPaquete) }, (_, i) => (i + 1) * this.tamanoPaquete); }
+  get promociones(): any[] { return this.tiers.filter(t => Number(t.entradas_por_paquete || 1) > 1); }
+  seleccionarPromocion(tier: any): void { this.zonaSeleccionada = null; this.seleccionarTier(tier); this.irACheckout(); }
 
   nombreComprador = '';
   correoComprador = '';
@@ -133,6 +136,11 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
         this.tiers = (data || []).filter(
           (t) => t.estado !== false && t.disponibilidad !== 'DESACTIVADO'
         );
+        if (this.tierSeleccionado && this.tamanoPaquete > 1) {
+          const current = this.tiers.find(t => t.id_tier === this.tierSeleccionado.id_tier && t.disponibilidad === 'DISPONIBLE');
+          if (!current) { this.tierSeleccionado = null; this.mensajeCompra = 'Esta promoción ya no está disponible.'; }
+          else { if (Number(current.precio) !== Number(this.tierSeleccionado.precio)) { this.quitarCodigo(); this.mensajeCompra = 'El precio cambió; revisá el total antes de pagar.'; } this.tierSeleccionado = current; }
+        }
         this.agruparPorZona();
         this.cargando = false;
       },
@@ -179,7 +187,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
     const zonasMap = new Map<string, any>();
     const orden: string[] = [];
 
-    for (const tier of this.tiers) {
+    for (const tier of this.tiers.filter(t => Number(t.entradas_por_paquete || 1) === 1)) {
       const norm = this.normalizar(tier.nombre);
       const def = this.zonaDefs.find((d) => d.keywords.some((k) => norm.includes(k)));
 
@@ -221,7 +229,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
       this.zonaSeleccionada =
         zonas.find((z) => z.clave === this.zonaSeleccionada.clave) || null;
     }
-    if (this.tierSeleccionado) {
+    if (this.tierSeleccionado && Number(this.tierSeleccionado.entradas_por_paquete || 1) === 1) {
       const actual = this.zonaSeleccionada?.faseActual;
       if (this.evento?.estado === true && actual) {
         const cambio = actual.id_tier !== this.tierSeleccionado.id_tier || Number(actual.precio) !== Number(this.tierSeleccionado.precio);
@@ -394,6 +402,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
     if (this.evento?.estado !== true || tier.disponibilidad !== 'DISPONIBLE') return;
 
     this.tierSeleccionado = tier;
+    this.cantidad = Number(tier.entradas_por_paquete || 1);
     this.actualizarPersonas();
     this.mensajeCompra = '';
     this.quitarCodigo();
@@ -406,6 +415,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
     if (nuevaCantidad < 1) nuevaCantidad = 1;
     if (nuevaCantidad > this.maxEntradas) nuevaCantidad = this.maxEntradas;
 
+    nuevaCantidad = Math.max(this.tamanoPaquete, Math.floor(nuevaCantidad / this.tamanoPaquete) * this.tamanoPaquete);
     this.cantidad = nuevaCantidad;
 
     while (this.personas.length < nuevaCantidad) {
@@ -453,7 +463,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
 
   calcularSubtotal(): number {
     if (!this.tierSeleccionado) return 0;
-    return Number(this.tierSeleccionado.precio || 0) * Number(this.cantidad || 1);
+    return Number(this.tierSeleccionado.precio || 0) * (Number(this.cantidad || 1) / this.tamanoPaquete);
   }
 
   calcularTotal(): number {
@@ -515,6 +525,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
 
   validarCompra(): string | null {
     if (!this.tierSeleccionado) return 'Seleccioná un tipo de entrada.';
+    if (this.cantidad % this.tamanoPaquete !== 0) return 'Completá todas las personas del paquete.';
     if (this.evento?.estado !== true || this.tierSeleccionado.disponibilidad !== 'DISPONIBLE') return 'Esta entrada no está disponible para compra.';
     if (!this.nombreComprador.trim()) return 'Ingresá el nombre de quien realizará el SINPE.';
     if (!this.correoComprador.trim()) return 'Ingresá un correo electrónico.';
