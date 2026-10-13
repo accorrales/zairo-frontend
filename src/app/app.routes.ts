@@ -13,28 +13,28 @@ export const routes: Routes = [
     path: 'dashboard',
     loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'rrhh'] }
+    data: { roles: ['admin', 'rrhh', 'contabilidad'] }
   },
 
   {
     path: 'empleados',
     loadComponent: () => import('./pages/empleados/empleados').then((m) => m.Empleados),
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'rrhh'] }
+    data: { roles: ['admin', 'rrhh', 'contabilidad'] }
   },
 
   {
     path: 'conceptos',
     loadComponent: () => import('./pages/conceptos/conceptos').then((m) => m.Conceptos),
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'rrhh'] }
+    data: { roles: ['admin', 'rrhh', 'contabilidad'] }
   },
 
   {
     path: 'novedades',
     loadComponent: () => import('./pages/novedades/novedades').then((m) => m.Novedades),
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'rrhh'] }
+    data: { roles: ['admin', 'rrhh', 'contabilidad'] }
   },
 
   {
@@ -71,7 +71,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/departamentos/departamentos').then((m) => m.Departamentos),
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'rrhh'] }
+    data: { roles: ['admin', 'rrhh', 'contabilidad'] }
   },
 
   {
@@ -98,7 +98,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/dashboard-entradas/dashboard-entradas').then((m) => m.DashboardEntradas),
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin'] }
+    data: { roles: ['admin', 'contabilidad'] }
   },
   {
     path: 'evento/:id/cortesia/:codigo',
@@ -131,7 +131,7 @@ export const routes: Routes = [
     path: 'admin/compras',
     loadComponent: () => import('./pages/admin-compras/admin-compras').then((m) => m.AdminCompras),
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin'] }
+    data: { roles: ['admin', 'contabilidad'] }
   },
   {
     path: 'admin/kiosk',

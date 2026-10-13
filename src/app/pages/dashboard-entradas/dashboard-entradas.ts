@@ -6,6 +6,7 @@ import { Sidebar } from '../../layout/sidebar/sidebar';
 import { Header } from '../../layout/header/header';
 import { EventosService } from '../../core/services/eventos.service';
 import { EntradasConfirmadasService } from '../../core/services/entradas-confirmadas.service';
+import { AuthService } from '../../core/services/auth.service';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
@@ -18,6 +19,9 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 export class DashboardEntradas implements OnInit {
   private eventosService = inject(EventosService);
   private entradasService = inject(EntradasConfirmadasService);
+
+  private authService = inject(AuthService);
+  get puedeModificarEntradas(): boolean { return this.authService.getRole()?.trim().toLowerCase() === 'admin'; }
 
   eventos: any[] = [];
   eventoSeleccionado: number | null = null;
@@ -86,6 +90,7 @@ export class DashboardEntradas implements OnInit {
   }
 
   invalidarEntrada(entrada: any): void {
+    if (!this.puedeModificarEntradas) return;
     this.abrirConfirmacion(
       'Invalidar entrada',
       `¿Invalidar la entrada de "${entrada.nombre_completo}"? No podrá usarse para ingresar al evento.`,
@@ -102,6 +107,7 @@ export class DashboardEntradas implements OnInit {
   }
 
   revalidarEntrada(entrada: any): void {
+    if (!this.puedeModificarEntradas) return;
     this.abrirConfirmacion(
       'Reactivar entrada',
       `¿Reactivar la entrada de "${entrada.nombre_completo}"? Volverá a permitir el ingreso.`,
@@ -119,10 +125,18 @@ export class DashboardEntradas implements OnInit {
 
   descargarReporte(): void {
     if (!this.eventoSeleccionado) return;
-    window.open(
-      this.entradasService.urlReporteCsv(this.eventoSeleccionado),
-      '_blank'
-    );
+    const id = this.eventoSeleccionado;
+    this.entradasService.descargarReporteCsv(id).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `entradas-${id}.csv`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      },
+      error: () => { this.mensaje = 'No se pudo descargar el reporte.'; }
+    });
   }
 
   abrirConfirmacion(titulo: string, mensaje: string, accion: () => void): void {

@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { roleHome } from '../../core/guards/role-home';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
@@ -33,22 +34,9 @@ export class Login {
       correo: this.correo.trim().toLowerCase(),
       password: this.password
     }).subscribe({
-      next: (resp: any) => {
+      next: () => {
         this.loading = false;
-
-        const usuario =
-          resp?.usuario ||
-          resp?.user ||
-          this.obtenerUsuarioLocal();
-
-        const rol = String(usuario?.rol || '').trim().toLowerCase();
-
-        if (rol === 'entrada') {
-          this.router.navigate(['/admin/kiosk']);
-          return;
-        }
-
-        this.router.navigate(['/dashboard']);
+        this.router.navigate([roleHome(this.authService.getRole())]);
       },
       error: (err) => {
         this.loading = false;
@@ -60,15 +48,4 @@ export class Login {
     });
   }
 
-  private obtenerUsuarioLocal(): any {
-    try {
-      const userStorage =
-        localStorage.getItem('user') ||
-        localStorage.getItem('usuario');
-
-      return userStorage ? JSON.parse(userStorage) : null;
-    } catch {
-      return null;
-    }
-  }
 }

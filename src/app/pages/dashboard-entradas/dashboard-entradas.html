@@ -92,7 +92,7 @@
                 <th>Precio</th>
                 <th>Estado</th>
                 <th>Fecha compra</th>
-                <th>Acciones</th>
+                <th *ngIf="puedeModificarEntradas">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -121,7 +121,7 @@
                   </small>
                 </td>
                 <td>{{ formatearFecha(e.fecha_compra) }}</td>
-                <td class="acciones">
+                <td class="acciones" *ngIf="puedeModificarEntradas">
                   <button
                     *ngIf="e.estado !== 'INVALIDADA'"
                     class="btn-danger"
