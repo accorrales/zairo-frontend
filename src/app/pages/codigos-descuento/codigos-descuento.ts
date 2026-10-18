@@ -21,6 +21,11 @@ export class CodigosDescuento implements OnInit {
 
   codigos: any[] = [];
   eventos: any[] = [];
+  eventoRankingId: number | null = null;
+  rankingCodigos: any[] = [];
+  cargandoRanking = false;
+  errorRanking = '';
+  private solicitudRanking = 0;
 
   nuevoCodigo = this.formularioVacio();
 
@@ -38,10 +43,7 @@ export class CodigosDescuento implements OnInit {
   }
 
   get topVendedores(): any[] {
-    return [...this.codigos]
-      .filter((c) => this.entradasVendidas(c) > 0)
-      .sort((a, b) => this.entradasVendidas(b) - this.entradasVendidas(a))
-      .slice(0, 3);
+    return this.rankingCodigos;
   }
 
   formularioVacio() {
@@ -60,14 +62,61 @@ export class CodigosDescuento implements OnInit {
 
   cargarEventos(): void {
     this.eventosService.obtenerEventos().subscribe({
-      next: (data) => (this.eventos = data || []),
-      error: (err) => console.error('Error al cargar eventos', err)
+      next: (data) => {
+        this.eventos = data || [];
+        // Primero el evento próximo más cercano; si todos pasaron, el más reciente.
+        const conFecha = this.eventos.filter((e) => Number.isFinite(new Date(e.fecha).getTime()));
+        const ahora = Date.now();
+        const proximos = conFecha
+          .filter((e) => new Date(e.fecha).getTime() >= ahora)
+          .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+        const anteriores = conFecha
+          .filter((e) => new Date(e.fecha).getTime() < ahora)
+          .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+        const preferido = proximos[0] || anteriores[0] || this.eventos[0];
+        this.eventoRankingId = preferido ? Number(preferido.id_evento) : null;
+        this.cargarRanking();
+      },
+      error: (err) => {
+        console.error('Error al cargar eventos', err);
+        this.errorRanking = 'No se pudieron cargar los eventos.';
+      }
+    });
+  }
+
+  cargarRanking(): void {
+    const solicitud = ++this.solicitudRanking;
+    this.rankingCodigos = [];
+    this.errorRanking = '';
+
+    if (this.eventoRankingId === null) {
+      this.cargandoRanking = false;
+      return;
+    }
+
+    this.cargandoRanking = true;
+    this.codigosService.rankingPorEvento(this.eventoRankingId).subscribe({
+      next: (data) => {
+        if (solicitud !== this.solicitudRanking) return;
+        this.rankingCodigos = data || [];
+        this.cargandoRanking = false;
+      },
+      error: (err) => {
+        if (solicitud !== this.solicitudRanking) return;
+        console.error('Error al cargar ranking por evento', err);
+        this.errorRanking = 'No se pudo cargar el ranking de este evento.';
+        this.cargandoRanking = false;
+      }
     });
   }
 
   cargarCodigos(): void {
     this.codigosService.listar().subscribe({
-      next: (data) => (this.codigos = data || []),
+      next: (data) => {
+        this.codigos = data || [];
+        // Refrescar el top si un código se agregó, editó o eliminó.
+        if (this.eventoRankingId !== null) this.cargarRanking();
+      },
       error: (err) => {
         console.error('Error al cargar códigos', err);
         alert(err?.error?.error || 'Error al cargar códigos');
