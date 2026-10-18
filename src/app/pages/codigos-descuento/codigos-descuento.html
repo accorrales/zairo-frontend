@@ -7,17 +7,41 @@
       [subtitle]="'Promociones aplicables a las entradas'">
     </app-header>
 
-    <div class="panel ranking-panel" *ngIf="topVendedores.length > 0">
-      <div class="panel-top">
+    <div class="panel ranking-panel">
+      <div class="panel-top ranking-panel-top">
         <div>
-          <h2>Top 3 vendedores</h2>
+          <h2>Top 3 vendedores por evento</h2>
           <p class="panel-subtitle">
-            Ranking calculado con entradas pagadas y no invalidadas.
+            Solo cuenta las entradas pagadas y no invalidadas del evento seleccionado.
           </p>
+        </div>
+
+        <div class="ranking-selector" *ngIf="eventos.length > 0">
+          <label for="evento-ranking">Evento del ranking</label>
+          <select id="evento-ranking"
+            [(ngModel)]="eventoRankingId"
+            (ngModelChange)="cargarRanking()">
+            <option *ngFor="let e of eventos" [ngValue]="e.id_evento">
+              {{ e.nombre }}
+            </option>
+          </select>
         </div>
       </div>
 
-      <div class="ranking-grid">
+      <div class="estado-box" *ngIf="cargandoRanking" role="status">
+        Cargando ranking del evento...
+      </div>
+      <div class="estado-box ranking-error" *ngIf="errorRanking" role="alert">
+        {{ errorRanking }}
+      </div>
+      <div class="estado-box" *ngIf="!cargandoRanking && !errorRanking && eventos.length === 0">
+        No hay eventos disponibles para consultar.
+      </div>
+      <div class="estado-box" *ngIf="!cargandoRanking && !errorRanking && eventos.length > 0 && topVendedores.length === 0">
+        Este evento todavía no tiene entradas válidas vendidas con códigos.
+      </div>
+
+      <div class="ranking-grid" *ngIf="!cargandoRanking && !errorRanking && topVendedores.length > 0">
         <article class="ranking-card" *ngFor="let vendedor of topVendedores; let i = index">
           <div class="ranking-header">
             <span class="ranking-position">#{{ i + 1 }}</span>
