@@ -14,6 +14,10 @@ export class CodigosDescuentoService {
     return this.http.get<any[]>(this.apiUrl);
   }
 
+  rankingPorEvento(idEvento: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/ranking/${idEvento}`);
+  }
+
   obtenerPorId(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
