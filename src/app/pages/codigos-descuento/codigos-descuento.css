@@ -44,6 +44,38 @@ app-sidebar,
   font-size: 14px;
 }
 
+
+.ranking-panel-top {
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ranking-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: min(100%, 240px);
+}
+
+.ranking-selector label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.ranking-selector select {
+  width: 100%;
+  border: 1px solid #505873;
+  background: #2a2f45;
+  color: white;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.ranking-error {
+  border: 1px solid rgba(239, 68, 68, 0.45);
+}
+
 .ranking-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
