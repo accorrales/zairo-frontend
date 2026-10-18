@@ -1,0 +1,22 @@
+name: Ranking por evento - frontend
+
+on:
+  push:
+    paths:
+      - 'src/app/pages/codigos-descuento/**'
+      - 'src/app/core/services/codigos-descuento.service.ts'
+      - 'package*.json'
+      - '.github/workflows/ranking-check.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
