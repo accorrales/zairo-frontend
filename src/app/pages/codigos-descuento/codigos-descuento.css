@@ -279,6 +279,54 @@ small {
   color: #d1d5db;
 }
 
+.listado-top {
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.badge.reto {
+  margin-left: 6px;
+  padding: 3px 8px;
+  font-size: 10px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  vertical-align: middle;
+  background: rgba(237, 57, 93, 0.2);
+  color: #ff91a3;
+}
+
+.contacto {
+  color: #94a3b8;
+}
+
+.contacto a {
+  color: #93c5fd;
+  text-decoration: none;
+}
+
+.badge.pendiente {
+  margin-left: 4px;
+  padding: 3px 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  vertical-align: middle;
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+
+.reto-bar {
+  width: 110px;
+  margin: 6px 0 4px;
+}
+
+.reto-bar span {
+  background: linear-gradient(90deg, #bd1b3d, #ff5c7c);
+}
+
+tr.fila-meta td {
+  background: rgba(34, 197, 94, 0.08);
+}
+
 @media (max-width: 900px) {
   .ranking-grid {
     grid-template-columns: 1fr;

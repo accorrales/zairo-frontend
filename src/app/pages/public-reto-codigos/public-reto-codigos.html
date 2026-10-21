@@ -1,0 +1,166 @@
+<div class="infamous-home reto-page">
+  <header class="navbar">
+    <a class="brand" routerLink="/home" aria-label="Inicio ZAIRO"><img src="/assets/infamous/v2/zairo-mark.webp" alt="ZAIRO"><span>ZAIRO<small>AFTER DARK EXPERIENCES</small></span></a>
+    <nav aria-label="Navegación principal"><a routerLink="/home">Inicio</a><a [routerLink]="[]" fragment="reto" (click)="cambiarVista('avance')">Mi solicitud</a><a routerLink="/login">Mi cuenta ↗</a></nav>
+  </header>
+
+  <main>
+    <section class="reto-hero" aria-labelledby="reto-title">
+      <div class="reto-glow" aria-hidden="true"></div>
+      <div class="reto-hero-copy">
+        <span class="eyebrow">ZAIRO PRESENTA / BRAND FRIENDS</span>
+        <h1 id="reto-title">Sé Brand<br>Friend.</h1>
+        <p>Postulate para tener tu propio código de descuento ZAIRO. Si te seleccionamos, compartilo con tu gente y si se venden <strong>{{ campana.meta_entradas }} entradas</strong> con tu código, ganás.</p>
+      </div>
+
+      <div class="reto-strip" aria-label="Reglas del Reto">
+        <div><small>DESCUENTO</small><strong>{{ campana.porcentaje }}% OFF</strong><span>para quien compre con tu código</span></div>
+        <div><small>META</small><strong>{{ campana.meta_entradas }} entradas</strong><span>vendidas con tu código</span></div>
+        <div class="premio"><small>PREMIO</small><strong>{{ campana.premio }}</strong></div>
+        <div><small>VIGENCIA</small><strong>{{ formatearFecha(campana.fecha_inicio) }}</strong><span>hasta el {{ formatearFecha(campana.fecha_fin) }}</span></div>
+      </div>
+    </section>
+
+    <div class="content reto-content" id="reto">
+      <section class="reto-pasos" aria-labelledby="pasos-title">
+        <span class="eyebrow">CÓMO FUNCIONA</span>
+        <h2 id="pasos-title">Cinco pasos.<br>Una noche VIP.</h2>
+        <ol>
+          <li><span>01</span><div><strong>Postulate</strong><p>Dejanos tus datos, tu Instagram y el código que te gustaría tener.</p></div></li>
+          <li><span>02</span><div><strong>Te seleccionamos</strong><p>El equipo ZAIRO revisa las solicitudes y te escribe por WhatsApp si quedaste.</p></div></li>
+          <li><span>03</span><div><strong>Compartilo</strong><p>Mandalo por WhatsApp, historias o donde querás. Tu gente obtiene {{ campana.porcentaje }}% de descuento en sus entradas.</p></div></li>
+          <li><span>04</span><div><strong>Sumá entradas</strong><p>Cada entrada pagada con tu código suma. Consultá tu avance cuando querás.</p></div></li>
+          <li><span>05</span><div><strong>Ganá</strong><p>Al llegar a {{ campana.meta_entradas }} entradas te llevás {{ campana.premio }}.</p></div></li>
+        </ol>
+      </section>
+
+      <section class="ticket-glass reto-card" aria-label="Solicitud y estado de Brand Friends">
+        <div class="reto-tabs" role="tablist">
+          <button type="button" role="tab" [attr.aria-selected]="vista === 'crear'" [class.active]="vista === 'crear'" (click)="cambiarVista('crear')">Postularme</button>
+          <button type="button" role="tab" [attr.aria-selected]="vista === 'avance'" [class.active]="vista === 'avance'" (click)="cambiarVista('avance')">Mi solicitud</button>
+        </div>
+
+        <!-- ===== Crear código ===== -->
+        <ng-container *ngIf="vista === 'crear'">
+          <ng-container *ngIf="!registrado; else registroListo">
+            <ng-container *ngIf="campana.registro_abierto; else retoCerrado">
+              <span class="card-kicker">SOLICITUD / BRAND FRIENDS</span>
+              <h3>Postulate</h3>
+
+              <form class="reto-form" (ngSubmit)="registrar()" novalidate>
+                <label>
+                  <span>Nombre completo</span>
+                  <input type="text" name="nombre" autocomplete="name" maxlength="80" required [(ngModel)]="formulario.nombre" placeholder="Ej. Ana Rojas">
+                </label>
+                <label>
+                  <span>Correo electrónico</span>
+                  <input type="email" name="email" autocomplete="email" inputmode="email" maxlength="160" required [(ngModel)]="formulario.email" placeholder="tucorreo@ejemplo.com">
+                </label>
+                <label>
+                  <span>Teléfono / WhatsApp</span>
+                  <input type="tel" name="telefono" autocomplete="tel" inputmode="tel" maxlength="20" required [(ngModel)]="formulario.telefono" placeholder="8888 8888">
+                </label>
+                <label>
+                  <span>Instagram</span>
+                  <input type="text" name="instagram" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="60" required [(ngModel)]="formulario.instagram" placeholder="@tuusuario">
+                </label>
+                <label>
+                  <span>Código que te gustaría</span>
+                  <input class="code-input" type="text" name="codigo" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="15" required [ngModel]="formulario.codigo" (ngModelChange)="onCodigoInput($event)" placeholder="ANAROJAS">
+                  <small>De 4 a 15 letras o números, sin espacios ni tildes.</small>
+                </label>
+
+                <div class="code-preview" aria-live="polite">
+                  <small>ASÍ SE VERÁ</small>
+                  <strong>{{ codigoVistaPrevia }}</strong>
+                  <span>{{ campana.porcentaje }}% OFF</span>
+                </div>
+
+                <p class="form-error" role="alert" *ngIf="errorRegistro">{{ errorRegistro }}</p>
+
+                <button class="primary-cta" type="submit" [disabled]="enviando">
+                  {{ enviando ? 'Enviando…' : 'Enviar solicitud' }} <span>↗</span>
+                </button>
+              </form>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+
+        <ng-template #registroListo>
+          <div class="reto-exito" role="status">
+            <span class="card-kicker">¡GRACIAS, {{ registrado.nombre | uppercase }}!</span>
+            <h3>Recibimos tu solicitud</h3>
+            <div class="code-preview big">
+              <small>CÓDIGO SOLICITADO · EN REVISIÓN</small>
+              <strong>{{ registrado.codigo }}</strong>
+              <span>{{ registrado.porcentaje }}% OFF</span>
+            </div>
+            <p>El equipo ZAIRO va a revisar tu solicitud. Si quedás seleccionado te escribimos por WhatsApp y tu código se activa hasta el <strong>{{ formatearFecha(registrado.fecha_fin) }}</strong> (hora de Costa Rica).</p>
+            <p>Mientras tanto el código todavía no funciona, así que no lo compartás hasta que te confirmemos.</p>
+            <div class="exito-acciones">
+              <button type="button" class="link-btn" (click)="verAvanceRegistrado()">Ver estado de mi solicitud →</button>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template #retoCerrado>
+          <span class="card-kicker">RETO {{ campana.meta_entradas }}</span>
+          <h3>Las solicitudes cerraron</h3>
+          <p class="muted">Brand Friends cerró el {{ formatearFecha(campana.fecha_fin) }}. Si ya tenés un código, podés consultar tu avance.</p>
+          <button type="button" class="secondary-cta" (click)="cambiarVista('avance')">Mi solicitud</button>
+        </ng-template>
+
+        <!-- ===== Avance ===== -->
+        <ng-container *ngIf="vista === 'avance'">
+          <span class="card-kicker">ESTADO / BRAND FRIENDS</span>
+          <h3>¿Cuánto llevás?</h3>
+
+          <form class="reto-form avance-form" (ngSubmit)="consultarAvance()" novalidate>
+            <label>
+              <span>Tu código</span>
+              <div class="inline-field">
+                <input class="code-input" type="text" name="codigoConsulta" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="15" [(ngModel)]="codigoConsulta" placeholder="TUCODIGO">
+                <button class="primary-cta" type="submit" [disabled]="consultando">{{ consultando ? '…' : 'Consultar' }}</button>
+              </div>
+            </label>
+          </form>
+
+          <p class="form-error" role="alert" *ngIf="errorConsulta">{{ errorConsulta }}</p>
+
+          <div class="avance" *ngIf="progreso && !progreso.activo" aria-live="polite">
+            <div class="avance-head">
+              <div><small>{{ progreso.codigo }}</small><strong>{{ progreso.nombre ? 'Hola, ' + progreso.nombre : 'Tu solicitud' }}</strong></div>
+            </div>
+            <p>Tu código <strong>todavía no está activo</strong>. Tu solicitud está en revisión; si quedás seleccionado te escribimos por WhatsApp.</p>
+          </div>
+
+          <div class="avance" *ngIf="progreso?.activo" aria-live="polite">
+            <div class="avance-head">
+              <div><small>{{ progreso.codigo }}</small><strong>{{ progreso.nombre ? 'Hola, ' + progreso.nombre : 'Tu avance' }}</strong></div>
+              <div class="avance-num"><strong>{{ progreso.entradas_vendidas }}</strong><span>/ {{ progreso.meta_entradas }}</span></div>
+            </div>
+            <div class="avance-bar" role="progressbar" aria-label="Entradas vendidas con tu código" [attr.aria-valuenow]="progreso.entradas_vendidas" aria-valuemin="0" [attr.aria-valuemax]="progreso.meta_entradas">
+              <span [style.width.%]="porcentajeAvance"></span>
+            </div>
+            <p *ngIf="!progreso.meta_alcanzada">Te faltan <strong>{{ progreso.faltan }} entradas</strong> para ganar {{ campana.premio }}.</p>
+            <p *ngIf="progreso.meta_alcanzada" class="avance-meta">🎉 ¡Llegaste a la meta! El equipo ZAIRO te va a contactar para entregarte tu premio.</p>
+            <small class="muted">Solo cuentan entradas pagadas y válidas. Las compras pendientes de confirmación se suman cuando se aprueba el pago.</small>
+            <div class="exito-acciones">
+              <a class="secondary-cta" [href]="linkWhatsapp" target="_blank" rel="noopener noreferrer">Compartir mi código ↗</a>
+            </div>
+          </div>
+        </ng-container>
+      </section>
+    </div>
+
+    <section class="content reto-legal" aria-label="Condiciones">
+      <p>
+        Condiciones: una solicitud por persona (correo y teléfono). ZAIRO selecciona a los Brand Friends y solo los códigos aprobados funcionan. El código da {{ campana.porcentaje }}% de descuento en entradas ZAIRO y es válido del {{ formatearFecha(campana.fecha_inicio) }} al {{ formatearFecha(campana.fecha_fin) }} (hora de Costa Rica).
+        Para ganar, deben venderse {{ campana.meta_entradas }} entradas pagadas y no invalidadas con tu código dentro de ese periodo. No aplica en combinación con paquetes promocionales.
+        ZAIRO se reserva el derecho de desactivar códigos ofensivos o que suplanten a otras personas o marcas.
+      </p>
+    </section>
+  </main>
+
+  <footer><a class="footer-brand" routerLink="/home">ZAIRO</a><p>Occidente · Costa Rica<br>Brand Friends / Tu código, tu noche.</p><a href="https://www.instagram.com/zairo.cr/" target="_blank" rel="noopener noreferrer">&#64;ZAIRO.CR ↗</a></footer>
+</div>

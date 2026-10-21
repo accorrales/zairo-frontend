@@ -122,6 +122,11 @@ export const routes: Routes = [
       )
   },
   {
+    path: 'brand-friends',
+    loadComponent: () =>
+      import('./pages/public-reto-codigos/public-reto-codigos').then((m) => m.PublicRetoCodigos)
+  },
+  {
     path: 'home',
     loadComponent: () =>
       import('./pages/public-eventos/public-eventos').then((m) => m.PublicEventos)
