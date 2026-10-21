@@ -90,7 +90,7 @@
               <strong>{{ registrado.codigo }}</strong>
               <span>{{ registrado.porcentaje }}% OFF</span>
             </div>
-            <p>Funciona desde el <strong>{{ formatearFecha(registrado.fecha_inicio) }}</strong> hasta el <strong>{{ formatearFecha(registrado.fecha_fin) }}</strong>. Quien compre su entrada lo escribe en “Código de descuento” al pagar.</p>
+            <p>Funciona desde el <strong>{{ formatearFecha(registrado.fecha_inicio) }}</strong> hasta el <strong>{{ formatearFecha(registrado.fecha_fin) }}</strong> (hora de Costa Rica). Quien compre su entrada lo escribe en “Código de descuento” al pagar.</p>
             <div class="exito-acciones">
               <a class="primary-cta" [href]="linkWhatsapp" target="_blank" rel="noopener noreferrer">Compartir por WhatsApp <span>↗</span></a>
               <button type="button" class="secondary-cta" (click)="copiarCodigo()">{{ copiado ? 'Código copiado ✓' : 'Copiar código' }}</button>

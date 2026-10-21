@@ -6,7 +6,7 @@
 }
 
 .reto-page button {
-  font: inherit;
+  font-family: inherit;
   color: inherit;
   cursor: pointer;
 }
@@ -503,6 +503,22 @@
   .reto-tabs button {
     font-size: 11px;
     padding: 10px 8px;
+  }
+
+  .code-preview {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+  }
+
+  .code-preview span {
+    justify-self: start;
+    margin-top: 6px;
+  }
+
+  .code-preview strong,
+  .code-preview.big strong {
+    font-size: clamp(17px, 5.4vw, 24px);
+    letter-spacing: 1.5px;
   }
 
   .avance {
