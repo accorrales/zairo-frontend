@@ -1,0 +1,519 @@
+/* Estilos del Reto 70. La base (navbar, tipografía, CTAs, ticket-glass,
+   footer) viene de public-eventos.css para mantener el diseño del Home. */
+
+.reto-page {
+  min-height: 100vh;
+}
+
+.reto-page button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.reto-page button:disabled {
+  opacity: .6;
+  cursor: progress;
+}
+
+.reto-page button.primary-cta,
+.reto-page button.secondary-cta {
+  border-style: solid;
+}
+
+/* ---------- Hero ---------- */
+
+.reto-hero {
+  position: relative;
+  padding: 170px 7% 70px;
+  overflow: hidden;
+}
+
+.reto-glow {
+  position: absolute;
+  inset: -20% -10% auto 35%;
+  height: 120%;
+  background:
+    radial-gradient(ellipse at 60% 40%, #bd1b3d55, transparent 55%),
+    radial-gradient(ellipse at 90% 10%, #ed395d30, transparent 45%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.reto-hero-copy {
+  position: relative;
+  max-width: 820px;
+}
+
+.reto-hero-copy h1 {
+  margin: 28px 0 22px;
+}
+
+.reto-hero-copy p {
+  color: #d4c6cc;
+  font-size: 16px;
+  line-height: 1.8;
+  max-width: 520px;
+}
+
+.reto-hero-copy strong {
+  color: #fff;
+}
+
+.reto-strip {
+  position: relative;
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  padding: 28px 32px;
+  border: 1px solid #ffffff25;
+  border-radius: 16px;
+  background: linear-gradient(120deg, #ffffff0b, #ffffff03);
+  backdrop-filter: blur(20px);
+}
+
+.reto-strip > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.reto-strip > div + div {
+  border-left: 1px solid #ffffff20;
+  padding-left: 24px;
+}
+
+.reto-strip small {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #c0a8b1;
+}
+
+.reto-strip strong {
+  font-size: 22px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.reto-strip .premio strong {
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: #ff91a3;
+}
+
+.reto-strip span {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #c7b9c0;
+}
+
+/* ---------- Contenido ---------- */
+
+.reto-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 70px;
+  align-items: start;
+  padding: 70px 0 60px;
+  border-top: 1px solid #ffffff20;
+}
+
+.reto-pasos ol {
+  list-style: none;
+  margin: 34px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 26px;
+}
+
+.reto-pasos li {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.reto-pasos li > span {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 4px 16px 4px 4px;
+  border: 1px solid #ff8c9f60;
+  background: #bd1b3d26;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #ff91a3;
+  font-weight: 700;
+}
+
+.reto-pasos strong {
+  display: block;
+  font-size: 17px;
+  margin: 4px 0 6px;
+}
+
+.reto-pasos p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #c7b9c0;
+}
+
+/* ---------- Tarjeta ---------- */
+
+.reto-card {
+  min-width: 0;
+}
+
+.reto-card h3 {
+  font-size: 34px;
+  margin: 14px 0 22px;
+}
+
+.card-kicker {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #e7bfc9;
+}
+
+.reto-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 5px;
+  margin-bottom: 30px;
+  border: 1px solid #ffffff20;
+  border-radius: 999px;
+  background: #00000040;
+}
+
+.reto-tabs button {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: #cdbec4;
+}
+
+.reto-tabs button.active {
+  color: #fff;
+  background: linear-gradient(120deg, #bd1b3d, #ed395d);
+  box-shadow: 0 6px 25px #c3254040;
+}
+
+.reto-form {
+  display: grid;
+  gap: 18px;
+}
+
+.reto-form label {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.reto-form label > span {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #cdbec4;
+}
+
+.reto-form label > small {
+  font-size: 11px;
+  color: #a998a0;
+}
+
+.reto-form input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 52px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid #ffffff30;
+  background: #08090ccc;
+  color: #f5eff1;
+  font: inherit;
+  font-size: 16px; /* evita el zoom automático en iOS */
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.reto-form input::placeholder {
+  color: #ffffff45;
+}
+
+.reto-form input:focus {
+  border-color: #ff91a3;
+  box-shadow: 0 0 0 3px #ed395d30;
+}
+
+.code-input {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: 700;
+}
+
+.reto-form .primary-cta {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.inline-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.inline-field .primary-cta {
+  width: auto;
+  margin: 0;
+  padding: 0 24px;
+}
+
+.code-preview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 16px;
+  padding: 18px 20px;
+  border: 1px dashed #ff8c9f70;
+  border-radius: 4px 22px 4px 4px;
+  background: radial-gradient(ellipse at top right, #97163540, transparent 65%), #ffffff05;
+}
+
+.code-preview small {
+  grid-column: 1 / -1;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #c0a8b1;
+}
+
+.code-preview strong {
+  font-size: 24px;
+  letter-spacing: 4px;
+  overflow-wrap: anywhere;
+}
+
+.code-preview span {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #bd1b3d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.code-preview.big strong {
+  font-size: clamp(26px, 6vw, 40px);
+}
+
+.form-error {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #ff6b8160;
+  background: #ff3b5a18;
+  color: #ffb3c0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.reto-exito p,
+.avance p,
+.muted {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #c7b9c0;
+}
+
+.reto-exito p strong,
+.avance p strong {
+  color: #fff;
+}
+
+.exito-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.link-btn {
+  border: 0;
+  background: none;
+  padding: 12px 4px;
+  min-height: 44px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ff91a3 !important;
+}
+
+/* ---------- Avance ---------- */
+
+.avance-form {
+  margin-bottom: 18px;
+}
+
+.avance {
+  margin-top: 8px;
+  padding: 24px;
+  border: 1px solid #ffffff25;
+  border-radius: 12px;
+  background: #00000035;
+}
+
+.avance-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.avance-head small {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #ff91a3;
+  margin-bottom: 6px;
+}
+
+.avance-head strong {
+  font-size: 18px;
+}
+
+.avance-num {
+  white-space: nowrap;
+}
+
+.avance-num strong {
+  font-size: 44px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.avance-num span {
+  margin-left: 4px;
+  font-size: 16px;
+  color: #c0a8b1;
+}
+
+.avance-bar {
+  height: 12px;
+  margin: 18px 0 14px;
+  border-radius: 999px;
+  background: #ffffff14;
+  overflow: hidden;
+}
+
+.avance-bar span {
+  display: block;
+  height: 100%;
+  min-width: 6px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #bd1b3d, #ff5c7c);
+  box-shadow: 0 0 18px #ed395d80;
+  transition: width .6s ease;
+}
+
+.avance-meta {
+  color: #ffd6de !important;
+  font-weight: 600;
+}
+
+/* ---------- Legal ---------- */
+
+.reto-legal {
+  padding: 10px 0 70px;
+}
+
+.reto-legal p {
+  max-width: 900px;
+  font-size: 11px;
+  line-height: 1.9;
+  color: #a998a0;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1100px) {
+  .reto-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .reto-strip > div + div:nth-child(3) {
+    border-left: 0;
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .reto-content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 44px;
+  }
+}
+
+@media (max-width: 600px) {
+  .reto-hero {
+    padding: 150px 6% 50px;
+  }
+
+  .reto-hero-copy p {
+    font-size: 15px;
+  }
+
+  .reto-strip {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 22px;
+    gap: 18px;
+    margin-top: 40px;
+  }
+
+  .reto-strip > div + div {
+    border-left: 0;
+    padding-left: 0;
+    border-top: 1px solid #ffffff20;
+    padding-top: 18px;
+  }
+
+  .reto-content {
+    padding: 50px 0 40px;
+  }
+
+  .reto-card {
+    padding: 24px 18px;
+  }
+
+  .reto-card h3 {
+    font-size: 28px;
+  }
+
+  .reto-tabs button {
+    font-size: 11px;
+    padding: 10px 8px;
+  }
+
+  .avance {
+    padding: 18px;
+  }
+
+  .avance-num strong {
+    font-size: 36px;
+  }
+
+  .exito-acciones > * {
+    width: 100%;
+  }
+}

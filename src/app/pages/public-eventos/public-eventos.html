@@ -2,7 +2,7 @@
   <a class="skip-link" [routerLink]="['/home']" fragment="experiencia">Saltar al contenido</a>
   <header class="navbar">
     <a class="brand" routerLink="/home" aria-label="Inicio ZAIRO"><img src="/assets/infamous/v2/zairo-mark.webp" alt="ZAIRO"><span>ZAIRO<small>AFTER DARK EXPERIENCES</small></span></a>
-    <nav aria-label="Navegación principal"><a [routerLink]="['/home']" fragment="lineup" (click)="irASeccion('lineup', $event)" *ngIf="esInfamous">Lineup</a><a [routerLink]="['/home']" fragment="experiencia" (click)="irASeccion('experiencia', $event)">La experiencia</a><a routerLink="/login">Mi cuenta ↗</a></nav>
+    <nav aria-label="Navegación principal"><a [routerLink]="['/home']" fragment="lineup" (click)="irASeccion('lineup', $event)" *ngIf="esInfamous">Lineup</a><a [routerLink]="['/home']" fragment="experiencia" (click)="irASeccion('experiencia', $event)">La experiencia</a><a routerLink="/mi-codigo">Reto 70</a><a routerLink="/login">Mi cuenta ↗</a></nav>
   </header>
   <main>
     <section class="hero" aria-labelledby="hero-title">
@@ -38,6 +38,10 @@
       <section class="ticket-invite">
         <div><span class="eyebrow">03 / TU LUGAR EN LA NOCHE</span><h2>Elegí cómo vivirla.</h2><p>Explorá las zonas, consultá la tarifa disponible y reservá tu entrada. Descubrí el mapa del evento y elegí General o VIP.</p></div>
         <div class="ticket-glass"><span>ENTRADAS OFICIALES / ZAIRO</span><h3>{{ nombreEventoActivo }}</h3><p>{{ proximoEvento?.ubicacion || 'Ubicación por revelar' }}</p><a *ngIf="ventaAbierta" class="primary-cta" [routerLink]="['/evento', proximoEvento.id_evento]">Explorar zonas y entradas ↗</a><span *ngIf="!ventaAbierta" class="locked-cta">{{ errorCarga ? 'Venta sin confirmar' : 'Entradas próximamente' }}</span><small>La disponibilidad y los precios se confirman al elegir tu zona.</small></div>
+      </section>
+      <section class="reto-invite" aria-labelledby="reto-invite-title">
+        <div><span class="eyebrow">04 / RETO 70</span><h2 id="reto-invite-title">Tu código. Tu noche.</h2><p>Creá tu propio código de descuento, compartilo y si se venden 70 entradas con tu código ganás una entrada doble Picnic y una entrada doble VIP ZAIRO. Tu gente obtiene 10% de descuento.</p></div>
+        <div class="ticket-glass reto-glass"><span>RETO 70 / 21 – 28 DE OCTUBRE</span><h3>10% OFF con tu código</h3><p>Registralo en un minuto y seguí tu avance en tiempo real.</p><div class="reto-invite-actions"><a class="primary-cta" routerLink="/mi-codigo">Crear mi código ↗</a><a class="secondary-cta" routerLink="/mi-codigo" [queryParams]="{ vista: 'avance' }">Ver mi avance</a></div><small>Válido del 21 de octubre, 8:00 a.m., al 28 de octubre, 11:59 p.m. (hora de Costa Rica).</small></div>
       </section>
       <section class="more-events" *ngIf="eventosAdicionales.length"><span class="eyebrow">PRÓXIMAS EXPERIENCIAS</span><h2>La señal continúa.</h2><div class="events-grid"><article *ngFor="let e of eventosAdicionales; trackBy: trackByEventoId"><img *ngIf="e.imagen" [src]="e.imagen" [alt]="e.nombre" loading="lazy"><div><small>{{ formatearFecha(e.fecha) }}</small><h3>{{ e.nombre }}</h3><p>{{ e.ubicacion || 'Ubicación por anunciar' }}</p><a *ngIf="e.estado === true" [routerLink]="['/evento', e.id_evento]">Ver entradas ↗</a><span *ngIf="e.estado !== true">Próximamente</span></div></article></div></section>
     </div>
