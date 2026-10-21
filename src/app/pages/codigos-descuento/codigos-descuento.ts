@@ -20,8 +20,6 @@ export class CodigosDescuento implements OnInit {
   private eventosService = inject(EventosService);
 
   codigos: any[] = [];
-  filtroOrigen: 'TODOS' | 'RETO' | 'ADMIN' = 'TODOS';
-  readonly metaReto = 70;
   eventos: any[] = [];
   eventoRankingId: number | null = null;
   rankingCodigos: any[] = [];
@@ -42,34 +40,6 @@ export class CodigosDescuento implements OnInit {
   ngOnInit(): void {
     this.cargarEventos();
     this.cargarCodigos();
-  }
-
-  get codigosFiltrados(): any[] {
-    if (this.filtroOrigen === 'RETO') {
-      return this.codigos
-        .filter((c) => this.esReto(c))
-        .sort((a, b) => this.entradasVendidas(b) - this.entradasVendidas(a));
-    }
-    if (this.filtroOrigen === 'ADMIN') {
-      return this.codigos.filter((c) => !this.esReto(c));
-    }
-    return this.codigos;
-  }
-
-  get totalReto(): number {
-    return this.codigos.filter((c) => this.esReto(c)).length;
-  }
-
-  get ganadoresReto(): number {
-    return this.codigos.filter((c) => this.esReto(c) && this.entradasVendidas(c) >= this.metaReto).length;
-  }
-
-  esReto(c: any): boolean {
-    return !!c?.campana;
-  }
-
-  avanceReto(c: any): number {
-    return Math.min(100, Math.round((this.entradasVendidas(c) / this.metaReto) * 100));
   }
 
   get topVendedores(): any[] {
@@ -179,9 +149,8 @@ export class CodigosDescuento implements OnInit {
       tipo_descuento: this.nuevoCodigo.tipo_descuento,
       valor: Number(this.nuevoCodigo.valor),
       id_evento: this.nuevoCodigo.id_evento || null,
-      // datetime-local está en hora local del navegador; se envía como ISO con zona.
-      fecha_inicio: this.aIsoConZona(this.nuevoCodigo.fecha_inicio),
-      fecha_fin: this.aIsoConZona(this.nuevoCodigo.fecha_fin),
+      fecha_inicio: this.nuevoCodigo.fecha_inicio || null,
+      fecha_fin: this.nuevoCodigo.fecha_fin || null,
       usos_maximos: this.nuevoCodigo.usos_maximos || null,
       estado: this.nuevoCodigo.estado
     };
@@ -323,12 +292,6 @@ export class CodigosDescuento implements OnInit {
       return `${usos} / ∞`;
     }
     return `${usos} / ${c.usos_maximos}`;
-  }
-
-  aIsoConZona(valor: string): string | null {
-    if (!valor) return null;
-    const fecha = new Date(valor);
-    return Number.isNaN(fecha.getTime()) ? null : fecha.toISOString();
   }
 
   formatoInputFecha(fecha: string): string {

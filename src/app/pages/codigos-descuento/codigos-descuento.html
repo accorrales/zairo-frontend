@@ -133,26 +133,12 @@
     </div>
 
     <div class="panel">
-      <div class="panel-top listado-top">
-        <div>
-          <h2>Listado de códigos</h2>
-          <p class="panel-subtitle" *ngIf="totalReto > 0">
-            Reto 70: {{ totalReto }} códigos de clientes · {{ ganadoresReto }} llegaron a la meta
-          </p>
-        </div>
-
-        <div class="ranking-selector">
-          <label for="filtro-origen">Mostrar</label>
-          <select id="filtro-origen" [(ngModel)]="filtroOrigen">
-            <option value="TODOS">Todos los códigos</option>
-            <option value="RETO">Reto 70 (clientes)</option>
-            <option value="ADMIN">Creados por admin</option>
-          </select>
-        </div>
+      <div class="panel-top">
+        <h2>Listado de códigos</h2>
       </div>
 
       <div class="table-wrapper">
-        <table *ngIf="codigosFiltrados.length > 0; else sinCodigos">
+        <table *ngIf="codigos.length > 0; else sinCodigos">
           <thead>
             <tr>
               <th>Código</th>
@@ -167,15 +153,10 @@
           </thead>
 
           <tbody>
-            <tr *ngFor="let c of codigosFiltrados" [class.fila-meta]="esReto(c) && entradasVendidas(c) >= metaReto">
+            <tr *ngFor="let c of codigos">
               <td>
-                <strong>{{ c.codigo }}</strong>
-                <span class="badge reto" *ngIf="esReto(c)">Reto 70</span><br>
+                <strong>{{ c.codigo }}</strong><br>
                 <small>{{ c.descripcion || '-' }}</small>
-                <small class="contacto" *ngIf="esReto(c)">
-                  <br>{{ c.contacto_email }}
-                  <br>{{ c.contacto_telefono }}
-                </small>
               </td>
               <td>{{ descuentoTexto(c) }}</td>
               <td>{{ nombreEvento(c.id_evento) }}</td>
@@ -186,14 +167,7 @@
                   {{ c.fecha_fin ? (c.fecha_fin | date:'dd/MM/yyyy HH:mm') : 'Sin fin' }}
                 </small>
               </td>
-              <td>
-                <ng-container *ngIf="esReto(c); else usosNormal">
-                  <strong>{{ entradasVendidas(c) }} / {{ metaReto }}</strong>
-                  <div class="ranking-bar reto-bar"><span [style.width.%]="avanceReto(c)"></span></div>
-                  <small *ngIf="entradasVendidas(c) >= metaReto">🏆 Meta alcanzada</small>
-                </ng-container>
-                <ng-template #usosNormal>{{ usosTexto(c) }}</ng-template>
-              </td>
+              <td>{{ usosTexto(c) }}</td>
               <td>
                 <strong>{{ formatearMoneda(c.total_vendido || 0) }}</strong><br>
                 <small>{{ entradasVendidas(c) }} entradas válidas</small>
@@ -227,7 +201,7 @@
 
         <ng-template #sinCodigos>
           <div class="estado-box">
-            {{ codigos.length === 0 ? 'No hay códigos de descuento registrados.' : 'No hay códigos con este filtro.' }}
+            No hay códigos de descuento registrados.
           </div>
         </ng-template>
       </div>

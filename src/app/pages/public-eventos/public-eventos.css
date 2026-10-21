@@ -384,31 +384,6 @@ h3 {
   color: #c7b9c0;
 }
 
-.reto-invite {
-  padding: 90px 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
-  border-top: 1px solid #ffffff20;
-}
-
-.reto-invite p {
-  font-size: 14px;
-  line-height: 1.9;
-  color: #c7b9c0;
-}
-
-.reto-glass {
-  order: -1;
-}
-
-.reto-invite-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
 .more-events {
   padding: 40px 0 90px;
 }
@@ -516,8 +491,7 @@ a:focus-visible {
     gap: 8px;
   }
 
-  .ticket-invite,
-  .reto-invite {
+  .ticket-invite {
     gap: 30px;
   }
 
@@ -605,19 +579,10 @@ a:focus-visible {
     padding: 65px 0 0;
   }
 
-  .ticket-invite,
-  .reto-invite {
+  .ticket-invite {
     grid-template-columns: 1fr;
     padding: 60px 0;
     gap: 20px;
-  }
-
-  .reto-glass {
-    order: 0;
-  }
-
-  .reto-invite-actions > a {
-    width: 100%;
   }
 
   .events-grid {
