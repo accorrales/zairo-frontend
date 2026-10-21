@@ -1,3 +1,4 @@
+import { analizarEdades } from './analisis-edades';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -34,6 +35,15 @@ export class DashboardEntradas implements OnInit {
   };
   porTier: any[] = [];
 
+  soloIngresos = false;
+  analisis = analizarEdades([], null);
+  recalcularEdades(): void {
+    const evento = this.eventos.find(e=>Number(e.id_evento)===Number(this.eventoSeleccionado));
+    this.analisis = analizarEdades(this.entradas, evento?.fecha, this.soloIngresos);
+  }
+  porcentaje(cantidad: number): number {
+    return this.analisis.total ? cantidad*100/this.analisis.total : 0;
+  }
   cargando = false;
   mensaje = '';
 
@@ -67,11 +77,14 @@ export class DashboardEntradas implements OnInit {
   cargarEntradas(): void {
     if (!this.eventoSeleccionado) return;
 
+    const solicitado = this.eventoSeleccionado;
+    this.limpiar();
     this.cargando = true;
     this.mensaje = '';
 
     this.entradasService.obtenerPorEvento(this.eventoSeleccionado).subscribe({
       next: (data) => {
+        if (this.eventoSeleccionado !== solicitado) return;
         this.entradas = data.entradas || [];
         this.totales = data.totales || {
           total_entradas: 0,
@@ -79,9 +92,11 @@ export class DashboardEntradas implements OnInit {
           total_invalidadas: 0
         };
         this.porTier = data.por_tier || [];
+        this.recalcularEdades();
         this.cargando = false;
       },
       error: (err) => {
+        if (this.eventoSeleccionado !== solicitado) return;
         console.error('Error al cargar entradas', err);
         this.cargando = false;
         this.mensaje = err?.error?.error || 'Error al cargar entradas.';
@@ -166,6 +181,8 @@ export class DashboardEntradas implements OnInit {
 
   limpiar(): void {
     this.entradas = [];
+    this.analisis = analizarEdades([], null);
+    this.cargando = false;
     this.totales = { total_entradas: 0, total_dinero: 0, total_invalidadas: 0 };
     this.porTier = [];
     this.mensaje = '';

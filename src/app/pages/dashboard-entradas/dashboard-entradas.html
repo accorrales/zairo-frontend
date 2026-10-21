@@ -48,6 +48,44 @@
         </div>
       </div>
 
+
+      <section class="panel" aria-labelledby="edades-title">
+        <div class="panel-top"><h2 id="edades-title">Análisis de edades</h2></div>
+        <label for="age-scope">Población del análisis</label>
+        <select id="age-scope" [(ngModel)]="soloIngresos" (ngModelChange)="recalcularEdades()">
+          <option [ngValue]="false">Entradas válidas de compras pagadas</option>
+          <option [ngValue]="true">Personas con ingreso registrado</option>
+        </select>
+        <p>Edad al día del evento, en hora de Costa Rica. Se cuenta una persona por entrada válida.
+          Las fechas faltantes o inválidas se muestran como “Sin edad”. El ingreso registrado depende del control en puerta.</p>
+        <div class="cards">
+          <div class="card"><span>Total analizado</span><strong class="card-value">{{ analisis.total }}</strong></div>
+          <div class="card"><span>Menores de 18</span><strong class="card-value">{{ analisis.menores }}</strong></div>
+          <div class="card"><span>18 años o más</span><strong class="card-value">{{ analisis.mayores }}</strong></div>
+          <div class="card"><span>Sin edad</span><strong class="card-value">{{ analisis.sinEdad }}</strong></div>
+        </div>
+        <p>Promedio: <strong>{{ analisis.promedio === null ? 'Sin datos' : (analisis.promedio | number:'1.1-1') }}</strong>
+          · Mediana: <strong>{{ analisis.mediana === null ? 'Sin datos' : (analisis.mediana | number:'1.0-1') }}</strong> años.
+          Promedio y mediana excluyen las edades desconocidas.</p>
+        <p *ngIf="!analisis.total">No hay personas en la población seleccionada.</p>
+        <h3>Menores, mayores y edades desconocidas</h3>
+        <div *ngFor="let g of analisis.grupos" style="margin:14px 0">
+          <div>{{ g.label }}: <strong>{{ g.cantidad }}</strong> ({{ porcentaje(g.cantidad) | number:'1.1-1' }}%)</div>
+          <div style="height:12px;background:#31364c;border-radius:6px;overflow:hidden"><div [style.width.%]="porcentaje(g.cantidad)" style="height:100%;background:#a78bfa"></div></div>
+        </div>
+        <h3>Distribución por rangos de edad</h3>
+        <p>Porcentajes sobre el total analizado, incluyendo “Sin edad”.</p>
+        <div *ngFor="let r of analisis.rangos" style="margin:14px 0">
+          <div>{{ r.label }} años: <strong>{{ r.cantidad }}</strong> ({{ porcentaje(r.cantidad) | number:'1.1-1' }}%)</div>
+          <div style="height:12px;background:#31364c;border-radius:6px;overflow:hidden"><div [style.width.%]="porcentaje(r.cantidad)" style="height:100%;background:#38bdf8"></div></div>
+        </div>
+        <details *ngIf="analisis.edades.length"><summary>Ver cantidades por edad exacta</summary>
+          <div class="table-wrapper"><table><thead><tr><th>Edad</th><th>Personas</th><th>% del total</th></tr></thead>
+            <tbody><tr *ngFor="let r of analisis.edades"><td>{{ r.label }}</td><td>{{ r.cantidad }}</td><td>{{ porcentaje(r.cantidad) | number:'1.1-1' }}%</td></tr></tbody>
+          </table></div>
+        </details>
+      </section>
+
       <!-- Desglose por tier -->
       <div class="panel" *ngIf="porTier.length > 0">
         <div class="panel-top">
