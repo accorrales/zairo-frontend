@@ -61,7 +61,7 @@
             <span class="access-rule-icon" aria-hidden="true">🕗</span>
             <div>
               <strong>Horarios de ingreso</strong>
-              <p>Puertas: 8:00 p. m. · Cierre de ingreso: 11:00 p. m. · Finalización: 5:00 a. m.</p>
+              <p>Puertas: 8:00 p. m. · Último ingreso: por confirmar · Finalización prevista: 5:00 a. m.</p>
             </div>
           </div>
 
@@ -118,6 +118,8 @@
         </div>
       </div>
     </section>
+
+    <app-infamous-guide *ngIf="esInfamous"></app-infamous-guide>
 
     <section class="tickets" id="entradas">
 
