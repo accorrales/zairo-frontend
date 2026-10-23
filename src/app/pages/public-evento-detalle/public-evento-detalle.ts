@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { InfamousExperience, InfamousFilm, isInfamous } from '../../shared/infamous/infamous-experience';
 import { EventZoneSelector } from '../../shared/event-zone-selector/event-zone-selector';
+import { InfamousGuide } from '../../shared/infamous/infamous-guide';
 import { ageAtEvent } from '../../shared/event-age';
 
 import { EventosService } from '../../core/services/eventos.service';
@@ -14,7 +15,7 @@ import { CodigosDescuentoService } from '../../core/services/codigos-descuento.s
 @Component({
   selector: 'app-public-evento-detalle',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, InfamousExperience, InfamousFilm, EventZoneSelector],
+  imports: [CommonModule, RouterLink, FormsModule, InfamousExperience, InfamousFilm, EventZoneSelector, InfamousGuide],
   templateUrl: './public-evento-detalle.html',
   styleUrl: './public-evento-detalle.css'
 })
