@@ -121,10 +121,10 @@ export class EventoTiers implements OnInit {
 
   usarPromoVip(): void {
     this.resetFormulario();
-    this.nuevoTier.nombre = 'INFAMOUS · VIP Red Bull · 6 entradas';
+    this.nuevoTier.nombre = 'INFAMOUS · Mesa Red Bull · 6 entradas VIP';
     this.nuevoTier.descripcion = 'EL LLAMADO DE LAS ALMAS · 31 octubre 2026';
     this.nuevoTier.zona = 'VIP';
-    this.nuevoTier.beneficios_paquete = "1 mesa Red Bull tipo hotel, 1 litro de Jack Daniel's y 4 Red Bulls";
+    this.nuevoTier.beneficios_paquete = "1 mesa Red Bull tipo hotel, 1 litro de Jägermeister y 4 Red Bulls";
     this.nuevoTier.entradas_por_paquete = 6;
     this.nuevoTier.precio = 75000;
     this.nuevoTier.cantidad_disponible = 5;

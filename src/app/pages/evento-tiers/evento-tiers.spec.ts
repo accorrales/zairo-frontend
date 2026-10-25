@@ -23,7 +23,7 @@ describe('event package configuration', () => {
     expect(create).toHaveBeenCalledWith(expect.objectContaining({id_evento:71,entradas_por_paquete:4,precio:20000,cantidad_disponible:12,estado:false}));
     expect(list).toHaveBeenCalledWith(71);
     c.usarPromoVip();c.guardarTier();
-    expect(create).toHaveBeenLastCalledWith(expect.objectContaining({id_evento:71,zona:'VIP',precio:75000,entradas_por_paquete:6,cantidad_disponible:5,estado:false,beneficios_paquete:expect.stringContaining('Jack Daniel')}));
+    expect(create).toHaveBeenLastCalledWith(expect.objectContaining({id_evento:71,zona:'VIP',precio:75000,entradas_por_paquete:6,cantidad_disponible:5,estado:false,beneficios_paquete:expect.stringContaining('Jägermeister')}));
     alert.mockRestore();
   });
 });
