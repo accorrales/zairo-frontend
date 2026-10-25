@@ -135,7 +135,7 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
   });
   it('prices six VIP once and displays shared package benefits without coupons', () => {
     const fixture=create();const c=fixture.componentInstance;
-    const promo={id_tier:25,zona:'VIP',nombre:'VIP Red Bull',beneficios_paquete:'1 mesa, 1 litro Jack y 4 Red Bulls',precio:75000,entradas_por_paquete:6,estado:true,disponibilidad:'DISPONIBLE'};
+    const promo={id_tier:25,zona:'VIP',nombre:'VIP Red Bull',beneficios_paquete:'1 mesa, 1 litro de Jägermeister y 4 Red Bulls',precio:75000,entradas_por_paquete:6,estado:true,disponibilidad:'DISPONIBLE'};
     c.tiers.push(promo);c.seleccionarPromocion(promo);fixture.changeDetectorRef.markForCheck();fixture.detectChanges();
     expect(c.calcularSubtotal()).toBe(75000);expect(c.personas.length).toBe(6);expect(c.opcionesCantidad).toEqual([6]);
     expect(fixture.nativeElement.textContent).toContain(promo.beneficios_paquete);expect(fixture.nativeElement.querySelector('#discount-code')).toBeNull();
