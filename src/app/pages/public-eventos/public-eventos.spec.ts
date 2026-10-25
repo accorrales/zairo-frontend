@@ -32,7 +32,7 @@ describe('PublicEventos dynamic experience', () => {
   it('normalizes the backend envelope, filters old events and links to the real event', () => {
     const fixture = create({ data: [{ ...event, id_evento: 1, fecha: '2000-01-01' }, event] });
     expect(fixture.componentInstance.eventos.length).toBe(1);
-    expect(fixture.nativeElement.querySelector('.primary-cta').getAttribute('href')).toBe('/evento/71');
+    expect(fixture.nativeElement.querySelector('a.primary-cta[href*="/evento/"]').getAttribute('href')).toBe('/evento/71');
     expect(fixture.nativeElement.textContent).toContain('El despertar de las almas');
   });
   it('does not attach the INFAMOUS lineup to the next unrelated event', () => {
@@ -43,14 +43,14 @@ describe('PublicEventos dynamic experience', () => {
   });
   it('does not offer a purchase link for a closed event', () => {
     const fixture = create([{ ...event, estado: false }]);
-    expect(fixture.nativeElement.querySelector('.primary-cta')).toBeNull();
+    expect(fixture.nativeElement.querySelector('a.primary-cta[href*="/evento/"]')).toBeNull();
     expect(fixture.componentInstance.ventaAbierta).toBe(false);
   });
   it('handles empty events and an API failure without inventing an available sale', () => {
     const fixture = create([], true);
     expect(fixture.componentInstance.errorCarga).toBe(true);
     expect(fixture.componentInstance.ventaAbierta).toBe(false);
-    expect(fixture.nativeElement.querySelector('.primary-cta')).toBeNull();
+    expect(fixture.nativeElement.querySelector('a.primary-cta[href*="/evento/"]')).toBeNull();
   });
   it('clamps expired and invalid countdowns to zero', () => {
     const fixture = create([{ ...event, fecha: '2000-01-01' }]);

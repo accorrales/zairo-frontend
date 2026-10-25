@@ -30,6 +30,8 @@ export class EventoTiers implements OnInit {
     fecha_inicio: '',
     fecha_fin: '',
     cantidad_disponible: null as number | null,
+    zona: 'GENERAL',
+    beneficios_paquete: '',
     entradas_por_paquete: 1,
     estado: true
   };
@@ -84,6 +86,8 @@ export class EventoTiers implements OnInit {
       fecha_inicio: this.nuevoTier.fecha_inicio || null,
       fecha_fin: this.nuevoTier.fecha_fin || null,
       cantidad_disponible: this.nuevoTier.cantidad_disponible,
+      zona: this.nuevoTier.zona,
+      beneficios_paquete: this.nuevoTier.beneficios_paquete,
       entradas_por_paquete: Number(this.nuevoTier.entradas_por_paquete),
       estado: this.nuevoTier.estado
     };
@@ -115,6 +119,18 @@ export class EventoTiers implements OnInit {
     });
   }
 
+  usarPromoVip(): void {
+    this.resetFormulario();
+    this.nuevoTier.nombre = 'INFAMOUS · VIP Red Bull · 6 entradas';
+    this.nuevoTier.descripcion = 'EL LLAMADO DE LAS ALMAS · 31 octubre 2026';
+    this.nuevoTier.zona = 'VIP';
+    this.nuevoTier.beneficios_paquete = "1 mesa Red Bull tipo hotel, 1 litro de Jack Daniel's y 4 Red Bulls";
+    this.nuevoTier.entradas_por_paquete = 6;
+    this.nuevoTier.precio = 75000;
+    this.nuevoTier.cantidad_disponible = 5;
+    this.nuevoTier.estado = false;
+  }
+
   usarPromoCuatro(): void {
     this.resetFormulario();
     this.nuevoTier.nombre = 'Promo General · 4 entradas';
@@ -133,6 +149,8 @@ export class EventoTiers implements OnInit {
       fecha_inicio: this.formatoInputFecha(tier.fecha_inicio),
       fecha_fin: this.formatoInputFecha(tier.fecha_fin),
       cantidad_disponible: tier.cantidad_disponible,
+      zona: tier.zona || 'GENERAL',
+      beneficios_paquete: tier.beneficios_paquete || '',
       entradas_por_paquete: Number(tier.entradas_por_paquete || 1),
       estado: tier.estado
     };
@@ -192,7 +210,9 @@ export class EventoTiers implements OnInit {
       fecha_inicio: '',
       fecha_fin: '',
       cantidad_disponible: null,
-      entradas_por_paquete: 1,
+      zona: 'GENERAL',
+    beneficios_paquete: '',
+    entradas_por_paquete: 1,
     estado: true
     };
 

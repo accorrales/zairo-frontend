@@ -1390,3 +1390,5 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible {
   border-color: rgba(245,158,11,.28);
   color: #fde7b0;
 }
+
+@media (max-width:600px) { .map-now { flex-wrap:wrap; } .map-now > div { min-width:0; overflow-wrap:anywhere; } .map-now .select-btn { width:100%; } }

@@ -107,7 +107,8 @@
 
           <div class="info-row">
             <span>Entrada</span>
-            <strong>{{ entrada.entrada }}</strong>
+            <strong>{{ entrada.entrada }} · {{ entrada.zona || 'GENERAL' }}</strong>
+            <div *ngIf="entrada.beneficios_paquete"><strong>Promoción · Compra de grupo #{{ entrada.id_compra }}</strong><p>{{ entrada.beneficios_paquete }}</p><p>Beneficios compartidos: entregar una sola vez por paquete, no por cada QR. Verificá el registro de entrega de esta compra.</p></div>
           </div>
 
           <div class="info-row principal" *ngIf="entrada.bebida_cortesia">

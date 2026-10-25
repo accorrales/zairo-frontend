@@ -154,3 +154,5 @@ small {
   background: rgba(107, 114, 128, 0.25);
   color: #d1d5db;
 }
+.form-grid textarea, .form-grid select { width:100%; max-width:100%; box-sizing:border-box; }
+.form-grid textarea { min-height:90px; }

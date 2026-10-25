@@ -86,6 +86,12 @@
         </details>
       </section>
 
+      <section class="panel" *ngIf="paquetes.length">
+        <h2>Paquetes pagados y beneficios compartidos</h2>
+        <p>Se cuenta cada paquete una vez. Los beneficios no son entradas ni reservas adicionales. Incluye compras pagadas aunque luego se invalide una entrada.</p>
+        <div class="table-wrapper"><table><thead><tr><th>Zona</th><th>Paquetes</th><th>Entradas</th><th>Beneficios por paquete</th><th>Total cobrado</th></tr></thead>
+        <tbody><tr *ngFor="let p of paquetes"><td>{{ p.zona }}</td><td>{{ p.paquetes }}</td><td>{{ p.entradas }}</td><td>{{ p.beneficios_paquete }}</td><td>{{ formatearMoneda(p.total) }}</td></tr></tbody></table></div>
+      </section>
       <!-- Desglose por tier -->
       <div class="panel" *ngIf="porTier.length > 0">
         <div class="panel-top">
@@ -139,7 +145,7 @@
                 <td>{{ e.correo_comprador }}</td>
                 <td>{{ e.telefono_comprador }}</td>
                 <td><small>{{ e.uuid_entrada || '-' }}</small></td>
-                <td>{{ e.tier }}</td>
+                <td>{{ e.tier }} · {{ e.zona || 'GENERAL' }}</td>
                 <td>{{ formatearMoneda(e.precio) }}</td>
                 <td>
                   <span
