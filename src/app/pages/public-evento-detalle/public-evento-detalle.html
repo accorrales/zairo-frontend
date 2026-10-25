@@ -135,7 +135,7 @@
       <div class="zone-detail" *ngIf="promociones.length">
         <h3>Promociones por paquete</h3>
         <div class="map-now" *ngFor="let promo of promociones">
-          <div><strong>{{ promo.nombre }}</strong><p>{{ promo.descripcion }}</p>
+          <div><strong>{{ promo.nombre }} · {{ promo.zona || 'GENERAL' }}</strong><p>{{ promo.descripcion }}</p><p *ngIf="promo.beneficios_paquete">Por paquete: {{ promo.beneficios_paquete }}. Beneficios compartidos por el grupo; se entregan una vez por paquete.</p>
           <div class="price">{{ promo.entradas_por_paquete }} entradas por {{ formatearMoneda(promo.precio) }}</div></div>
           <button class="select-btn" [disabled]="evento.estado !== true || promo.disponibilidad !== 'DISPONIBLE'" (click)="seleccionarPromocion(promo)">
             {{ promo.disponibilidad === 'DISPONIBLE' ? 'Elegir promoción' : promo.disponibilidad }}</button>
@@ -200,7 +200,8 @@
         <div class="selected-summary">
           <div>
             <span class="selected-label">Zona seleccionada</span>
-            <strong>{{ zonaSeleccionada?.nombre || tierSeleccionado.nombre }}</strong>
+            <strong>{{ zonaSeleccionada?.nombre || tierSeleccionado.nombre }} · {{ tierSeleccionado.zona || 'GENERAL' }}</strong>
+            <p *ngIf="tierSeleccionado.beneficios_paquete">Por paquete: {{ tierSeleccionado.beneficios_paquete }}. Se entrega una vez por paquete, compartido por el grupo.</p>
           </div>
           <div class="selected-price">{{ formatearMoneda(tierSeleccionado.precio) }} {{ tamanoPaquete > 1 ? 'por paquete de ' + tamanoPaquete : 'por entrada' }}</div>
         </div>

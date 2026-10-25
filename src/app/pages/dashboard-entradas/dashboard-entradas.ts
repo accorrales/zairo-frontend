@@ -33,6 +33,7 @@ export class DashboardEntradas implements OnInit {
     total_dinero: 0,
     total_invalidadas: 0
   };
+  paquetes: any[] = [];
   porTier: any[] = [];
 
   soloIngresos = false;
@@ -85,6 +86,7 @@ export class DashboardEntradas implements OnInit {
     this.entradasService.obtenerPorEvento(this.eventoSeleccionado).subscribe({
       next: (data) => {
         if (this.eventoSeleccionado !== solicitado) return;
+        this.paquetes = data.paquetes || [];
         this.entradas = data.entradas || [];
         this.totales = data.totales || {
           total_entradas: 0,
@@ -184,6 +186,7 @@ export class DashboardEntradas implements OnInit {
     this.analisis = analizarEdades([], null);
     this.cargando = false;
     this.totales = { total_entradas: 0, total_dinero: 0, total_invalidadas: 0 };
+    this.paquetes = [];
     this.porTier = [];
     this.mensaje = '';
   }

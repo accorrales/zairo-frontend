@@ -17,8 +17,12 @@
       </div>
 
       <button type="button" class="btn-info" (click)="usarPromoCuatro()">Configurar 4 entradas por ₡20.000</button>
+      <button type="button" class="btn-info" (click)="usarPromoVip()">Preparar VIP Red Bull · 6 por ₡75.000 (inactiva)</button>
       <p>El precio es por paquete. El cupo limita paquetes, no personas. Las compras pendientes reservan cupo; al rechazarlas se libera. El inventario no se muestra al público.</p>
+      <p>Asigná cupos exclusivos a esta promoción antes de activarla. Cada paquete incluye sus beneficios una sola vez; no crea reservas adicionales de mesas o bebidas.</p>
       <div class="form-grid">
+        <label>Zona <select [(ngModel)]="nuevoTier.zona"><option value="GENERAL">General</option><option value="VIP">VIP</option></select></label>
+        <label>Beneficios por paquete <textarea maxlength="2000" [(ngModel)]="nuevoTier.beneficios_paquete"></textarea></label>
         <label>Entradas por paquete
           <input type="number" min="1" max="10" step="1" [(ngModel)]="nuevoTier.entradas_por_paquete">
         </label>
@@ -96,8 +100,8 @@
             <tr *ngFor="let t of tiers">
               <td>{{ t.id_tier }}</td>
               <td>
-                <strong>{{ t.nombre }}</strong><br>
-                <small>{{ t.descripcion || '-' }}</small>
+                <strong>{{ t.nombre }} · {{ t.zona || 'GENERAL' }}</strong><br>
+                <small>{{ t.descripcion || '-' }} {{ t.beneficios_paquete }}</small>
               </td>
               <td>{{ formatearMoneda(t.precio) }}</td>
               <td>{{ t.entradas_por_paquete || 1 }}</td>
