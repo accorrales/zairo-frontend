@@ -36,11 +36,11 @@ import { Component } from '@angular/core';
       <section class="guide-block" id="infamous-premios">
         <span class="eyebrow">HALLOWEEN / COSTUME AWARDS</span><h3>Tu disfraz puede hacer historia.</h3>
         <div class="awards">
-          <article><strong>1.er lugar</strong><p>Premio por confirmar.</p></article>
+          <article><strong>1.er lugar</strong><p>₡100.000 en efectivo + un litro de Jägermeister.</p></article>
           <article><strong>2.º lugar</strong><p>Una noche en Hotel &amp; Casino Rancho Mirador + un litro del patrocinador K-NTINA.</p></article>
           <article><strong>3.er lugar</strong><p>Un litro de K-NTINA.</p></article>
         </div>
-        <p class="note">El premio del primer lugar, las reglas de participación, la evaluación y las condiciones de entrega se anunciarán por los canales oficiales. Los premios de alcohol son solo para mayores de 18 años.</p>
+        <p class="note">Las reglas de participación, la evaluación y las condiciones de entrega se anunciarán por los canales oficiales. Los premios de alcohol son solo para mayores de 18 años.</p>
       </section>
       <section class="guide-block casino" id="infamous-casino">
         <span class="eyebrow">EXPERIENCIA CASINO / +18</span><h3>Las primeras 100 personas tienen una sorpresa.</h3>
