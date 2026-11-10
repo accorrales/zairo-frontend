@@ -7,8 +7,17 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 To start a local development server, run:
 
 ```bash
-ng serve
+npm start -- --host 127.0.0.1 --port 4200
 ```
+
+Development uses the same-origin `/api` path. `proxy.conf.json` forwards it to
+`http://127.0.0.1:3000`; start the local backend first. Development never uses the
+production API. Production builds replace `environment.ts` with
+`environment.prod.ts`.
+
+Font inlining is disabled so builds do not require Google Fonts network access.
+The existing stylesheet links and typography remain; browsers still need access
+to Google Fonts to load those fonts.
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
