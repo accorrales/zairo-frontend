@@ -27,7 +27,8 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/styles/admin-mobile.css"
+              "src/styles/admin-mobile.css",
+              "src/styles/zairo-system.css"
             ]
           },
           "configurations": {

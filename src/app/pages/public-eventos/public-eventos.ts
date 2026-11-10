@@ -16,6 +16,7 @@ export class PublicEventos implements OnInit, OnDestroy {
   private timer: ReturnType<typeof setInterval> | null = null;
 
   eventos: any[] = [];
+  menuAbierto = false;
   cargando = true;
   errorCarga = false;
 
@@ -36,6 +37,12 @@ export class PublicEventos implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
+    this.cargarEventos();
+  }
+
+  cargarEventos(): void {
+    this.cargando = true;
+    this.errorCarga = false;
     this.eventosService.obtenerEventosActivos().subscribe({
       next: (data: any) => {
         const lista = this.normalizarEventos(data);

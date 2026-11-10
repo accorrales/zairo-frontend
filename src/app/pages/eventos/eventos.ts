@@ -10,6 +10,7 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-eventos',
+  host: { class: 'zairo-screen' },
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, Sidebar, Header, ConfirmDialog],
   templateUrl: './eventos.html',
@@ -19,6 +20,8 @@ export class Eventos implements OnInit {
   private eventosService = inject(EventosService);
 
   eventos: any[] = [];
+  cargando = false;
+  errorCarga = '';
 
   nuevoEvento = {
     nombre: '',
@@ -63,13 +66,17 @@ export class Eventos implements OnInit {
   }
 
   cargarEventos(): void {
+    this.cargando = true;
+    this.errorCarga = '';
     this.eventosService.obtenerEventos().subscribe({
       next: (data) => {
         this.eventos = data;
+        this.cargando = false;
       },
       error: (err) => {
         console.error('Error al cargar eventos', err);
-        alert(err?.error?.error || 'Error al cargar eventos');
+        this.cargando = false;
+        this.errorCarga = 'No pudimos cargar los eventos. Intentá nuevamente.';
       }
     });
   }

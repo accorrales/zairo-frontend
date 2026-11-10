@@ -15,9 +15,9 @@ Development uses the same-origin `/api` path. `proxy.conf.json` forwards it to
 production API. Production builds replace `environment.ts` with
 `environment.prod.ts`.
 
-Font inlining is disabled so builds do not require Google Fonts network access.
-The existing stylesheet links and typography remain; browsers still need access
-to Google Fonts to load those fonts.
+The shared visual foundation is documented in `docs/identidad-zairo.md`.
+Typography uses system fonts; neither builds nor browsers download Google Fonts.
+Font inlining remains disabled.
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 

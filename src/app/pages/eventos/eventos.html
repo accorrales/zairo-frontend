@@ -1,7 +1,7 @@
-<div class="layout">
+<div class="layout zairo-ui">
   <app-sidebar></app-sidebar>
 
-  <div class="content">
+  <main class="content" id="admin-content">
     <app-header
       [title]="'Eventos'"
       [subtitle]="'Administración de eventos ZAIRO'">
@@ -9,48 +9,49 @@
 
     <div class="panel">
       <div class="panel-top">
-        <h2>{{ editando ? 'Editar evento' : 'Nuevo evento' }}</h2>
+        <div><span class="z-eyebrow">GESTIÓN / EXPERIENCIAS</span>
+        <h2>{{ editando ? 'Editar evento' : 'Nuevo evento' }}</h2><p class="z-muted">Los detalles de cada noche, en un solo lugar.</p></div>
       </div>
 
       <div class="form-grid">
-        <input
+        <label class="z-field"><span>Nombre del evento</span><input
           type="text"
           placeholder="Nombre del evento"
-          [(ngModel)]="nuevoEvento.nombre">
+          [(ngModel)]="nuevoEvento.nombre"></label>
 
-        <input
+        <label class="z-field"><span>Descripción</span><input
           type="text"
           placeholder="Descripción"
-          [(ngModel)]="nuevoEvento.descripcion">
+          [(ngModel)]="nuevoEvento.descripcion"></label>
 
-        <input
+        <label class="z-field"><span>Fecha y hora</span><input
           type="datetime-local"
-          [(ngModel)]="nuevoEvento.fecha">
+          [(ngModel)]="nuevoEvento.fecha"></label>
 
-        <input
+        <label class="z-field"><span>Ubicación</span><input
           type="text"
           placeholder="Ubicación"
-          [(ngModel)]="nuevoEvento.ubicacion">
+          [(ngModel)]="nuevoEvento.ubicacion"></label>
 
-        <input
+        <label class="z-field"><span>Precio base (₡)</span><input
           type="number"
           placeholder="Precio base"
-          [(ngModel)]="nuevoEvento.precio">
+          [(ngModel)]="nuevoEvento.precio"></label>
 
-        <input
+        <label class="z-field"><span>URL de la imagen</span><input
           type="text"
           placeholder="URL de la imagen"
-          [(ngModel)]="nuevoEvento.imagen">
+          [(ngModel)]="nuevoEvento.imagen"></label>
 
-        <select [(ngModel)]="nuevoEvento.estado">
+        <label class="z-field"><span>Estado de venta</span><select [(ngModel)]="nuevoEvento.estado">
           <option [ngValue]="true">Venta activa</option>
           <option [ngValue]="false">Venta inactiva</option>
-        </select>
+        </select></label>
 
-        <select [(ngModel)]="nuevoEvento.mostrar_en_home">
+        <label class="z-field"><span>Visibilidad en portada</span><select [(ngModel)]="nuevoEvento.mostrar_en_home">
           <option [ngValue]="true">Mostrar en Home como “Próximamente”</option>
           <option [ngValue]="false">Ocultar del Home</option>
-        </select>
+        </select></label>
 
         <div class="acciones-form">
           <button class="btn-primary" (click)="guardarEvento()">
@@ -69,10 +70,12 @@
 
     <div class="panel">
       <div class="panel-top">
-        <h2>Listado de eventos</h2>
+        <div><h2>Listado de eventos</h2><p class="z-table-hint">Deslizá la tabla hacia los lados para ver detalles y acciones.</p></div>
       </div>
 
-      <div class="table-wrapper">
+      <div *ngIf="cargando" class="z-status" role="status"><span class="z-spinner" aria-hidden="true"></span> Cargando eventos…</div>
+      <div *ngIf="errorCarga" class="z-status z-status-error" role="alert">{{ errorCarga }} <button class="z-button" (click)="cargarEventos()">Reintentar</button></div>
+      <div class="table-wrapper" *ngIf="!cargando && !errorCarga" tabindex="0" role="region" aria-label="Listado de eventos; desplazá para ver todas las columnas">
         <table *ngIf="eventos.length > 0; else sinEventos">
           <thead>
             <tr>
@@ -176,7 +179,7 @@
         </ng-template>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 
 <app-confirm-dialog
@@ -187,7 +190,7 @@
   (cancelar)="cancelarAccion()">
 </app-confirm-dialog>
 
-<div class="overlay-ubicacion" *ngIf="panelUbicacionVisible">
+<div class="overlay-ubicacion zairo-ui" *ngIf="panelUbicacionVisible">
   <div class="panel-ubicacion">
     <div class="panel-ubicacion-header">
       <div>

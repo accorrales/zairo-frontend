@@ -1,0 +1,121 @@
+/* ZAIRO foundations. Components opt in with .zairo-ui; event art stays independent. */
+:root {
+  --z-bg: #080b0a;
+  --z-surface: #111815;
+  --z-raised: #18221c;
+  --z-text: #f3f6ef;
+  --z-muted: #b6c3b8;
+  --z-line: #465449;
+  --z-control-line: #65776a;
+  --z-accent: #c6ff57;
+  --z-ink: #101708;
+  --z-danger: #ffb4b4;
+  --z-success: #b5ecc5;
+  --z-warning: #f5d69b;
+  --z-font: 'Segoe UI', Arial, sans-serif;
+  --z-radius: 16px;
+}
+.zairo-ui { font-family: var(--z-font); color: var(--z-text); color-scheme: dark; }
+.zairo-ui :is(button, input, select, textarea) { font: inherit; }
+.zairo-ui :is(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--z-accent); outline-offset: 4px;
+}
+.zairo-ui .z-button, app-eventos.zairo-screen :is(button, .btn-info) {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 44px; padding: 12px 18px; border: 1px solid var(--z-control-line);
+  border-radius: 10px; background: var(--z-raised); color: var(--z-text);
+  font-size: 14px; font-weight: 650; line-height: 1.35; text-decoration: none; cursor: pointer;
+  transition: background .18s, border-color .18s;
+}
+.zairo-ui .z-button:hover, app-eventos.zairo-screen button:hover { border-color: var(--z-accent); background: #243126; transform: none; }
+.zairo-ui .z-button.z-button-primary, app-eventos.zairo-screen .btn-primary { background: var(--z-accent); color: var(--z-ink); border-color: var(--z-accent); box-shadow: 0 8px 30px #c6ff5712; }
+.zairo-ui .z-button.z-button-primary:hover, app-eventos.zairo-screen .btn-primary:hover { background: #dbff9a; color: var(--z-ink); }
+.zairo-ui button:disabled { opacity: .55; cursor: not-allowed; }
+.z-status { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 18px; border: 1px solid var(--z-line); border-radius: 12px; background: var(--z-surface); color: var(--z-text); font-size: 14px; line-height: 1.6; }
+.z-status-error { border-color: #a25e63; color: var(--z-danger); }
+.z-spinner { width: 18px; height: 18px; border: 2px solid var(--z-line); border-top-color: var(--z-accent); border-radius: 50%; animation: z-spin .8s linear infinite; }
+@keyframes z-spin { to { transform: rotate(360deg); } }
+.z-eyebrow { color: var(--z-accent); font-size: 11px; letter-spacing: 2px; font-weight: 700; }
+.z-muted { color: var(--z-muted); font-size: 14px; line-height: 1.6; }
+/* Brand chrome on the public home. Crimson event art remains untouched. */
+.infamous-home.zairo-ui { font-family: var(--z-font); }
+.infamous-home.zairo-ui .navbar { position: relative; padding: 18px 5%; background: var(--z-bg); border-color: var(--z-line); }
+.infamous-home.zairo-ui .brand small { color: var(--z-muted); font-size: 10px; letter-spacing: 1.5px; }
+.infamous-home.zairo-ui nav { font-size: 14px; gap: 24px; }
+.infamous-home.zairo-ui nav a { display: flex; align-items: center; min-height: 44px; }
+.infamous-home.zairo-ui nav a:hover { color: var(--z-accent); }
+.infamous-home.zairo-ui .z-nav-toggle { display: none; }
+.infamous-home.zairo-ui .hero { height: auto; min-height: 660px; padding-top: 100px; }
+.infamous-home.zairo-ui .sale-state { color: #d8c9d0; font-size: 12px; letter-spacing: 1px; }
+.infamous-home.zairo-ui .hero-actions { pointer-events: auto; }
+.infamous-home.zairo-ui .primary-cta { color: var(--z-ink); }
+.infamous-home.zairo-ui .secondary-cta { color: var(--z-text); }
+.infamous-home.zairo-ui .eyebrow { font-size: 12px; }
+.infamous-home.zairo-ui footer { background: var(--z-bg); }
+/* First administrative adoption: Eventos only. */
+app-eventos.zairo-screen .layout { background: var(--z-bg); }
+app-eventos.zairo-screen .content { background: radial-gradient(ellipse at top right,#c6ff5708,transparent 45%),var(--z-bg); min-width: 0; padding: 32px; }
+app-eventos.zairo-screen :is(.panel,.panel-ubicacion) { background: var(--z-surface); border: 1px solid var(--z-line); border-radius: var(--z-radius); padding: 26px; box-shadow: 0 18px 50px #0003; }
+app-eventos.zairo-screen .panel-top h2 { font-size: 24px; letter-spacing: -.5px; margin: 8px 0; }
+app-eventos.zairo-screen .panel-top p { margin: 6px 0 0; }
+app-eventos.zairo-screen .form-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
+app-eventos.zairo-screen .z-field { display: flex; flex-direction: column; gap: 9px; font-size: 13px; color: var(--z-muted); }
+app-eventos.zairo-screen .form-grid :is(input:not([type=checkbox]),select) { width: 100%; min-width: 0; min-height: 48px; border: 1px solid var(--z-control-line); border-radius: 9px; padding: 12px; background: var(--z-bg); color: var(--z-text); font-size: 16px; }
+app-eventos.zairo-screen .form-grid input::placeholder { color: #9daea1; }
+app-eventos.zairo-screen .acciones-form { grid-column: 1/-1; padding-top: 4px; }
+app-eventos.zairo-screen table { font-size: 14px; }
+app-eventos.zairo-screen :is(th,td) { border-color: var(--z-line); padding: 16px 12px; }
+app-eventos.zairo-screen th { color: var(--z-muted); font-size: 12px; font-weight: 600; }
+app-eventos.zairo-screen :is(small,.subtitulo,.stat-label) { color: var(--z-muted); }
+app-eventos.zairo-screen .badge { display: inline-block; padding: 7px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+app-eventos.zairo-screen .activo { color: var(--z-success); background: #254433; }
+app-eventos.zairo-screen .inactivo { color: var(--z-warning); background: #403522; }
+app-eventos.zairo-screen :is(.btn-danger,.btn-delete) { color: var(--z-danger); background: #341c21; border-color: #8f555c; }
+app-eventos.zairo-screen .btn-warning { background: var(--z-raised); color: var(--z-text); }
+app-eventos.zairo-screen .btn-success { color: var(--z-success); background: #254433; }
+app-eventos.zairo-screen .estado-box { background: var(--z-raised); padding: 28px; color: var(--z-muted); text-align: center; }
+app-eventos.zairo-screen .evento-img { border: 1px solid var(--z-line); }
+app-eventos.zairo-screen :is(.sidebar,.header) { background: var(--z-surface); border-color: var(--z-line); box-shadow: none; font-family: var(--z-font); }
+app-eventos.zairo-screen :is(.sidebar-glow,.sidebar-line,.header::before,.header::after) { display: none; }
+app-eventos.zairo-screen .sidebar { width: 260px; padding: 24px 16px; }
+app-eventos.zairo-screen .sidebar .brand-copy p { color: var(--z-muted); font-size: 9px; letter-spacing: 1px; }
+app-eventos.zairo-screen .theme-badge { background: var(--z-raised); color: var(--z-muted); border: 1px solid var(--z-line); font-size: 11px; }
+app-eventos.zairo-screen .menu a { min-height: 44px; font-size: 14px; color: var(--z-muted); border-radius: 10px; }
+app-eventos.zairo-screen .menu a.active { color: var(--z-accent); background: #c6ff5712; border-color: #c6ff5750; }
+app-eventos.zairo-screen .menu a:hover { color: var(--z-text); }
+app-eventos.zairo-screen .header { border-radius: var(--z-radius); padding: 24px; }
+app-eventos.zairo-screen .header-left p { color: var(--z-muted); font-size: 14px; }
+app-eventos.zairo-screen .header-logo { display: none; }
+app-eventos.zairo-screen .btn-logout { box-shadow: none; }
+app-eventos.zairo-screen .user-box { background: var(--z-raised); border-color: var(--z-line); }
+@media(max-width:900px) {
+  .infamous-home.zairo-ui .z-nav-toggle { display: inline-flex; }
+  .infamous-home.zairo-ui .navbar { flex-wrap: wrap; gap: 12px; }
+  .infamous-home.zairo-ui nav { display: none; width: 100%; gap: 4px; flex-direction: column; border-top: 1px solid var(--z-line); padding-top: 12px; }
+  .infamous-home.zairo-ui nav.is-open { display: flex; }
+  .infamous-home.zairo-ui nav a { padding: 10px; }
+  .infamous-home.zairo-ui .hero { min-height: 600px; padding-top: 64px; }
+  .infamous-home.zairo-ui .brand img { width: 40px; height: 40px; }
+  .infamous-home.zairo-ui .brand>span { font-size: 18px; }
+  .infamous-home.zairo-ui .brand small { font-size: 8px; }
+  app-eventos.zairo-screen .form-grid { grid-template-columns: 1fr; }
+  app-eventos.zairo-screen .panel { padding: 20px; }
+  app-eventos.zairo-screen .header { padding: 18px; }
+}
+@media(prefers-reduced-motion:reduce) { .zairo-ui *, .z-spinner { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+/* Public component link rules must not override primary-button contrast. */
+.infamous-home.zairo-ui a.z-button.z-button-primary { color: var(--z-ink); }
+app-eventos.zairo-screen .sidebar .logo { background: transparent; box-shadow: none; border: 0; border-radius: 0; }
+app-eventos.zairo-screen .sidebar .logo img { filter: none; }
+@media(min-width:901px) { app-eventos.zairo-screen .sidebar .menu-toggle { display: none; } }
+@media(max-width:900px) {
+  app-eventos.zairo-screen app-sidebar .sidebar { width: 100% !important; min-width: 0; }
+}
+/* Keep event cells in the table layout; their old flex display split rows. */
+app-eventos.zairo-screen td.evento-card { display: table-cell; min-width: 220px; }
+app-eventos.zairo-screen td.evento-card img { display: inline-block; width: 48px; height: 60px; vertical-align: middle; margin: 0 10px 0 0; }
+app-eventos.zairo-screen td.evento-card>div { display: inline-block; max-width: 150px; vertical-align: middle; }
+app-eventos.zairo-screen .table-wrapper { overflow-x: auto; }
+app-eventos.zairo-screen table { min-width: 960px; }
+.z-table-hint { display: none; }
+@media(max-width:900px) { .z-table-hint { display: block; color: var(--z-muted); font-size: 13px; line-height: 1.6; } }
