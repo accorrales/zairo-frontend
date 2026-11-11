@@ -1,0 +1,10 @@
+import {TestBed} from '@angular/core/testing';
+import {PublicImage,PublicVideo} from './public-media';
+import {heroAccent} from './public-theme';
+describe('Efficient event media and readable brand chrome',()=>{
+ afterEach(()=>TestBed.resetTestingModule());
+ it('keeps a video out of the DOM until playback is requested',()=>{const f=TestBed.createComponent(PublicVideo);f.componentRef.setInput('src','/assets/test.mp4');f.componentRef.setInput('title','Video de prueba');f.detectChanges();expect(f.nativeElement.querySelector('video')).toBeNull();f.nativeElement.querySelector('button').click();f.changeDetectorRef.markForCheck();f.detectChanges();const v=f.nativeElement.querySelector('video');expect(v.getAttribute('src')).toBe('/assets/test.mp4');expect(v.preload).toBe('none');expect(v.controls).toBe(true);});
+ it('shows an accessible fallback after an image error and retries when its source changes',()=>{const f=TestBed.createComponent(PublicImage);f.componentRef.setInput('src','/assets/missing.webp');f.componentRef.setInput('alt','Arte del evento');f.detectChanges();f.nativeElement.querySelector('img').dispatchEvent(new Event('error'));f.changeDetectorRef.markForCheck();f.detectChanges();expect(f.nativeElement.textContent).toContain('Imagen no disponible');expect(f.nativeElement.querySelector('[role=img]').getAttribute('aria-label')).toBe('Arte del evento');f.componentRef.setInput('src','/assets/another.webp');f.detectChanges();expect(f.nativeElement.querySelector('img')).not.toBeNull();});
+ it('requests below-the-fold images lazily and reserves explicit dimensions',()=>{const f=TestBed.createComponent(PublicImage);f.componentRef.setInput('src','/assets/gallery.webp');f.detectChanges();const image=f.nativeElement.querySelector('img');expect(image.getAttribute('loading')).toBe('lazy');expect(image.getAttribute('width')).toBe('1600');expect(image.getAttribute('height')).toBe('1000');});
+ it('does not reuse a dark event accent on the permanently dark hero',()=>{expect(heroAccent('#000000')).toBe('#c6ff57');expect(heroAccent('#b2edff')).toBe('#b2edff');expect(heroAccent('not-a-color')).toBe('#c6ff57');});
+});

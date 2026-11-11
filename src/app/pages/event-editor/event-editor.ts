@@ -5,11 +5,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Sidebar } from '../../layout/sidebar/sidebar';
 import { Header } from '../../layout/header/header';
+import { PublicVideo } from '../../shared/public-event/public-media';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector:'app-event-editor', standalone:true, host:{class:'zairo-screen'},
-  imports:[CommonModule,FormsModule,RouterLink,Sidebar,Header],
+  imports:[CommonModule,FormsModule,RouterLink,Sidebar,Header,PublicVideo],
   templateUrl:'./event-editor.html', styleUrls:['../eventos/eventos.css','./event-editor.css']
 })
 export class EventEditor implements OnInit {
@@ -41,6 +42,7 @@ export class EventEditor implements OnInit {
   changed(){this.dirty=true;this.message='';}
   addArtist(){if(this.content.artistas.length<30){this.content.artistas.push({nombre:'',descripcion:'',imagen:''});this.changed();}}
   addImage(){if(this.content.imagenes.length<20){this.content.imagenes.push({url:'',alt:''});this.changed();}}
+  addVideo(){if(this.content.videos.length<3){this.content.videos.push({url:'',poster:'',titulo:''});this.changed();}}
   move(index:number,delta:number){const a=this.content.secciones;const target=index+delta;if(target<0||target>=a.length)return;[a[index],a[target]]=[a[target],a[index]];this.changed();}
   save(){
     this.busy=true;this.error='';this.message='';

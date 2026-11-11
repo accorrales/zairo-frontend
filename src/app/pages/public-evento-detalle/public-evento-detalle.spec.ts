@@ -8,7 +8,7 @@ import { ComprasEntradasService } from '../../core/services/compras-entradas.ser
 import { CodigosDescuentoService } from '../../core/services/codigos-descuento.service';
 
 describe('PublicEventoDetalle zone and purchase integration', () => {
-  const event = { id_evento: 71, nombre: 'INFAMOUS', fecha: '2099-10-31T20:00:00-06:00', estado: true };
+  const event = { id_evento: 71, nombre: 'INFAMOUS', fecha: '2099-10-31T20:00:00-06:00', estado: true,publicacion:'PUBLICADO',ventas_abiertas:true };
   const tiers = [
     { id_tier: 1, nombre: 'General Fase 1', precio: 5000, disponibilidad: 'AGOTADO' },
     { id_tier: 2, nombre: 'General Fase 2', precio: 7000, disponibilidad: 'DISPONIBLE' },
@@ -21,7 +21,7 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
   function create(closed = false, failTiers = false) {
     TestBed.configureTestingModule({ imports: [PublicEventoDetalle], providers: [provideRouter([]),
       { provide: ActivatedRoute, useValue: { snapshot: { paramMap: convertToParamMap({ id: '71' }) } } },
-      { provide: EventosService, useValue: { obtenerEventoPorId: () => of({ ...event, estado: !closed }) } },
+      { provide: EventosService, useValue: { obtenerEventoPorId: () => of({ ...event, estado: !closed,ventas_abiertas:!closed }) } },
       { provide: EntradaTiersService, useValue: { obtenerTiersPorEvento: () => failTiers ? throwError(() => new Error('offline')) : of(tiers) } },
       { provide: ComprasEntradasService, useValue: { crearCompra: createPurchase } },
       { provide: CodigosDescuentoService, useValue: {} }
@@ -40,8 +40,10 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
     const element = fixture.nativeElement as HTMLElement;
     const notices = element.querySelectorAll('.access-rules--footer');
     expect(notices.length).toBe(1);
-    expect(element.querySelector('.hero .access-rule strong')?.textContent).toContain('Horarios');
-    expect(element.querySelector('.hero')?.textContent).not.toContain('Ingreso de menores de edad');
+    expect(element.querySelector('app-infamous-guide')).toBeNull();
+    expect(element.querySelector('.purchase-header')?.textContent).not.toContain('INFAMOUS / HALLOWEEN');
+    expect(element.querySelector('.hero')).toBeNull();
+    expect(element.querySelector('.purchase-header')?.textContent).toContain('31 de octubre de 2099');
     expect(element.querySelector('.select-btn')?.textContent?.trim()).toBe('Comprar entrada');
     expect(element.querySelector('.lost-detail')?.lastElementChild?.classList.contains('access-rules--footer')).toBe(true);
   });
@@ -68,7 +70,7 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
     const general = fixture.componentInstance.zonas.find(z => z.clave === 'general');
     expect(general.fases.length).toBe(2);
     expect(general.faseActual.id_tier).toBe(2);
-    expect(fixture.nativeElement.textContent).toContain('PLANO DEL EVENTO');
+    expect(fixture.nativeElement.textContent).toContain('ZONAS Y TARIFAS');
   }, 15000);
   it('selects a real tier through the reusable selector and clears it for an unavailable zone', () => {
     const fixture = create();
@@ -126,12 +128,10 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
     expect(fixture.nativeElement.querySelectorAll('.zones button').length).toBe(1);
     expect(fixture.nativeElement.querySelector('.zones').textContent).not.toContain('7.000');
   });
-  it('selects the live General tier directly from the supplied map', () => {
-    const fixture = create();
-    expect(fixture.nativeElement.querySelector('.venue img').getAttribute('src')).toContain('event-map.webp');
-    fixture.nativeElement.querySelector('.map-zone.general').click(); fixture.changeDetectorRef.markForCheck(); fixture.detectChanges();
+  it('does not invent a map when none is configured and keeps zone selection functional',()=>{
+    const fixture=create();expect(fixture.nativeElement.querySelector('.venue')).toBeNull();
+    fixture.nativeElement.querySelector('app-event-zone-selector .zones button').click();fixture.changeDetectorRef.markForCheck();fixture.detectChanges();
     expect(fixture.componentInstance.tierSeleccionado.id_tier).toBe(2);
-    expect(fixture.nativeElement.querySelector('.map-zone.general').getAttribute('aria-pressed')).toBe('true');
   });
   it('prices six VIP once and displays shared package benefits without coupons', () => {
     const fixture=create();const c=fixture.componentInstance;

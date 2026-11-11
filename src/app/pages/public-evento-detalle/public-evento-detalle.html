@@ -1,127 +1,11 @@
-<div class="lost-detail">
-
-  <a class="skip-link" href="#entradas" (click)="$event.preventDefault(); irAEntradas()">Saltar a las entradas</a>
-  <div class="intro-loader" *ngIf="cargando" role="status" aria-label="Cargando evento">
-    <img class="loader-logo" src="/assets/infamous/v2/zairo-mark.webp" alt="ZAIRO">
-    <p class="loader-copy">Abriendo el portal…</p>
-  </div>
-
-  <div class="load-error" *ngIf="!cargando && (errorCarga || !evento)" role="alert"><p>{{ errorCarga || 'Evento no encontrado.' }}</p><button *ngIf="idEvento" (click)="cargarDatos()">Reintentar</button><a routerLink="/home">Volver al Home</a></div>
-  <ng-container *ngIf="!cargando && evento">
-
-    <header class="lost-nav">
-      <a class="brand" routerLink="/home" aria-label="Inicio ZAIRO">
-        <div class="logo-img">
-          <img
-            src="/assets/infamous/v2/zairo-mark.webp"
-            alt="ZAIRO">
-        </div>
-
-        <div>
-          <h2>ZAIRO</h2>
-          <span>{{ evento.nombre }}</span>
-        </div>
-      </a>
-
-      <a routerLink="/home" class="nav-btn">Volver</a>
-    </header>
-
-    <section class="hero">
-
-      <div class="hero-bg">
-        <app-infamous-film *ngIf="esInfamous"></app-infamous-film>
-        <img
-          *ngIf="!esInfamous" [src]="evento.imagen || '/assets/infamous/v2/portal.webp'"
-          [alt]="evento.nombre"
-          fetchpriority="high"
-          loading="eager"
-          decoding="async">
-      </div>
-
-      <div class="jungle-overlay"></div>
-
-      <div class="hero-content">
-        <span class="tag">ZAIRO PRESENTS</span>
-
-        <h1>{{ evento.nombre }}</h1>
-        <h2 class="event-subtitle" *ngIf="esInfamous">El despertar de las almas</h2>
-
-        <p>
-          {{ evento.descripcion || 'Una noche de música, cristal y sombras. Cruzá el umbral de la próxima experiencia ZAIRO.' }}
-        </p>
-
-        <div class="hero-info">
-          <span>📅 {{ formatearFecha(evento.fecha) }}</span>
-          <span>📍 {{ evento.ubicacion || 'Ubicación por anunciar' }}</span>
-          <span>🎟️ Cupo limitado</span>
-        </div>
-
-        <section class="access-rules" *ngIf="esInfamous" aria-label="Información importante del evento">
-          <div class="access-rule">
-            <span class="access-rule-icon" aria-hidden="true">🕗</span>
-            <div>
-              <strong>Horarios de ingreso</strong>
-              <p>Puertas: 8:00 p. m. · Último ingreso: por confirmar · Finalización prevista: 5:00 a. m.</p>
-            </div>
-          </div>
-
-        </section>
-
-        <button
-          class="primary-btn"
-          (click)="irAEntradas()">
-          Elegir mi zona
-        </button>
-      </div>
-
-    </section>
-
-    <section class="experience-card">
-      <div>
-        <span>EXPERIENCIA ZAIRO</span>
-        <h2>Una noche en otra dimensión.</h2>
-      </div>
-
-      <p>
-        Música, producción visual, acceso digital y confirmación oficial por WhatsApp.
-      </p>
-    </section>
-
-    <!-- Ubicación secreta revelada: el backend solo manda estos campos si
-         el admin marcó el evento como "visible públicamente". -->
-    <section class="ubicacion-revelada" *ngIf="evento.ubicacion_secreta_nombre">
-      <div class="ubicacion-revelada-card">
-        <span class="ubicacion-tag">📍 UBICACIÓN REVELADA</span>
-
-        <h2>{{ evento.ubicacion_secreta_nombre }}</h2>
-
-        <p *ngIf="evento.ubicacion_secreta_direccion">
-          {{ evento.ubicacion_secreta_direccion }}
-        </p>
-
-        <div class="ubicacion-botones">
-          <a
-            *ngIf="evento.ubicacion_secreta_google_maps_url"
-            [href]="evento.ubicacion_secreta_google_maps_url"
-            target="_blank" rel="noopener noreferrer"
-            class="ubicacion-btn maps">
-            Abrir en Google Maps
-          </a>
-
-          <a
-            *ngIf="evento.ubicacion_secreta_waze_url"
-            [href]="evento.ubicacion_secreta_waze_url"
-            target="_blank" rel="noopener noreferrer"
-            class="ubicacion-btn waze">
-            Abrir en Waze
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <app-infamous-guide *ngIf="esInfamous"></app-infamous-guide>
-
-    <section class="tickets" id="entradas">
+<div class="lost-detail zairo-ui">
+  <app-public-nav></app-public-nav>
+  <div class="intro-loader" *ngIf="cargando" role="status"><img class="loader-logo" src="/assets/brand/zairo-mark.webp" alt="ZAIRO"><p>Consultando entradas…</p></div>
+  <div class="load-error" *ngIf="!cargando && (errorCarga || !evento)" role="alert"><p>{{errorCarga || 'Evento no disponible.'}}</p><button class="z-button" (click)="cargarDatos()">Reintentar</button><a class="z-button" routerLink="/home">Ver experiencias</a></div>
+  <ng-container *ngIf="!cargando && !errorCarga && evento">
+    <header class="purchase-header"><a class="z-button" [routerLink]="['/evento',idEvento]">Volver al evento</a><span class="purchase-kicker">ENTRADAS OFICIALES / ZAIRO</span><h1>{{evento.nombre}}</h1><p>{{formatearFecha(evento.fecha)}}</p></header>
+    <div *ngIf="!ventaAbierta" class="sale-closed-card"><h2>Las ventas están cerradas.</h2><p>Podés conocer el evento sin realizar una compra.</p><a class="z-button" [routerLink]="['/evento',idEvento]">Conocer la experiencia</a><button class="z-button" (click)="cargarDatos()">Actualizar disponibilidad</button></div>
+    <section *ngIf="ventaAbierta" class="tickets" id="entradas">
 
       <div class="section-title">
         <span>MAPA DEL EVENTO</span>
@@ -129,7 +13,7 @@
         <p>Elegí General o VIP. Cada zona muestra únicamente su tarifa vigente, confirmada por la venta oficial.</p>
       </div>
 
-      <app-event-zone-selector [zones]="zonas" [selectedKey]="zonaSeleccionada?.clave || null" [imageUrl]="mapaImagen" [interactiveMap]="esInfamous && !evento.mapa_imagen_url" (zoneSelected)="seleccionarZona($event)"></app-event-zone-selector>
+      <app-event-zone-selector [zones]="zonas" [selectedKey]="zonaSeleccionada?.clave || null" [imageUrl]="mapaImagen" [interactiveMap]="false" [showConcept]="false" (zoneSelected)="seleccionarZona($event)"></app-event-zone-selector>
       <p class="sale-notice" *ngIf="evento.estado !== true">La venta de este evento todavía no está abierta.</p>
 
       <div class="zone-detail" *ngIf="promociones.length">
@@ -359,17 +243,7 @@
       </div>
 
     </section>
-    <div class="detail-experience"><app-infamous-experience *ngIf="esInfamous"></app-infamous-experience></div>
-    <section class="access-rules access-rules--footer" *ngIf="esInfamous" aria-label="Información de ingreso de menores de edad">
-      <div class="access-rule">
-        <span class="access-rule-icon" aria-hidden="true">🔞</span>
-        <div>
-          <strong>Ingreso de menores de edad</strong>
-          <p>El evento es para personas de 16 años o más. Quienes tengan 16 o 17 años deben comprar su entrada junto con al menos una persona 18 años o más e ingresar acompañados por ese adulto responsable. Menores de 16 años no pueden ingresar.</p>
-        </div>
-      </div>
-    </section>
 
+    <section class="access-rules access-rules--footer" aria-label="Información de ingreso de menores de edad"><div class="access-rule"><div><strong>Ingreso de menores de edad</strong><p>El evento es para personas de 16 años o más. Quienes tengan 16 o 17 años deben comprar su entrada junto con al menos una persona 18 años o más e ingresar acompañados por ese adulto responsable. Menores de 16 años no pueden ingresar.</p></div></div></section>
   </ng-container>
-
 </div>

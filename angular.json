@@ -62,6 +62,10 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "verification": {
+              "fileReplacements": [],
+              "outputPath": "dist/verification"
             }
           },
           "defaultConfiguration": "production"

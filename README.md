@@ -66,3 +66,23 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Public event pages (stage 4)
+
+The home and `/evento/:id` use the saved public snapshot from the event editor.
+The existing checkout remains at `/evento/:id/comprar` and accepts `?tier=ID`.
+Published events can be presented with sales closed. Drafts and secret locations
+remain protected by the backend. See `docs/etapa-4.md` for behavior, checks,
+controlled slow-network measurements and deployment limitations.
+
+For safe local production-optimization verification:
+
+```bash
+npm run build:verification
+```
+
+This outputs `dist/verification/browser` with the development same-origin `/api`
+path and production optimizations. Serve it with a local API proxy and SPA history
+fallback; do not publish this verification build. `npm run build` retains the
+normal production environment replacement. No global administrative route
+preloading or external font download is used.

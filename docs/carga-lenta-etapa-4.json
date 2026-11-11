@@ -1,0 +1,91 @@
+{
+  "network": {
+    "download_kbps": 400,
+    "upload_kbps": 400,
+    "latency_ms": 150,
+    "cpu_slowdown": 4,
+    "cache": "disabled",
+    "viewport": "390x844",
+    "fixture_hero_bytes": 31074,
+    "heavy_image_bytes": 326106
+  },
+  "measurements": [
+    {
+      "label": "home-cold-1",
+      "fcp_ms": 892,
+      "lcp_ms": 6288,
+      "load_ms": 3762,
+      "transfer_bytes": 207741,
+      "requests": 20,
+      "videos": 0,
+      "fonts": 0,
+      "wall_ms": 7160
+    },
+    {
+      "label": "event-cold-1",
+      "fcp_ms": 460,
+      "lcp_ms": 5776,
+      "load_ms": 3547,
+      "transfer_bytes": 210004,
+      "requests": 22,
+      "videos": 0,
+      "fonts": 0,
+      "wall_ms": 6922
+    },
+    {
+      "label": "home-cold-2",
+      "fcp_ms": 460,
+      "lcp_ms": 5964,
+      "load_ms": 3727,
+      "transfer_bytes": 207741,
+      "requests": 20,
+      "videos": 0,
+      "fonts": 0,
+      "wall_ms": 7017
+    },
+    {
+      "label": "event-cold-2",
+      "fcp_ms": 612,
+      "lcp_ms": 6040,
+      "load_ms": 3653,
+      "transfer_bytes": 210004,
+      "requests": 22,
+      "videos": 0,
+      "fonts": 0,
+      "wall_ms": 7130
+    },
+    {
+      "label": "home-cold-3",
+      "fcp_ms": 460,
+      "lcp_ms": 5804,
+      "load_ms": 3577,
+      "transfer_bytes": 207741,
+      "requests": 20,
+      "videos": 0,
+      "fonts": 0,
+      "wall_ms": 6876
+    },
+    {
+      "label": "event-cold-3",
+      "fcp_ms": 404,
+      "lcp_ms": 5932,
+      "load_ms": 3664,
+      "transfer_bytes": 210004,
+      "requests": 22,
+      "videos": 0,
+      "fonts": 0,
+      "wall_ms": 6981
+    },
+    {
+      "label": "event-heavy-image-cold",
+      "fcp_ms": 596,
+      "lcp_ms": 12036,
+      "load_ms": 3696,
+      "transfer_bytes": 505046,
+      "requests": 22,
+      "videos": 0,
+      "fonts": 0,
+      "wall_ms": 13018
+    }
+  ]
+}

@@ -1392,3 +1392,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible {
 }
 
 @media (max-width:600px) { .map-now { flex-wrap:wrap; } .map-now > div { min-width:0; overflow-wrap:anywhere; } .map-now .select-btn { width:100%; } }
+
+/* Permanent Zairo purchase chrome. Event imagery and editorial live on its page. */
+.lost-detail.zairo-ui{background:var(--z-bg);font-family:var(--z-font)}
+.purchase-header{width:88%;max-width:1260px;margin:45px auto 10px;color:var(--z-text)}
+.purchase-kicker{display:block;margin-top:35px;color:var(--z-accent);font-size:11px;letter-spacing:2px}
+.purchase-header h1{font-size:clamp(34px,6vw,76px);letter-spacing:-2px;overflow-wrap:anywhere;margin:20px 0}
+.purchase-header p{color:var(--z-muted);line-height:1.7}
+.sale-closed-card{width:88%;max-width:1260px;margin:40px auto;padding:30px;background:var(--z-surface);border:1px solid var(--z-line);border-radius:18px}
+.sale-closed-card p{line-height:1.8}.sale-closed-card .z-button{margin:10px 10px 0 0}
+.lost-detail.zairo-ui .tickets{padding-top:40px}
+.lost-detail.zairo-ui .load-error{position:relative;inset:auto;min-height:50vh;padding:70px 6%;background:var(--z-bg)}
+.lost-detail.zairo-ui .access-rules--footer{width:88%;max-width:1260px;margin:40px auto;padding:24px;background:var(--z-surface);border-color:var(--z-line)}

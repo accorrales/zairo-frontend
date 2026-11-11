@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { InfamousExperience, InfamousFilm, isInfamous } from '../../shared/infamous/infamous-experience';
+import { PublicNav } from '../../shared/public-event/public-nav';
 import { EventZoneSelector } from '../../shared/event-zone-selector/event-zone-selector';
-import { InfamousGuide } from '../../shared/infamous/infamous-guide';
+
 import { ageAtEvent } from '../../shared/event-age';
 
 import { EventosService } from '../../core/services/eventos.service';
@@ -15,7 +15,7 @@ import { CodigosDescuentoService } from '../../core/services/codigos-descuento.s
 @Component({
   selector: 'app-public-evento-detalle',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, InfamousExperience, InfamousFilm, EventZoneSelector, InfamousGuide],
+  imports: [CommonModule, RouterLink, FormsModule, EventZoneSelector, PublicNav],
   templateUrl: './public-evento-detalle.html',
   styleUrl: './public-evento-detalle.css'
 })
@@ -35,8 +35,9 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
 
   cargando = true;
   errorCarga = '';
-  get esInfamous(): boolean { return isInfamous(this.evento); }
-  get mapaImagen(): string | null { return this.evento?.mapa_imagen_url || (this.esInfamous ? '/assets/infamous/v2/event-map.webp' : null); }
+  get ventaAbierta(): boolean { return this.evento?.estado === true && this.evento?.publicacion === 'PUBLICADO' && this.evento?.ventas_abiertas === true; }
+  get mapaImagen(): string | null { return this.evento?.mapa_imagen_url || null; }
+  private requestedTierApplied = false;
   private refreshTiers?: ReturnType<typeof setInterval>;
 
   tierSeleccionado: any = null;
@@ -109,6 +110,8 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
 
   cargarDatos(): void {
     this.errorCarga = '';
+    this.evento=null;
+    this.requestedTierApplied=false;
     this.cargando = true;
     this.tiers = [];
     this.zonas = [];
@@ -118,7 +121,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
     this.eventosService.obtenerEventoPorId(this.idEvento).subscribe({
       next: (evento) => {
         this.evento = evento;
-        this.cargarTiers();
+        if(this.ventaAbierta) this.cargarTiers(); else this.cargando=false;
       },
       error: (err) => {
         console.error('Error al cargar evento', err);
@@ -129,6 +132,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
   }
 
   cargarTiers(): void {
+    if(!this.ventaAbierta)return;
     this.tiersService.obtenerTiersPorEvento(this.idEvento).subscribe({
       next: (data) => {
         // En la venta pública no se muestran los tiers desactivados
@@ -143,11 +147,19 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
           else { if (Number(current.precio) !== Number(this.tierSeleccionado.precio)) { this.quitarCodigo(); this.mensajeCompra = 'El precio cambió; revisá el total antes de pagar.'; } this.tierSeleccionado = current; }
         }
         this.agruparPorZona();
+        if(!this.requestedTierApplied){
+          this.requestedTierApplied=true;
+          const id=Number(this.route.snapshot.queryParamMap?.get('tier'));
+          const tier=this.tiers.find(t=>t.id_tier===id && t.disponibilidad==='DISPONIBLE');
+          if(tier)this.seleccionarTier(tier);
+        }
         this.cargando = false;
       },
       error: (err) => {
         console.error('Error al cargar tiers', err);
-        this.errorCarga = 'No pudimos consultar las entradas. Volvé a intentarlo.';
+        this.tiers=[];this.zonas=[];this.tierSeleccionado=null;this.zonaSeleccionada=null;
+        if(err.status===404){this.evento={...this.evento,estado:false,ventas_abiertas:false};this.errorCarga='';}
+        else this.errorCarga = 'No pudimos consultar las entradas. Volvé a intentarlo.';
         this.cargando = false;
       }
     });
@@ -400,7 +412,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
   // ===========================================================
 
   seleccionarTier(tier: any): void {
-    if (this.evento?.estado !== true || tier.disponibilidad !== 'DISPONIBLE') return;
+    if (!this.ventaAbierta || tier.disponibilidad !== 'DISPONIBLE') return;
 
     this.tierSeleccionado = tier;
     this.cantidad = Number(tier.entradas_por_paquete || 1);
@@ -527,7 +539,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
   validarCompra(): string | null {
     if (!this.tierSeleccionado) return 'Seleccioná un tipo de entrada.';
     if (this.cantidad % this.tamanoPaquete !== 0) return 'Completá todas las personas del paquete.';
-    if (this.evento?.estado !== true || this.tierSeleccionado.disponibilidad !== 'DISPONIBLE') return 'Esta entrada no está disponible para compra.';
+    if (!this.ventaAbierta || this.tierSeleccionado.disponibilidad !== 'DISPONIBLE') return 'Esta entrada no está disponible para compra.';
     if (!this.nombreComprador.trim()) return 'Ingresá el nombre de quien realizará el SINPE.';
     if (!this.correoComprador.trim()) return 'Ingresá un correo electrónico.';
     if (!this.telefonoComprador.trim()) return 'Ingresá un número de teléfono.';
@@ -700,6 +712,7 @@ Voy a realizar el SINPE a ese número, colocar el nombre indicado en el detalle 
 
   formatearFecha(fecha: string): string {
     return new Date(fecha).toLocaleDateString('es-CR', {
+      timeZone: 'America/Costa_Rica',
       day: '2-digit',
       month: 'long',
       year: 'numeric'

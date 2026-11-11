@@ -1,52 +1,18 @@
-<div class="infamous-home zairo-ui">
-  <a class="skip-link" [routerLink]="['/home']" fragment="experiencia">Saltar al contenido</a>
-  <header class="navbar">
-    <a class="brand" routerLink="/home" aria-label="Inicio ZAIRO"><img src="/assets/infamous/v2/zairo-mark.webp" alt="ZAIRO"><span>ZAIRO<small>AFTER DARK EXPERIENCES</small></span></a>
-    <button type="button" class="z-button z-nav-toggle" aria-controls="public-menu" [attr.aria-expanded]="menuAbierto" (click)="menuAbierto = !menuAbierto">{{ menuAbierto ? 'Cerrar ✕' : 'Menú ☰' }}</button>
-    <nav id="public-menu" [class.is-open]="menuAbierto" (click)="menuAbierto = false" aria-label="Navegación principal"><a [routerLink]="['/home']" fragment="lineup" (click)="irASeccion('lineup', $event)" *ngIf="esInfamous">Lineup</a><a [routerLink]="['/home']" fragment="experiencia" (click)="irASeccion('experiencia', $event)">La experiencia</a><a routerLink="/brand-friends">Brand Friends</a><a routerLink="/login">Mi cuenta ↗</a></nav>
-  </header>
-  <main>
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-media"><app-infamous-film *ngIf="esInfamous; else eventImage" videoFile="VIdeo4bes.mp4"></app-infamous-film><ng-template #eventImage><img [src]="imagenPrincipal" [alt]="nombreEventoActivo" fetchpriority="high"></ng-template></div>
-      <div class="hero-shade" aria-hidden="true"></div>
-      <div class="hero-copy">
-        <span class="eyebrow">ZAIRO PRESENTA / {{ esInfamous ? 'HALLOWEEN 2026' : 'PRÓXIMA EXPERIENCIA' }}</span>
-        <h1 id="hero-title">{{ nombreEventoActivo }}</h1>
-        <h2>{{ esInfamous ? halloween.subtitulo : 'La próxima noche empieza aquí.' }}</h2>
-        <p>{{ esInfamous ? 'Cruzá el umbral. La noche tiene otra dimensión.' : (proximoEvento?.descripcion || 'Descubrí la próxima experiencia ZAIRO.') }}</p>
-        <div class="hero-actions" aria-live="polite">
-          <span *ngIf="cargando" role="status" class="z-status"><span class="z-spinner" aria-hidden="true"></span> Consultando próximas experiencias…</span>
-          <div *ngIf="errorCarga" role="alert" class="z-status z-status-error">No pudimos consultar los eventos. <button class="z-button" (click)="cargarEventos()">Reintentar</button></div>
-          <a *ngIf="!cargando && ventaAbierta" class="primary-cta z-button z-button-primary" [routerLink]="['/evento', proximoEvento.id_evento]">Elegir mis entradas <span>↗</span></a>
-          <a *ngIf="!cargando && !ventaAbierta" class="secondary-cta z-button" href="https://www.instagram.com/zairo.cr/" target="_blank" rel="noopener noreferrer">{{ errorCarga ? 'Ver novedades en Instagram ↗' : 'Seguí la revelación ↗' }}</a>
-          <span class="sale-state" *ngIf="!cargando">{{ errorCarga ? 'No pudimos consultar la venta. Intentá de nuevo más tarde.' : ventaAbierta ? 'VENTA ABIERTA / ACCESO OFICIAL' : 'ENTRADAS PRÓXIMAMENTE' }}</span>
-        </div>
-      </div>
-      <div class="hero-bottom"><span>01 / EL DESPERTAR</span><span>DESLIZÁ PARA CRUZAR ↓</span></div>
-    </section>
-    <section class="event-strip" aria-label="Información del evento">
-      <div><small>CUÁNDO</small><strong>{{ formatearFechaLarga(fechaPrincipal) }}</strong></div>
-      <div><small>DÓNDE</small><strong>{{ proximoEvento?.ubicacion || 'Ubicación por revelar' }}</strong></div>
-      <div class="countdown" aria-label="Cuenta regresiva"><div><strong>{{ countdown.dias }}</strong><small>DÍAS</small></div><div><strong>{{ countdown.horas }}</strong><small>HRS</small></div><div><strong>{{ countdown.minutos }}</strong><small>MIN</small></div><div><strong>{{ countdown.segundos }}</strong><small>SEG</small></div></div>
-    </section>
-    <div class="content" id="experiencia">
-      <section class="intro"><span class="eyebrow">UN UNIVERSO ZAIRO</span><h2>{{ esInfamous ? 'La noche se transforma. Vos también.' : nombreEventoActivo }}</h2><p>{{ proximoEvento?.descripcion || 'Negro profundo. Cristal encendido. Música que atraviesa las sombras. Una experiencia creada para sentir Halloween desde otro lugar.' }}</p></section>
-      <section class="official-poster" *ngIf="esInfamous" aria-labelledby="official-poster-title">
-        <div><span class="eyebrow">INFAMOUS / FLYER OFICIAL</span><h2 id="official-poster-title">El despertar de las almas.</h2></div>
-        <figure><img [src]="infamousFlyer" alt="Flyer oficial de INFAMOUS: 31 de octubre, live show de 4BES y lineup JUNE, JUNNO, JOAO, BARU y VARGAS" width="1280" height="1600" loading="lazy" decoding="async"></figure>
-      </section>
-      <app-infamous-intro *ngIf="esInfamous"></app-infamous-intro>
-      <app-infamous-experience *ngIf="esInfamous"></app-infamous-experience>
-      <section class="ticket-invite">
-        <div><span class="eyebrow">03 / TU LUGAR EN LA NOCHE</span><h2>Elegí cómo vivirla.</h2><p>Explorá las zonas, consultá la tarifa disponible y reservá tu entrada. Descubrí el mapa del evento y elegí General o VIP.</p></div>
-        <div class="ticket-glass"><span>ENTRADAS OFICIALES / ZAIRO</span><h3>{{ nombreEventoActivo }}</h3><p>{{ proximoEvento?.ubicacion || 'Ubicación por revelar' }}</p><a *ngIf="ventaAbierta" class="primary-cta z-button z-button-primary" [routerLink]="['/evento', proximoEvento.id_evento]">Explorar zonas y entradas ↗</a><span *ngIf="!ventaAbierta" class="locked-cta">{{ errorCarga ? 'Venta sin confirmar' : 'Entradas próximamente' }}</span><small>La disponibilidad y los precios se confirman al elegir tu zona.</small></div>
-      </section>
-      <section class="reto-invite" aria-labelledby="reto-invite-title">
-        <div><span class="eyebrow">04 / BRAND FRIENDS</span><h2 id="reto-invite-title">Sé Brand Friend.</h2><p>Postulate para tener tu propio código de descuento ZAIRO. Si te seleccionamos y se venden 70 entradas con tu código, ganás una entrada doble Picnic y una entrada doble VIP ZAIRO. Tu gente obtiene 10% de descuento.</p></div>
-        <div class="ticket-glass reto-glass"><span>BRAND FRIENDS / 21 – 28 DE OCTUBRE</span><h3>Tu propio código ZAIRO</h3><p>Postulate en un minuto. El equipo ZAIRO elige a los Brand Friends.</p><div class="reto-invite-actions"><a class="primary-cta z-button z-button-primary" routerLink="/brand-friends">Postularme ↗</a><a class="secondary-cta z-button" routerLink="/brand-friends" [queryParams]="{ vista: 'avance' }">Ver mi solicitud</a></div><small>Válido del 21 de octubre, 8:00 a.m., al 28 de octubre, 11:59 p.m. (hora de Costa Rica).</small></div>
-      </section>
-      <section class="more-events" *ngIf="eventosAdicionales.length"><span class="eyebrow">PRÓXIMAS EXPERIENCIAS</span><h2>La señal continúa.</h2><div class="events-grid"><article *ngFor="let e of eventosAdicionales; trackBy: trackByEventoId"><img *ngIf="e.imagen" [src]="e.imagen" [alt]="e.nombre" loading="lazy"><div><small>{{ formatearFecha(e.fecha) }}</small><h3>{{ e.nombre }}</h3><p>{{ e.ubicacion || 'Ubicación por anunciar' }}</p><a *ngIf="e.estado === true" [routerLink]="['/evento', e.id_evento]">Ver entradas ↗</a><span *ngIf="e.estado !== true">Próximamente</span></div></article></div></section>
-    </div>
-  </main>
-  <footer><a class="footer-brand" routerLink="/home">ZAIRO</a><p>Occidente · Costa Rica<br>{{ esInfamous ? 'INFAMOUS / El despertar de las almas' : 'Experiencias que dejan huella.' }}</p><a href="https://www.instagram.com/zairo.cr/" target="_blank" rel="noopener noreferrer">&#64;ZAIRO.CR ↗</a></footer>
+<div class="zairo-home-page zairo-ui">
+ <a class="skip" href="#eventos">Saltar a las experiencias</a><app-public-nav></app-public-nav>
+ <main id="eventos">
+  <div *ngIf="cargando" class="page-state" role="status"><span class="z-spinner" aria-hidden="true"></span> Cargando experiencias Zairo…</div>
+  <div *ngIf="errorCarga" class="page-state z-status-error" role="alert"><h1>La noche sigue. La conexión puede esperar.</h1><p>No pudimos cargar las experiencias. Intentá de nuevo.</p><button class="z-button" (click)="cargarEventos()">Reintentar</button></div>
+  <ng-container *ngIf="!cargando && !errorCarga">
+   <section *ngIf="destacado as event; else empty" class="home-hero" [style.--event-accent]="heroAccent(event.contenido?.colores?.acento)">
+    <div class="hero-art"><app-public-image [src]="event.imagen" [alt]="event.nombre" [priority]="true"></app-public-image></div><div class="hero-shade" aria-hidden="true"></div>
+    <div class="hero-copy"><span class="eyebrow">ZAIRO PRESENTA / {{event.destacado ? 'EXPERIENCIA DESTACADA' : 'PRÓXIMA EXPERIENCIA'}}</span><h1>{{event.nombre}}</h1><p class="hero-description" *ngIf="event.descripcion">{{event.descripcion}}</p><p class="event-date">{{date(event.fecha)}}</p><span class="sale-tag">{{label(event)}}</span>
+     <div class="hero-actions"><a *ngIf="event.publicacion==='PUBLICADO'" class="z-button z-button-primary" [routerLink]="['/evento',event.id_evento]">Descubrir la experiencia <span aria-hidden="true">↗</span></a><p *ngIf="event.publicacion==='PROXIMAMENTE'" class="teaser-note">Pronto revelaremos esta experiencia. Las ventas todavía no están abiertas.</p><a *ngIf="otros.length" class="z-button" href="#mas-eventos">Ver más experiencias</a></div>
+    </div><div class="hero-signature">OCCIDENTE · COSTA RICA <span>EXPERIENCIAS QUE DEJAN HUELLA</span></div>
+   </section>
+   <ng-template #empty><section class="empty-hero"><span class="eyebrow">ZAIRO / OCCIDENTE · COSTA RICA</span><h1>Cada noche,<br>un universo.</h1><p>No hay eventos anunciados por ahora.</p><p class="empty-note">Estamos preparando lo que viene. Volvé pronto para descubrir la próxima experiencia Zairo.</p><a class="z-button" href="https://www.instagram.com/zairo.cr/" target="_blank" rel="noopener noreferrer">Seguí a Zairo</a></section></ng-template>
+   <section *ngIf="otros.length" class="more-events public-width" id="mas-eventos"><span class="eyebrow">LA SEÑAL CONTINÚA</span><h2>Más noches por descubrir.</h2><div class="event-grid"><article *ngFor="let event of otros" class="event-card"><app-public-image [src]="event.imagen" [alt]="event.nombre"></app-public-image><div class="card-copy"><span class="sale-tag">{{label(event)}}</span><h3>{{event.nombre}}</h3><p>{{date(event.fecha)}}</p><p *ngIf="event.descripcion">{{event.descripcion}}</p><a *ngIf="event.publicacion==='PUBLICADO'" class="z-button" [routerLink]="['/evento',event.id_evento]">Conocer el evento</a><span *ngIf="event.publicacion==='PROXIMAMENTE'" class="teaser-note">Detalles próximamente</span></div></article></div></section>
+  </ng-container>
+  <section class="brand-story public-width" id="zairo"><span class="eyebrow">SOMOS ZAIRO</span><h2>La noche cambia.<br>La huella queda.</h2><p>Música, encuentros y experiencias con identidad propia. Un mismo universo para descubrirlas todas.</p></section>
+ </main><footer class="public-footer"><a class="footer-wordmark" routerLink="/home">ZAIRO</a><span>Occidente · Costa Rica</span><a href="https://www.instagram.com/zairo.cr/" target="_blank" rel="noopener noreferrer">&#64;ZAIRO.CR</a></footer>
 </div>

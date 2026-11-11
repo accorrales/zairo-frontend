@@ -21,6 +21,7 @@
             <label class="z-field">Fecha y hora (Costa Rica)<input name="fecha" type="datetime-local" [(ngModel)]="content.fecha" required></label>
             <label class="z-field">Descripción breve<textarea name="descripcion" [(ngModel)]="content.descripcion" maxlength="2000"></textarea></label>
             <label class="z-field">Imagen de portada (HTTPS o /assets/)<input name="imagen" [(ngModel)]="content.imagen" maxlength="2000"></label>
+            <label class="z-field">Plano de zonas (opcional)<input name="mapa" [(ngModel)]="content.mapa_imagen_url" maxlength="2000"></label>
             <label class="z-field">Ubicación pública<input name="ubicacion" [(ngModel)]="content.ubicacion" maxlength="500"><small>No incluyás aquí la dirección secreta. Se gestiona por separado.</small></label>
             <label class="z-field">Precio de referencia (₡)<input name="precio" type="number" min="0" max="100000000" [(ngModel)]="content.precio" required><small>Los precios de compra siguen definidos en los tiers.</small></label>
           </div>
@@ -40,6 +41,8 @@
           <div class="editor-item" *ngFor="let img of content.imagenes;let i=index"><div class="form-grid"><label class="z-field">URL de imagen<input [name]="'imagen'+i" [(ngModel)]="img.url" required></label><label class="z-field">Descripción de la imagen<input [name]="'alt'+i" [(ngModel)]="img.alt" maxlength="200" required></label></div><button class="z-button" type="button" (click)="content.imagenes.splice(i,1);changed()">Quitar imagen {{i+1}}</button></div>
           <button class="z-button" type="button" (click)="addImage()" [disabled]="content.imagenes.length>=20">Agregar imagen</button>
         </section>
+        <section class="panel"><h2>Videos del evento</h2><p class="z-muted">Hasta tres videos. Se reproducen solo cuando la persona lo solicita, sin descargas automáticas.</p>
+        <div class="editor-item" *ngFor="let video of content.videos;let i=index"><div class="form-grid"><label class="z-field">Título del video<input [name]="'videoTitulo'+i" [(ngModel)]="video.titulo" required maxlength="180"></label><label class="z-field">URL del video (HTTPS o /assets/)<input [name]="'videoUrl'+i" [(ngModel)]="video.url" required></label><label class="z-field">Imagen previa del video<input [name]="'videoPoster'+i" [(ngModel)]="video.poster"></label></div><button class="z-button" type="button" (click)="content.videos.splice(i,1);changed()">Quitar video {{i+1}}</button></div><button class="z-button" type="button" (click)="addVideo()" [disabled]="content.videos.length>=3">Agregar video</button></section>
         <section class="panel"><span class="z-eyebrow">05 / PERSONALIDAD</span><h2>Colores propios</h2><p class="z-muted">El panel siempre conserva la identidad Zairo. El contenido del evento usa estos colores; validamos su contraste al guardar.</p>
           <div class="color-grid"><label class="z-field">Fondo<input name="fondo" type="color" [(ngModel)]="content.colores.fondo"></label><label class="z-field">Texto<input name="texto" type="color" [(ngModel)]="content.colores.texto"></label><label class="z-field">Acento<input name="acento" type="color" [(ngModel)]="content.colores.acento"></label></div>
         </section>
@@ -57,7 +60,7 @@
             <ng-container [ngSwitch]="section.tipo">
               <div *ngSwitchCase="'historia'"><h3>{{content.concepto}}</h3><p class="story">{{content.historia||'Agregá la historia del evento.'}}</p></div>
               <div *ngSwitchCase="'artistas'" class="preview-grid"><div *ngFor="let a of content.artistas"><img *ngIf="a.imagen" [src]="a.imagen" [alt]="a.nombre"><h3>{{a.nombre}}</h3><p>{{a.descripcion}}</p></div><p *ngIf="!content.artistas.length">Todavía no agregaste artistas.</p></div>
-              <div *ngSwitchCase="'galeria'" class="preview-grid"><figure *ngFor="let img of content.imagenes"><img [src]="img.url" [alt]="img.alt"><figcaption>{{img.alt}}</figcaption></figure><p *ngIf="!content.imagenes.length">Todavía no agregaste imágenes.</p></div>
+              <div *ngSwitchCase="'galeria'" class="preview-grid"><figure *ngFor="let img of content.imagenes"><img [src]="img.url" [alt]="img.alt"><figcaption>{{img.alt}}</figcaption></figure><p *ngIf="!content.imagenes.length">Todavía no agregaste imágenes.</p><app-public-video *ngFor="let video of content.videos" [src]="video.url" [poster]="video.poster" [title]="video.titulo"></app-public-video></div>
               <div *ngSwitchCase="'informacion'"><p>{{formatDate(content.fecha)}}</p><p>{{content.ubicacion||'Ubicación por anunciar'}}</p><p>No se muestran ubicaciones secretas en esta vista.</p></div>
             </ng-container>
           </section></ng-container>

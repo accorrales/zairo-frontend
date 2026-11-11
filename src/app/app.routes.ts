@@ -122,10 +122,7 @@ export const routes: Routes = [
   },
   {
     path: 'evento/:id',
-    loadComponent: () =>
-      import('./pages/public-evento-detalle/public-evento-detalle').then(
-        (m) => m.PublicEventoDetalle
-      )
+    loadComponent: () => import('./pages/public-event-page/public-event-page').then(m => m.PublicEventPage)
   },
   {
     path: 'brand-friends',
