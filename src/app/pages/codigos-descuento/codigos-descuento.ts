@@ -1,3 +1,5 @@
+import {AdminFeedback} from '../../shared/admin/admin-feedback';
+import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,12 +12,14 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-codigos-descuento',
+  host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [CommonModule, FormsModule, Sidebar, Header, ConfirmDialog],
+  imports: [AdminFeedback, CommonModule, FormsModule, Sidebar, Header, ConfirmDialog],
   templateUrl: './codigos-descuento.html',
   styleUrl: './codigos-descuento.css'
 })
 export class CodigosDescuento implements OnInit {
+  pageState=new PageLoadState();
   private codigosService = inject(CodigosDescuentoService);
   private eventosService = inject(EventosService);
 
@@ -108,7 +112,7 @@ export class CodigosDescuento implements OnInit {
   }
 
   cargarEventos(): void {
-    this.eventosService.obtenerEventos().subscribe({
+    this.pageState.observe(this.eventosService.obtenerEventos()).subscribe({
       next: (data) => {
         this.eventos = data || [];
         // Primero el evento próximo más cercano; si todos pasaron, el más reciente.
@@ -142,7 +146,7 @@ export class CodigosDescuento implements OnInit {
     }
 
     this.cargandoRanking = true;
-    this.codigosService.rankingPorEvento(this.eventoRankingId).subscribe({
+    this.pageState.observe(this.codigosService.rankingPorEvento(this.eventoRankingId)).subscribe({
       next: (data) => {
         if (solicitud !== this.solicitudRanking) return;
         this.rankingCodigos = data || [];
@@ -158,7 +162,7 @@ export class CodigosDescuento implements OnInit {
   }
 
   cargarCodigos(): void {
-    this.codigosService.listar().subscribe({
+    this.pageState.observe(this.codigosService.listar()).subscribe({
       next: (data) => {
         this.codigos = data || [];
         // Refrescar el top si un código se agregó, editó o eliminó.
@@ -166,19 +170,19 @@ export class CodigosDescuento implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar códigos', err);
-        alert(err?.error?.error || 'Error al cargar códigos');
+        this.pageState.notify(err?.error?.error || 'Error al cargar códigos');
       }
     });
   }
 
   guardarCodigo(): void {
     if (!this.nuevoCodigo.codigo?.trim()) {
-      alert('El código es obligatorio');
+      this.pageState.notify('El código es obligatorio');
       return;
     }
 
     if (!this.nuevoCodigo.valor || Number(this.nuevoCodigo.valor) <= 0) {
-      alert('El valor del descuento debe ser mayor a 0');
+      this.pageState.notify('El valor del descuento debe ser mayor a 0');
       return;
     }
 
@@ -186,7 +190,7 @@ export class CodigosDescuento implements OnInit {
       this.nuevoCodigo.tipo_descuento === 'PORCENTAJE' &&
       Number(this.nuevoCodigo.valor) > 100
     ) {
-      alert('El porcentaje no puede ser mayor a 100');
+      this.pageState.notify('El porcentaje no puede ser mayor a 100');
       return;
     }
 
@@ -211,7 +215,7 @@ export class CodigosDescuento implements OnInit {
         },
         error: (err) => {
           console.error('Error al actualizar código', err);
-          alert(err?.error?.error || 'Error al actualizar código');
+          this.pageState.notify(err?.error?.error || 'Error al actualizar código');
         }
       });
       return;
@@ -224,7 +228,7 @@ export class CodigosDescuento implements OnInit {
       },
       error: (err) => {
         console.error('Error al crear código', err);
-        alert(err?.error?.error || 'Error al crear código');
+        this.pageState.notify(err?.error?.error || 'Error al crear código');
       }
     });
   }
@@ -255,7 +259,7 @@ export class CodigosDescuento implements OnInit {
       next: () => this.cargarCodigos(),
       error: (err) => {
         console.error('Error al cambiar estado', err);
-        alert(err?.error?.error || 'Error al cambiar estado');
+        this.pageState.notify(err?.error?.error || 'Error al cambiar estado');
       }
     });
   }
@@ -269,7 +273,7 @@ export class CodigosDescuento implements OnInit {
           next: () => this.cargarCodigos(),
           error: (err) => {
             console.error('Error al eliminar código', err);
-            alert(err?.error?.error || 'Error al eliminar código');
+            this.pageState.notify(err?.error?.error || 'Error al eliminar código');
           }
         });
       }

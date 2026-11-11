@@ -17,6 +17,12 @@ describe('Sidebar', () => {
     await fixture.whenStable();
   });
 
+  it('closes an open mobile menu on Escape outside the nav', () => {
+    component.menuAbierto = true;
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    expect(component.menuAbierto).toBe(false);
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });

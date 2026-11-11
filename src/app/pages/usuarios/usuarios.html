@@ -6,6 +6,8 @@
       [title]="'Usuarios'"
       [subtitle]="'Gestión de usuarios y roles del sistema'">
     </app-header>
+    <app-admin-feedback [state]="pageState" (retry)="cargarUsuarios()"></app-admin-feedback>
+    <div class="admin-data" *ngIf="!pageState.error() && (pageState.loaded() || !pageState.loading)">
 
     <div class="panel">
       <div class="panel-top">
@@ -13,34 +15,34 @@
       </div>
 
       <div class="form-grid">
-        <input
+        <label class="z-field"><span>Nombre</span><input
           type="text"
           placeholder="Nombre"
-          [(ngModel)]="nuevoUsuario.nombre">
+          [(ngModel)]="nuevoUsuario.nombre"></label>
 
-        <input
+        <label class="z-field"><span>Correo</span><input
           type="email"
           placeholder="Correo"
-          [(ngModel)]="nuevoUsuario.correo">
+          [(ngModel)]="nuevoUsuario.correo"></label>
 
-        <input
-          *ngIf="!editando"
+        <label class="z-field" *ngIf="!editando"><span>Contraseña</span><input
+
           type="password"
           placeholder="Contraseña"
-          [(ngModel)]="nuevoUsuario.password">
+          [(ngModel)]="nuevoUsuario.password"></label>
 
-        <select [(ngModel)]="nuevoUsuario.rol">
+        <label class="z-field"><span>Rol</span><select aria-label="Rol" [(ngModel)]="nuevoUsuario.rol">
           <option value="admin">Admin</option>
           <option value="rrhh">RRHH</option>
           <option value="contabilidad">Contabilidad</option>
           <option value="visor">Visor</option>
           <option value="entrada">Entrada / KIOSK QR</option>
-        </select>
+        </select></label>
 
-        <select *ngIf="editando" [(ngModel)]="nuevoUsuario.estado">
+        <label class="z-field" *ngIf="editando"><span>Estado</span><select aria-label="Estado" [(ngModel)]="nuevoUsuario.estado">
           <option [ngValue]="true">Activo</option>
           <option [ngValue]="false">Inactivo</option>
-        </select>
+        </select></label>
 
         <div class="acciones-form">
           <button class="btn-primary" (click)="guardarUsuario()">
@@ -62,17 +64,17 @@
         <h2>Listado de usuarios</h2>
       </div>
 
-      <div class="table-wrapper">
+      <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Usuarios">
         <table *ngIf="usuarios.length > 0; else sinUsuarios">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Rol</th>
-              <th>Estado</th>
-              <th>Fecha creación</th>
-              <th>Acciones</th>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Correo</th>
+              <th scope="col">Rol</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Fecha creación</th>
+              <th scope="col">Acciones</th>
             </tr>
           </thead>
 
@@ -125,6 +127,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <app-confirm-dialog

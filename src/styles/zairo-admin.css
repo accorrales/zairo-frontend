@@ -1,0 +1,74 @@
+/* Stage 5 adoption: internal administration only; public pages and scanner stay scoped out. */
+.z-admin.zairo-screen{display:block;width:100%;min-width:0;background:var(--z-bg);color:var(--z-text);font-family:var(--z-font);color-scheme:dark}
+.z-admin.zairo-screen .layout{display:flex;align-items:flex-start;min-height:100dvh;background:var(--z-bg)}
+.z-admin.zairo-screen app-sidebar{flex:0 0 248px;width:248px;min-width:248px;max-width:248px;align-self:stretch}
+.z-admin.zairo-screen app-sidebar .sidebar{width:100%;min-height:100dvh;height:100dvh;overflow-y:auto;position:sticky;top:0;padding:24px 16px;background:var(--z-surface);border-right:1px solid var(--z-line);box-shadow:none}
+.z-admin.zairo-screen :is(.sidebar-glow,.sidebar-line,.header::before,.header::after){display:none}
+.z-admin.zairo-screen :is(.logo,.header-logo){background:none;border:0;box-shadow:none}
+.z-admin.zairo-screen .logo img{filter:none}.z-admin.zairo-screen .sidebar .brand-copy p{color:var(--z-muted);font-size:9px;letter-spacing:1px}
+.z-admin.zairo-screen .theme-badge{font-size:11px;color:var(--z-muted);background:var(--z-raised);border:1px solid var(--z-line);box-shadow:none;margin:18px 0}
+.z-admin.zairo-screen .menu-group{margin:20px 0}.z-admin.zairo-screen .menu-group-title{color:var(--z-muted);font-size:10px;font-weight:650;letter-spacing:1.2px;margin:20px 10px 12px}
+.z-admin.zairo-screen .menu a{min-height:44px;display:flex;align-items:center;gap:10px;padding:10px;border:1px solid transparent;border-radius:9px;color:var(--z-muted);font-size:13px;text-decoration:none;background:transparent;box-shadow:none;margin:4px 0;transform:none}
+.z-admin.zairo-screen .menu a>span{font:700 10px var(--z-font);display:grid;place-items:center;width:27px;height:27px;min-width:27px;border:1px solid var(--z-line);border-radius:7px;color:inherit;background:transparent;filter:none}
+.z-admin.zairo-screen .menu a.active{color:var(--z-accent);background:#c6ff5710;border-color:#c6ff5760;box-shadow:inset 3px 0 var(--z-accent)}
+.z-admin.zairo-screen .menu a.active::after{display:none}.z-admin.zairo-screen .menu a:hover{background:var(--z-raised);color:var(--z-text);transform:none}
+.z-admin.zairo-screen .content{flex:1;min-width:0;max-width:calc(100% - 248px);padding:30px;background:radial-gradient(ellipse at top right,#c6ff5708,transparent 45%),var(--z-bg)}
+.z-admin.zairo-screen .admin-data{min-width:0}.z-admin.zairo-screen .admin-shortcuts{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.z-admin.zairo-screen app-header .header{background:var(--z-surface);border:1px solid var(--z-line);border-radius:16px;box-shadow:none;padding:22px 24px;margin-bottom:22px;gap:20px}
+.z-admin.zairo-screen app-header .header-logo{display:none}.z-admin.zairo-screen app-header h1{font-size:clamp(26px,3vw,38px);line-height:1.12;letter-spacing:-1px}
+.z-admin.zairo-screen app-header :is(p,.user-role){color:var(--z-muted)}.z-admin.zairo-screen app-header .user-box{background:var(--z-raised);border-color:var(--z-line);backdrop-filter:none;box-shadow:none}
+.z-admin.zairo-screen :is(h1,h2,h3,h4){font-family:var(--z-font);color:var(--z-text);background:none;-webkit-text-fill-color:currentColor;text-shadow:none;overflow-wrap:anywhere}
+.z-admin.zairo-screen h2{font-size:24px;line-height:1.25;letter-spacing:-.5px}.z-admin.zairo-screen h3{font-size:18px;line-height:1.4}
+.z-admin.zairo-screen :is(.panel,.card,.compra-card,.detalle-card,.stat-card){background:var(--z-surface);color:var(--z-text);border:1px solid var(--z-line);border-radius:16px;box-shadow:0 14px 40px #0002;padding:24px;min-width:0}
+.z-admin.zairo-screen .panel{margin:20px 0}.z-admin.zairo-screen .panel-top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.z-admin.zairo-screen :is(.card::before,.card::after,.panel::before){display:none}.z-admin.zairo-screen .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:24px}
+.z-admin.zairo-screen .card :is(p,.card-value){font-size:clamp(24px,3vw,34px);font-weight:750;letter-spacing:-.6px;line-height:1.25;color:var(--z-text);font-variant-numeric:tabular-nums;overflow-wrap:anywhere;margin:14px 0 0}
+.z-admin.zairo-screen .card :is(h3,.card-label){font-size:13px;letter-spacing:.2px;color:var(--z-muted);line-height:1.5;margin:0}
+.z-admin.zairo-screen :is(.panel-kicker,.header-kicker){color:var(--z-accent);font-size:10px;letter-spacing:2px}
+.z-admin.zairo-screen :is(small,.subtitulo,.subtitle,.stat-label){color:var(--z-muted);line-height:1.6}
+.z-admin.zairo-screen :is(button,a[class^=btn],a[class*=' btn-']){display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:11px 15px;border:1px solid var(--z-control-line);border-radius:9px;background:var(--z-raised);color:var(--z-text);font:600 14px/1.35 var(--z-font);text-decoration:none;cursor:pointer;box-shadow:none;transform:none}
+.z-admin.zairo-screen :is(button,a[class^=btn]):hover{border-color:var(--z-accent);transform:none;background:#243126;box-shadow:none}
+.z-admin.zairo-screen :is(.btn-primary,.btn-confirm,.btn-confirmar){background:var(--z-accent);border-color:var(--z-accent);color:var(--z-ink)}
+.z-admin.zairo-screen :is(.btn-primary,.btn-confirm,.btn-confirmar):hover{background:#dbff9a;color:var(--z-ink)}
+.z-admin.zairo-screen :is(.btn-delete,.btn-danger,.btn-rechazar){background:#341c21;color:var(--z-danger);border-color:#a0646b}
+.z-admin.zairo-screen button:disabled{opacity:.5;cursor:not-allowed;transform:none}.z-admin.zairo-screen :is(a,button,input,select,textarea,[tabindex]):focus-visible{outline:3px solid var(--z-accent);outline-offset:4px}
+.z-admin.zairo-screen .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}.z-admin.zairo-screen .acciones-form{grid-column:1/-1}
+.z-admin.zairo-screen .z-field{display:flex;flex-direction:column;gap:8px;min-width:0;font-size:13px;line-height:1.5;color:var(--z-muted)}
+.z-admin.zairo-screen :is(input:not([type=checkbox]):not([type=radio]):not([type=color]),select,textarea){width:100%;max-width:100%;min-width:0;min-height:48px;background:var(--z-bg);color:var(--z-text);border:1px solid var(--z-control-line);border-radius:8px;padding:12px;font:16px/1.4 var(--z-font);box-shadow:none}
+.z-admin.zairo-screen textarea{resize:vertical;min-height:100px}.z-admin.zairo-screen input::placeholder{color:#a8b7ad}
+.z-admin.zairo-screen input:is([type=checkbox],[type=radio]){width:20px!important;height:20px!important;min-height:20px!important;accent-color:var(--z-accent);flex:0 0 20px}
+.z-admin.zairo-screen :is(.filtros,.filters,.wa-filtros){display:flex;align-items:end;gap:16px;flex-wrap:wrap}.z-admin.zairo-screen :is(.filtros,.filters,.wa-filtros) .z-field{flex:1 1 170px}
+.z-admin.zairo-screen :is(.acciones,.modal-actions,.actions){gap:8px}.z-admin.zairo-screen .table-wrapper{width:100%;max-width:100%;overflow:auto;overscroll-behavior-x:contain;border-radius:10px;-webkit-overflow-scrolling:touch}
+.z-admin.zairo-screen table{width:100%!important;min-width:760px!important;border-collapse:collapse;table-layout:auto!important;color:var(--z-text);font-size:14px;font-variant-numeric:tabular-nums}
+.z-admin.zairo-screen table thead{display:table-header-group!important}.z-admin.zairo-screen table tbody{display:table-row-group!important}.z-admin.zairo-screen table tr{display:table-row!important}
+.z-admin.zairo-screen table :is(th,td){display:table-cell!important;padding:14px 12px!important;border:0;border-bottom:1px solid var(--z-line);background:transparent;text-align:left;vertical-align:middle;font-size:14px;line-height:1.55;max-width:none!important;white-space:normal}
+.z-admin.zairo-screen table th{color:var(--z-muted);font-size:12px;font-weight:650;background:#18221c;white-space:nowrap}
+.z-admin.zairo-screen table td:before{display:none!important}.z-admin.zairo-screen table .acciones{min-width:180px}.z-admin.zairo-screen table .acciones :is(button,a){margin:4px 4px 4px 0;white-space:nowrap}
+.z-admin.zairo-screen table tbody tr:hover{background:#c6ff5706}.z-admin.zairo-screen .table-hint{display:none}
+.z-admin.zairo-screen :is(.badge,.status){display:inline-block;padding:6px 10px;border-radius:20px;font-size:12px;line-height:1.5;font-weight:600}
+.z-admin.zairo-screen :is(.activo,.confirmada,.procesada,.ok){color:var(--z-success);background:#254433}.z-admin.zairo-screen :is(.inactivo,.pendiente){color:var(--z-warning);background:#403522}
+.z-admin.zairo-screen :is(.estado-box,.estado,.mensaje){border:1px solid var(--z-line);background:var(--z-raised);color:var(--z-text);padding:20px;border-radius:12px;line-height:1.7}
+.z-admin.zairo-screen :is(.error,.error-texto){color:var(--z-danger)}.z-admin.zairo-screen :is(.modal,.modal-compra,.panel-ubicacion){background:var(--z-surface);color:var(--z-text);border:1px solid var(--z-line);border-radius:18px;max-height:90dvh;overflow:auto;padding:24px;width:min(760px,94vw)}
+.z-admin.zairo-screen :is(.modal-backdrop,.overlay-ubicacion){background:#000b;backdrop-filter:blur(5px)}
+.z-admin.zairo-screen :is(.admin-compras-page,.wa-page){padding:0;min-height:auto;background:transparent;font-family:var(--z-font);width:100%;max-width:none}
+.z-admin.zairo-screen :is(.admin-header,.wa-header){background:none;padding:0;border:0;box-shadow:none;display:flex;justify-content:flex-end;margin-bottom:18px}.z-admin.zairo-screen :is(.admin-header,.wa-header)>div{display:none}
+.z-admin.zairo-screen :is(.compras-grid,.wa-layout){min-width:0}.z-admin.zairo-screen .compras-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}.z-admin.zairo-screen .compra-info{line-height:1.7}.z-admin.zairo-screen .compra-info p{overflow-wrap:anywhere}
+@media(min-width:901px){.z-admin.zairo-screen app-sidebar .menu-toggle{display:none!important}}
+@media(max-width:900px){
+ .z-admin.zairo-screen .layout{flex-direction:column!important}.z-admin.zairo-screen app-sidebar{flex:auto!important;width:100%!important;min-width:0!important;max-width:100%!important}
+ .z-admin.zairo-screen app-sidebar .sidebar{height:auto;min-height:0;width:100%!important;position:static;padding:12px 16px;border-right:0;border-bottom:1px solid var(--z-line)}
+ .z-admin.zairo-screen .content{width:100%!important;max-width:100%!important;padding:16px!important;overflow-x:clip}
+ .z-admin.zairo-screen .menu{max-height:70dvh;overflow:auto}.z-admin.zairo-screen .menu-group-title{margin-top:14px}.z-admin.zairo-screen .sidebar-top{gap:12px}
+ .z-admin.zairo-screen .form-grid{grid-template-columns:1fr}.z-admin.zairo-screen .panel{padding:20px}.z-admin.zairo-screen .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ .z-admin.zairo-screen .card{padding:18px}.z-admin.zairo-screen .card :is(p,.card-value){font-size:26px}.z-admin.zairo-screen .table-hint{display:block;color:var(--z-muted);font-size:12px;line-height:1.6}
+ .z-admin.zairo-screen app-header .header{padding:18px}.z-admin.zairo-screen .compras-grid{grid-template-columns:1fr}
+ .z-admin.zairo-screen :is(.wa-layout,.dashboard-grid){grid-template-columns:1fr!important}.z-admin.zairo-screen .admin-shortcuts .z-button{flex:1 1 140px}
+}
+/* Login is an entry point, not a temporary event campaign. */
+.zairo-login.zairo-ui .login-page{background:radial-gradient(ellipse at 20% 10%,#c6ff5713,transparent 50%),var(--z-bg);color:var(--z-text);font-family:var(--z-font)}
+.zairo-login.zairo-ui :is(.login-bg-grid,.login-orb){display:none}.zairo-login.zairo-ui :is(.login-brand-panel,.login-card){background:var(--z-surface);border:1px solid var(--z-line);box-shadow:none;border-radius:20px}
+.zairo-login.zairo-ui :is(h1,h2){color:var(--z-text);background:none;-webkit-text-fill-color:currentColor;text-shadow:none}.zairo-login.zairo-ui .brand-logo{background:none;border:0;box-shadow:none}.zairo-login.zairo-ui .brand-logo img{filter:none}
+.zairo-login.zairo-ui .input-box{border-color:var(--z-control-line);background:var(--z-bg);box-shadow:none}.zairo-login.zairo-ui .input-box input{font:16px var(--z-font);color:var(--z-text)}
+.zairo-login.zairo-ui .login-btn{background:var(--z-accent);color:var(--z-ink);box-shadow:none;min-height:48px}.zairo-login.zairo-ui .error{color:var(--z-danger);background:#341c21;border:1px solid #a0646b}.zairo-login.zairo-ui :is(.login-subtitle,.login-footer small){color:var(--z-muted)}
+.zairo-login.zairo-ui :is(a,button,input):focus-visible{outline:3px solid var(--z-accent);outline-offset:4px}
+@media(prefers-reduced-motion:reduce){.z-admin.zairo-screen *,.zairo-login *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}

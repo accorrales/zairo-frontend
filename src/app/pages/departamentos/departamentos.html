@@ -6,6 +6,8 @@
       [title]="'Departamentos'"
       [subtitle]="'Gestión de departamentos de la empresa'">
     </app-header>
+    <app-admin-feedback [state]="pageState" (retry)="cargarDepartamentos()"></app-admin-feedback>
+    <div class="admin-data" *ngIf="!pageState.error() && (pageState.loaded() || !pageState.loading)">
 
     <div class="panel">
       <div class="panel-top">
@@ -13,15 +15,15 @@
       </div>
 
       <div class="form-grid">
-        <input
+        <label class="z-field"><span>Nombre del departamento</span><input
           type="text"
           placeholder="Nombre del departamento"
-          [(ngModel)]="nuevoDepartamento.nombre">
+          [(ngModel)]="nuevoDepartamento.nombre"></label>
 
-        <input
+        <label class="z-field"><span>Descripción</span><input
           type="text"
           placeholder="Descripción"
-          [(ngModel)]="nuevoDepartamento.descripcion">
+          [(ngModel)]="nuevoDepartamento.descripcion"></label>
 
         <div class="acciones-form">
           <button class="btn-primary" (click)="guardarDepartamento()">
@@ -43,14 +45,14 @@
         <h2>Listado de departamentos</h2>
       </div>
 
-      <div class="table-wrapper">
+      <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Departamentos">
         <table *ngIf="departamentos.length > 0; else sinDepartamentos">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Acciones</th>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Acciones</th>
             </tr>
           </thead>
 
@@ -81,6 +83,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <app-confirm-dialog

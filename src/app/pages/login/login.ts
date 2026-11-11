@@ -7,6 +7,7 @@ import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
+  host:{class:'zairo-login zairo-ui'},
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './login.html',

@@ -1,3 +1,5 @@
+import {AdminFeedback} from '../../shared/admin/admin-feedback';
+import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,8 +12,9 @@ import { PasswordDialog } from '../../shared/password-dialog/password-dialog';
 
 @Component({
   selector: 'app-usuarios',
+  host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [
+  imports: [AdminFeedback,
     CommonModule,
     FormsModule,
     Sidebar,
@@ -23,6 +26,7 @@ import { PasswordDialog } from '../../shared/password-dialog/password-dialog';
   styleUrl: './usuarios.css'
 })
 export class Usuarios implements OnInit {
+  pageState=new PageLoadState();
   private usuariosService = inject(UsuariosService);
 
   usuarios: any[] = [];
@@ -51,7 +55,7 @@ export class Usuarios implements OnInit {
   }
 
   cargarUsuarios(): void {
-    this.usuariosService.obtenerUsuarios().subscribe({
+    this.pageState.observe(this.usuariosService.obtenerUsuarios()).subscribe({
       next: (data) => {
         this.usuarios = data;
       },
@@ -63,12 +67,12 @@ export class Usuarios implements OnInit {
 
   guardarUsuario(): void {
     if (!this.nuevoUsuario.nombre || !this.nuevoUsuario.correo || !this.nuevoUsuario.rol) {
-      alert('Nombre, correo y rol son obligatorios');
+      this.pageState.notify('Nombre, correo y rol son obligatorios');
       return;
     }
 
     if (!this.editando && !this.nuevoUsuario.password) {
-      alert('La contraseña es obligatoria para crear usuario');
+      this.pageState.notify('La contraseña es obligatoria para crear usuario');
       return;
     }
 
@@ -87,7 +91,7 @@ export class Usuarios implements OnInit {
         },
         error: (err) => {
           console.error('Error al actualizar usuario', err);
-          alert(err?.error?.error || 'Error al actualizar usuario');
+          this.pageState.notify(err?.error?.error || 'Error al actualizar usuario');
         }
       });
 
@@ -108,7 +112,7 @@ export class Usuarios implements OnInit {
       },
       error: (err) => {
         console.error('Error al crear usuario', err);
-        alert(err?.error?.error || 'Error al crear usuario');
+        this.pageState.notify(err?.error?.error || 'Error al crear usuario');
       }
     });
   }
@@ -142,7 +146,7 @@ export class Usuarios implements OnInit {
           next: () => this.cargarUsuarios(),
           error: (err) => {
             console.error('Error al cambiar estado', err);
-            alert(err?.error?.error || 'Error al cambiar estado del usuario');
+            this.pageState.notify(err?.error?.error || 'Error al cambiar estado del usuario');
           }
         });
       }
@@ -161,13 +165,13 @@ export class Usuarios implements OnInit {
       password: nuevaPassword
     }).subscribe({
       next: () => {
-        alert('Contraseña actualizada correctamente');
+        this.pageState.notify('Contraseña actualizada correctamente');
         this.passwordModalVisible = false;
         this.usuarioSeleccionado = null;
       },
       error: (err) => {
         console.error('Error al cambiar contraseña', err);
-        alert(err?.error?.error || 'Error al cambiar contraseña');
+        this.pageState.notify(err?.error?.error || 'Error al cambiar contraseña');
       }
     });
   }
@@ -186,7 +190,7 @@ export class Usuarios implements OnInit {
           next: () => this.cargarUsuarios(),
           error: (err) => {
             console.error('Error al eliminar usuario', err);
-            alert(err?.error?.error || 'Error al eliminar usuario');
+            this.pageState.notify(err?.error?.error || 'Error al eliminar usuario');
           }
         });
       }

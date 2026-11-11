@@ -1,3 +1,6 @@
+<div class="layout"><app-sidebar></app-sidebar><main class="content"><app-header title="Comprobantes" subtitle="Comprobantes y filtros de WhatsApp"></app-header>
+    <app-admin-feedback [state]="pageState" (retry)="cargar()"></app-admin-feedback>
+    <div class="admin-data" *ngIf="!pageState.error() && (pageState.loaded() || !pageState.loading)">
 <div class="wa-page">
   <header class="wa-header">
     <div>
@@ -9,13 +12,13 @@
   </header>
 
   <div class="wa-filtros">
-    <input type="number" placeholder="Evento (id)" [(ngModel)]="filtros.evento" />
-    <select [(ngModel)]="filtros.estado">
+    <label class="z-field"><span>Evento (id)</span><input type="number" placeholder="Evento (id)" [(ngModel)]="filtros.evento" /></label>
+    <label class="z-field"><span>Estado</span><select aria-label="Estado" [(ngModel)]="filtros.estado">
       <option value="">Todos los estados</option>
       <option *ngFor="let e of estados" [value]="e">{{ e }}</option>
-    </select>
-    <input type="text" placeholder="Teléfono" [(ngModel)]="filtros.telefono" />
-    <input type="number" placeholder="Confianza mín." [(ngModel)]="filtros.confianza_min" />
+    </select></label>
+    <label class="z-field"><span>Teléfono</span><input type="text" placeholder="Teléfono" [(ngModel)]="filtros.telefono" /></label>
+    <label class="z-field"><span>Confianza mín.</span><input type="number" placeholder="Confianza mín." [(ngModel)]="filtros.confianza_min" /></label>
     <label class="wa-check">
       <input type="checkbox" [(ngModel)]="filtros.pendientes" />
       Solo pendientes
@@ -119,13 +122,16 @@
         </div>
       </div>
       <div class="wa-enviar">
-        <input
+        <label class="z-field"><span>Escribir mensaje...</span><input
           type="text"
           placeholder="Escribir mensaje..."
           [(ngModel)]="nuevoMensaje"
-          (keyup.enter)="enviarMensaje()" />
+          (keyup.enter)="enviarMensaje()" /></label>
         <button (click)="enviarMensaje()">Enviar</button>
       </div>
     </section>
   </aside>
 </div>
+
+</div>
+</main></div>

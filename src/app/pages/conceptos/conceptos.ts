@@ -1,3 +1,5 @@
+import {AdminFeedback} from '../../shared/admin/admin-feedback';
+import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -7,12 +9,14 @@ import { ConceptosService } from '../../core/services/conceptos.service';
 
 @Component({
   selector: 'app-conceptos',
+  host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [CommonModule, FormsModule, Sidebar, Header],
+  imports: [AdminFeedback, CommonModule, FormsModule, Sidebar, Header],
   templateUrl: './conceptos.html',
   styleUrls: ['./conceptos.css']
 })
 export class Conceptos implements OnInit {
+  pageState=new PageLoadState();
   private conceptosService = inject(ConceptosService);
 
   conceptos: any[] = [];
@@ -33,7 +37,7 @@ export class Conceptos implements OnInit {
   }
 
   cargarConceptos(): void {
-    this.conceptosService.obtenerConceptos().subscribe({
+    this.pageState.observe(this.conceptosService.obtenerConceptos()).subscribe({
       next: (data) => {
         this.conceptos = data;
       },
@@ -48,7 +52,7 @@ export class Conceptos implements OnInit {
       !this.nuevoConcepto.nombre ||
       !this.nuevoConcepto.tipo
     ) {
-      alert('Nombre y tipo son obligatorios');
+      this.pageState.notify('Nombre y tipo son obligatorios');
       return;
     }
 

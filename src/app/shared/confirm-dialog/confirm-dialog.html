@@ -1,6 +1,6 @@
 <div class="overlay" *ngIf="visible">
-  <div class="modal">
-    <h2>{{ titulo }}</h2>
+  <div class="modal" #dialog role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" (keydown)="keyboard($event)">
+    <h2 [id]="titleId">{{ titulo }}</h2>
     <p>{{ mensaje }}</p>
 
     <div class="acciones">

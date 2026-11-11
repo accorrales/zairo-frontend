@@ -1,3 +1,6 @@
+<div class="layout"><app-sidebar></app-sidebar><main class="content"><app-header title="Compras pendientes" subtitle="Revisión de compras y pagos"></app-header>
+    <app-admin-feedback [state]="pageState" (retry)="cargarPendientes()"></app-admin-feedback>
+    <div class="admin-data" *ngIf="!pageState.error() && (pageState.loaded() || !pageState.loading)">
 <div class="admin-compras-page">
 
   <div class="admin-header">
@@ -122,3 +125,5 @@
   </div>
 
 </div>
+</div>
+</main></div>

@@ -6,6 +6,8 @@
       [title]="'Planillas'"
       [subtitle]="'Administración de planillas'">
     </app-header>
+    <app-admin-feedback [state]="pageState" (retry)="cargarPlanillas()"></app-admin-feedback>
+    <div class="admin-data" *ngIf="!pageState.error() && (pageState.loaded() || !pageState.loading)">
 
     <div class="panel">
       <div class="panel-top">
@@ -13,18 +15,18 @@
       </div>
 
       <div class="form-grid">
-        <input
+        <label class="z-field"><span>Nombre del período</span><input
           type="text"
           placeholder="Nombre del período"
-          [(ngModel)]="nuevaPlanilla.nombre_periodo">
+          [(ngModel)]="nuevaPlanilla.nombre_periodo"></label>
 
-        <input
+        <label class="z-field"><span>Fecha de inicio</span><input
           type="date"
-          [(ngModel)]="nuevaPlanilla.fecha_inicio">
+          [(ngModel)]="nuevaPlanilla.fecha_inicio"></label>
 
-        <input
+        <label class="z-field"><span>Fecha de fin</span><input
           type="date"
-          [(ngModel)]="nuevaPlanilla.fecha_fin">
+          [(ngModel)]="nuevaPlanilla.fecha_fin"></label>
 
         <div class="acciones-form">
           <button class="btn-primary" (click)="crearPlanilla()">
@@ -39,19 +41,19 @@
         <h2>Listado de planillas</h2>
       </div>
 
-      <div class="table-wrapper">
+      <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Planillas">
         <table *ngIf="planillas.length > 0; else sinPlanillas">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Período</th>
-              <th>Fecha inicio</th>
-              <th>Fecha fin</th>
-              <th>Estado</th>
-              <th>Total bruto</th>
-              <th>Total deducciones</th>
-              <th>Total neto</th>
-              <th>Acciones</th>
+              <th scope="col">ID</th>
+              <th scope="col">Período</th>
+              <th scope="col">Fecha inicio</th>
+              <th scope="col">Fecha fin</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Total bruto</th>
+              <th scope="col">Total deducciones</th>
+              <th scope="col">Total neto</th>
+              <th scope="col">Acciones</th>
             </tr>
           </thead>
 
@@ -117,6 +119,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <app-confirm-dialog

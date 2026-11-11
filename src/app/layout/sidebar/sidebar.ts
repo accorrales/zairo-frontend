@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -14,6 +14,8 @@ export class Sidebar {
   private authService = inject(AuthService);
 
   menuAbierto = false;
+  @ViewChild('menuButton') menuButton?:ElementRef<HTMLButtonElement>;
+  get roleLabel(){return ({admin:'Administración',contabilidad:'Contabilidad',rrhh:'Recursos humanos',visor:'Consulta',entrada:'Control de acceso'} as Record<string,string>)[this.getRole()||'']||'Equipo Zairo';}
 
   getRole(): string | null {
     return this.authService.getRole();
@@ -28,7 +30,11 @@ export class Sidebar {
     this.menuAbierto = !this.menuAbierto;
   }
 
-  cerrarMenuMovil(): void {
+  @HostListener('document:keydown.escape')
+  onEscape(): void { if(this.menuAbierto)this.cerrarMenuMovil(true); }
+
+  cerrarMenuMovil(returnFocus=false): void {
     this.menuAbierto = false;
+    if(returnFocus)this.menuButton?.nativeElement.focus();
   }
 }

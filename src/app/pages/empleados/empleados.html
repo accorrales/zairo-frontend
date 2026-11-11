@@ -6,6 +6,8 @@
       [title]="'Empleados'"
       [subtitle]="'Gestión de empleados del sistema'">
     </app-header>
+    <app-admin-feedback [state]="pageState" (retry)="cargarEmpleados()"></app-admin-feedback>
+    <div class="admin-data" *ngIf="!pageState.error() && (pageState.loaded() || !pageState.loading)">
 
     <div class="panel">
       <div class="panel-top">
@@ -25,16 +27,16 @@
         <table *ngIf="empleados.length > 0; else sinDatos">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Cédula</th>
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Teléfono</th>
-              <th>Puesto</th>
-              <th>Departamento</th>
-              <th>Salario</th>
-              <th>Estado</th>
-              <th>Acciones</th>
+              <th scope="col">ID</th>
+              <th scope="col">Cédula</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Correo</th>
+              <th scope="col">Teléfono</th>
+              <th scope="col">Puesto</th>
+              <th scope="col">Departamento</th>
+              <th scope="col">Salario</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -81,26 +83,26 @@
             <h2>Nuevo Empleado</h2>
 
             <div class="form-grid">
-            <input type="text" placeholder="Cédula" [(ngModel)]="nuevoEmpleado.cedula" />
-            <input type="text" placeholder="Nombre" [(ngModel)]="nuevoEmpleado.nombre" />
+            <label class="z-field"><span>Cédula</span><input type="text" placeholder="Cédula" [(ngModel)]="nuevoEmpleado.cedula" /></label>
+            <label class="z-field"><span>Nombre</span><input type="text" placeholder="Nombre" [(ngModel)]="nuevoEmpleado.nombre" /></label>
 
-            <input type="text" placeholder="Apellido" [(ngModel)]="nuevoEmpleado.apellido" />
-            <input type="email" placeholder="Correo" [(ngModel)]="nuevoEmpleado.correo" />
+            <label class="z-field"><span>Apellido</span><input type="text" placeholder="Apellido" [(ngModel)]="nuevoEmpleado.apellido" /></label>
+            <label class="z-field"><span>Correo</span><input type="email" placeholder="Correo" [(ngModel)]="nuevoEmpleado.correo" /></label>
 
-            <input type="text" placeholder="Teléfono" [(ngModel)]="nuevoEmpleado.telefono" />
-            <input type="text" placeholder="Dirección" [(ngModel)]="nuevoEmpleado.direccion" />
+            <label class="z-field"><span>Teléfono</span><input type="text" placeholder="Teléfono" [(ngModel)]="nuevoEmpleado.telefono" /></label>
+            <label class="z-field"><span>Dirección</span><input type="text" placeholder="Dirección" [(ngModel)]="nuevoEmpleado.direccion" /></label>
 
-            <input type="text" placeholder="Puesto" [(ngModel)]="nuevoEmpleado.puesto" />
+            <label class="z-field"><span>Puesto</span><input type="text" placeholder="Puesto" [(ngModel)]="nuevoEmpleado.puesto" /></label>
 
-            <select [(ngModel)]="nuevoEmpleado.id_departamento">
+            <label class="z-field"><span>Departamento</span><select aria-label="Departamento" [(ngModel)]="nuevoEmpleado.id_departamento">
                 <option [ngValue]="null">Seleccione departamento</option>
                 <option *ngFor="let depto of departamentos" [ngValue]="depto.id_departamento">
                 {{ depto.nombre }}
                 </option>
-            </select>
+            </select></label>
 
-            <input type="number" placeholder="Salario" [(ngModel)]="nuevoEmpleado.salario_base" />
-            <input type="date" [(ngModel)]="nuevoEmpleado.fecha_ingreso" />
+            <label class="z-field"><span>Salario</span><input type="number" placeholder="Salario" [(ngModel)]="nuevoEmpleado.salario_base" /></label>
+            <label class="z-field"><span>Fecha de ingreso</span><input type="date" [(ngModel)]="nuevoEmpleado.fecha_ingreso" /></label>
             </div>
 
             <div class="modal-actions">
@@ -112,4 +114,5 @@
         </div>
         </div>
         </div>
+</div>
     </div>

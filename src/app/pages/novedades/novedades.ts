@@ -1,3 +1,5 @@
+import {AdminFeedback} from '../../shared/admin/admin-feedback';
+import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,12 +12,14 @@ import { ConceptosService } from '../../core/services/conceptos.service';
 
 @Component({
   selector: 'app-novedades',
+  host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [CommonModule, FormsModule, Sidebar, Header],
+  imports: [AdminFeedback, CommonModule, FormsModule, Sidebar, Header],
   templateUrl: './novedades.html',
   styleUrl: './novedades.css'
 })
 export class Novedades implements OnInit {
+  pageState=new PageLoadState();
   private novedadesService = inject(NovedadesService);
   private empleadosService = inject(EmpleadosService);
   private planillasService = inject(PlanillasService);
@@ -50,7 +54,7 @@ export class Novedades implements OnInit {
   }
 
   cargarNovedades(): void {
-    this.novedadesService.obtenerNovedades().subscribe({
+    this.pageState.observe(this.novedadesService.obtenerNovedades()).subscribe({
       next: (data) => {
         this.novedades = data;
       },
@@ -61,7 +65,7 @@ export class Novedades implements OnInit {
   }
 
   cargarEmpleados(): void {
-    this.empleadosService.obtenerEmpleados().subscribe({
+    this.pageState.observe(this.empleadosService.obtenerEmpleados()).subscribe({
       next: (data) => {
         this.empleados = data;
       },
@@ -72,7 +76,7 @@ export class Novedades implements OnInit {
   }
 
   cargarPlanillas(): void {
-    this.planillasService.getPlanillas().subscribe({
+    this.pageState.observe(this.planillasService.getPlanillas()).subscribe({
       next: (data) => {
         this.planillas = data;
       },
@@ -83,7 +87,7 @@ export class Novedades implements OnInit {
   }
 
   cargarConceptos(): void {
-    this.conceptosService.obtenerConceptos().subscribe({
+    this.pageState.observe(this.conceptosService.obtenerConceptos()).subscribe({
       next: (data) => {
         this.conceptos = data;
       },
@@ -99,7 +103,7 @@ export class Novedades implements OnInit {
       !this.nuevaNovedad.id_planilla ||
       !this.nuevaNovedad.id_concepto
     ) {
-      alert('Empleado, planilla y concepto son obligatorios');
+      this.pageState.notify('Empleado, planilla y concepto son obligatorios');
       return;
     }
 

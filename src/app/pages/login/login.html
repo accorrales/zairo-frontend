@@ -14,13 +14,13 @@
       <div class="brand-top">
         <div class="brand-logo">
           <img
-            src="/assets/zairo-loader-logo.png"
+            src="/assets/brand/zairo-mark.webp"
             alt="ZAIRO">
         </div>
 
         <div>
           <span>ZAIRO CLUB</span>
-          <h1>AFTER LOVE</h1>
+          <h1>ZAIRO</h1>
         </div>
       </div>
 
@@ -41,7 +41,7 @@
 
         <div>
           <strong>Admin</strong>
-          <span>Control total</span>
+          <span>Gestión por rol</span>
         </div>
 
         <div>
@@ -55,7 +55,7 @@
 
       <div class="mobile-logo">
         <img
-          src="/assets/zairo-loader-logo.png"
+          src="/assets/brand/zairo-mark.webp"
           alt="ZAIRO">
       </div>
 
@@ -68,13 +68,13 @@
       </p>
 
       <div class="form-group">
-        <label>Correo</label>
+        <label for="login-email">Correo</label>
 
         <div class="input-box">
           <span>✉️</span>
           <input
             [(ngModel)]="correo"
-            name="correo"
+            name="correo" id="login-email"
             type="email"
             placeholder="correo@zairoclub.com"
             autocomplete="email" />
@@ -82,13 +82,13 @@
       </div>
 
       <div class="form-group">
-        <label>Contraseña</label>
+        <label for="login-password">Contraseña</label>
 
         <div class="input-box">
           <span>🔒</span>
           <input
             [(ngModel)]="password"
-            name="password"
+            name="password" id="login-password"
             type="password"
             placeholder="********"
             autocomplete="current-password"
@@ -96,7 +96,7 @@
         </div>
       </div>
 
-      <p *ngIf="errorMessage" class="error">
+      <p *ngIf="errorMessage" class="error" role="alert">
         {{ errorMessage }}
       </p>
 
@@ -110,7 +110,7 @@
 
       <div class="login-footer">
         <span>ZAIRO EXPERIENCE</span>
-        <small>After Love · Lost Trip · Official Access</small>
+        <small>Acceso del equipo · Zairo</small>
       </div>
 
     </section>

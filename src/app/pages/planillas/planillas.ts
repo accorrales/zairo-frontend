@@ -1,3 +1,5 @@
+import {AdminFeedback} from '../../shared/admin/admin-feedback';
+import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,12 +13,14 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-planillas',
+  host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, Sidebar, Header, ConfirmDialog],
+  imports: [AdminFeedback, CommonModule, FormsModule, RouterLink, Sidebar, Header, ConfirmDialog],
   templateUrl: './planillas.html',
   styleUrl: './planillas.css'
 })
 export class Planillas implements OnInit {
+  pageState=new PageLoadState();
   private planillasService = inject(PlanillasService);
 
   planillas: any[] = [];
@@ -43,7 +47,7 @@ export class Planillas implements OnInit {
     this.cargando = true;
     this.error = '';
 
-    this.planillasService.getPlanillas().subscribe({
+    this.pageState.observe(this.planillasService.getPlanillas()).subscribe({
       next: (data) => {
         this.planillas = data;
         this.cargando = false;
@@ -62,19 +66,19 @@ export class Planillas implements OnInit {
       !this.nuevaPlanilla.fecha_inicio ||
       !this.nuevaPlanilla.fecha_fin
     ) {
-      alert('Todos los campos son obligatorios');
+      this.pageState.notify('Todos los campos son obligatorios');
       return;
     }
 
     this.planillasService.crearPlanilla(this.nuevaPlanilla).subscribe({
       next: () => {
-        alert('Planilla creada correctamente');
+        this.pageState.notify('Planilla creada correctamente');
         this.cargarPlanillas();
         this.resetFormulario();
       },
       error: (err) => {
         console.error('Error al crear planilla', err);
-        alert(err?.error?.error || 'Error al crear planilla');
+        this.pageState.notify(err?.error?.error || 'Error al crear planilla');
       }
     });
   }
@@ -86,12 +90,12 @@ export class Planillas implements OnInit {
       () => {
         this.planillasService.procesarPlanilla(id).subscribe({
           next: () => {
-            alert('Planilla procesada correctamente');
+            this.pageState.notify('Planilla procesada correctamente');
             this.cargarPlanillas();
           },
           error: (err) => {
             console.error('Error al procesar planilla', err);
-            alert(err?.error?.error || 'Error al procesar planilla');
+            this.pageState.notify(err?.error?.error || 'Error al procesar planilla');
           }
         });
       }
@@ -105,12 +109,12 @@ export class Planillas implements OnInit {
       () => {
         this.planillasService.confirmarPlanilla(id).subscribe({
           next: () => {
-            alert('Planilla confirmada correctamente');
+            this.pageState.notify('Planilla confirmada correctamente');
             this.cargarPlanillas();
           },
           error: (err) => {
             console.error('Error al confirmar planilla', err);
-            alert(err?.error?.error || 'Error al confirmar planilla');
+            this.pageState.notify(err?.error?.error || 'Error al confirmar planilla');
           }
         });
       }
@@ -124,12 +128,12 @@ export class Planillas implements OnInit {
       () => {
         this.planillasService.eliminarPlanilla(id).subscribe({
           next: () => {
-            alert('Planilla eliminada correctamente');
+            this.pageState.notify('Planilla eliminada correctamente');
             this.cargarPlanillas();
           },
           error: (err) => {
             console.error('Error al eliminar planilla', err);
-            alert(err?.error?.error || 'Error al eliminar planilla');
+            this.pageState.notify(err?.error?.error || 'Error al eliminar planilla');
           }
         });
       }

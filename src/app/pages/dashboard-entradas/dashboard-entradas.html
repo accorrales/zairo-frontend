@@ -3,9 +3,11 @@
 
   <div class="content">
     <app-header
-      [title]="'Entradas confirmadas'"
+      [title]="'Ventas y reportes'"
       [subtitle]="'Control de entradas vendidas por evento'">
     </app-header>
+    <app-admin-feedback [state]="pageState" (retry)="eventoSeleccionado ? cargarEntradas() : cargarEventos()"></app-admin-feedback>
+    <div class="admin-data" *ngIf="!pageState.error() && (pageState.loaded() || !pageState.loading)">
 
     <div class="panel">
       <div class="panel-top">
@@ -20,12 +22,12 @@
       </div>
 
       <div class="form-grid">
-        <select [(ngModel)]="eventoSeleccionado" (ngModelChange)="onCambioEvento()">
+        <label class="z-field"><span>Evento</span><select aria-label="Evento" [(ngModel)]="eventoSeleccionado" (ngModelChange)="onCambioEvento()">
           <option [ngValue]="null">— Seleccioná un evento —</option>
           <option *ngFor="let e of eventos" [ngValue]="e.id_evento">
             {{ e.nombre }}
           </option>
-        </select>
+        </select></label>
       </div>
 
       <div class="mensaje" *ngIf="mensaje">{{ mensaje }}</div>
@@ -80,7 +82,7 @@
           <div style="height:12px;background:#31364c;border-radius:6px;overflow:hidden"><div [style.width.%]="porcentaje(r.cantidad)" style="height:100%;background:#38bdf8"></div></div>
         </div>
         <details *ngIf="analisis.edades.length"><summary>Ver cantidades por edad exacta</summary>
-          <div class="table-wrapper"><table><thead><tr><th>Edad</th><th>Personas</th><th>% del total</th></tr></thead>
+          <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Ventas"><table><thead><tr><th scope="col">Edad</th><th scope="col">Personas</th><th scope="col">% del total</th></tr></thead>
             <tbody><tr *ngFor="let r of analisis.edades"><td>{{ r.label }}</td><td>{{ r.cantidad }}</td><td>{{ porcentaje(r.cantidad) | number:'1.1-1' }}%</td></tr></tbody>
           </table></div>
         </details>
@@ -89,7 +91,7 @@
       <section class="panel" *ngIf="paquetes.length">
         <h2>Paquetes pagados y beneficios compartidos</h2>
         <p>Se cuenta cada paquete una vez. Los beneficios no son entradas ni reservas adicionales. Incluye compras pagadas aunque luego se invalide una entrada.</p>
-        <div class="table-wrapper"><table><thead><tr><th>Zona</th><th>Paquetes</th><th>Entradas</th><th>Beneficios por paquete</th><th>Total cobrado</th></tr></thead>
+        <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Ventas"><table><thead><tr><th scope="col">Zona</th><th scope="col">Paquetes</th><th scope="col">Entradas</th><th scope="col">Beneficios por paquete</th><th scope="col">Total cobrado</th></tr></thead>
         <tbody><tr *ngFor="let p of paquetes"><td>{{ p.zona }}</td><td>{{ p.paquetes }}</td><td>{{ p.entradas }}</td><td>{{ p.beneficios_paquete }}</td><td>{{ formatearMoneda(p.total) }}</td></tr></tbody></table></div>
       </section>
       <!-- Desglose por tier -->
@@ -98,13 +100,13 @@
           <h2>Vendido por tipo de entrada</h2>
         </div>
 
-        <div class="table-wrapper">
+        <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Ventas">
           <table>
             <thead>
               <tr>
-                <th>Tipo de entrada</th>
-                <th>Cantidad</th>
-                <th>Total</th>
+                <th scope="col">Tipo de entrada</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Total</th>
               </tr>
             </thead>
             <tbody>
@@ -124,18 +126,18 @@
           <h2>Entradas confirmadas</h2>
         </div>
 
-        <div class="table-wrapper">
+        <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Ventas">
           <table *ngIf="entradas.length > 0; else sinEntradas">
             <thead>
               <tr>
-                <th>Persona</th>
-                <th>Correo</th>
-                <th>Teléfono</th>
-                <th>UUID</th>
-                <th>Tipo</th>
-                <th>Precio</th>
-                <th>Estado</th>
-                <th>Fecha compra</th>
+                <th scope="col">Persona</th>
+                <th scope="col">Correo</th>
+                <th scope="col">Teléfono</th>
+                <th scope="col">UUID</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Precio</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Fecha compra</th>
                 <th *ngIf="puedeModificarEntradas">Acciones</th>
               </tr>
             </thead>
@@ -196,6 +198,7 @@
       <div class="estado-box">Cargando entradas...</div>
     </div>
   </div>
+</div>
 </div>
 
 <app-confirm-dialog

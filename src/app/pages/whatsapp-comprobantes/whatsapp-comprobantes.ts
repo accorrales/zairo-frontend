@@ -1,3 +1,7 @@
+import {Sidebar} from '../../layout/sidebar/sidebar';
+import {Header} from '../../layout/header/header';
+import {AdminFeedback} from '../../shared/admin/admin-feedback';
+import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,12 +10,14 @@ import { WhatsappService, WhatsappComprobante } from '../../core/services/whatsa
 
 @Component({
   selector: 'app-whatsapp-comprobantes',
+  host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [AdminFeedback, Sidebar, Header, CommonModule, FormsModule],
   templateUrl: './whatsapp-comprobantes.html',
   styleUrl: './whatsapp-comprobantes.css'
 })
 export class WhatsappComprobantes implements OnInit {
+  pageState=new PageLoadState();
   private whatsapp = inject(WhatsappService);
 
   comprobantes: WhatsappComprobante[] = [];
@@ -42,6 +48,7 @@ export class WhatsappComprobantes implements OnInit {
   }
 
   cargar(): void {
+    if(this.mensaje==='Error cargando comprobantes.')this.mensaje='';
     this.cargando = true;
     const filtros: Record<string, string> = {};
     if (this.filtros.evento) filtros['evento'] = this.filtros.evento;
@@ -50,7 +57,7 @@ export class WhatsappComprobantes implements OnInit {
     if (this.filtros.confianza_min) filtros['confianza_min'] = this.filtros.confianza_min;
     if (this.filtros.pendientes) filtros['pendientes'] = 'true';
 
-    this.whatsapp.listarComprobantes(filtros).subscribe({
+    this.pageState.observe(this.whatsapp.listarComprobantes(filtros)).subscribe({
       next: (data) => {
         this.comprobantes = data;
         this.cargando = false;

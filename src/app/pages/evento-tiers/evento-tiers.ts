@@ -1,3 +1,5 @@
+import {AdminFeedback} from '../../shared/admin/admin-feedback';
+import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,12 +12,14 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-evento-tiers',
+  host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, Sidebar, Header, ConfirmDialog],
+  imports: [AdminFeedback, CommonModule, FormsModule, RouterLink, Sidebar, Header, ConfirmDialog],
   templateUrl: './evento-tiers.html',
   styleUrl: './evento-tiers.css'
 })
 export class EventoTiers implements OnInit {
+  pageState=new PageLoadState();
   private route = inject(ActivatedRoute);
   private tiersService = inject(EntradaTiersService);
 
@@ -48,7 +52,7 @@ export class EventoTiers implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
 
     if (!id) {
-      alert('No se recibió el ID del evento');
+      this.pageState.notify('No se recibió el ID del evento');
       return;
     }
 
@@ -58,26 +62,26 @@ export class EventoTiers implements OnInit {
   }
 
   cargarTiers(): void {
-    this.tiersService.obtenerTiersAdmin(this.idEvento).subscribe({
+    this.pageState.observe(this.tiersService.obtenerTiersAdmin(this.idEvento)).subscribe({
       next: (data) => {
         this.tiers = data;
       },
       error: (err) => {
         console.error('Error al cargar tiers', err);
-        alert(err?.error?.error || 'Error al cargar tiers');
+        this.pageState.notify(err?.error?.error || 'Error al cargar tiers');
       }
     });
   }
 
   guardarTier(): void {
     if (!this.nuevoTier.nombre || !this.nuevoTier.precio) {
-      alert('Nombre y precio son obligatorios');
+      this.pageState.notify('Nombre y precio son obligatorios');
       return;
     }
 
     const size = Number(this.nuevoTier.entradas_por_paquete);
     const stock = this.nuevoTier.cantidad_disponible;
-    if (!Number.isInteger(size) || size < 1 || size > 10 || (size > 1 && stock === null) || (stock !== null && (!Number.isInteger(Number(stock)) || Number(stock) < 0))) { alert('Revisá las entradas por paquete (1 a 10) y el límite de paquetes de la promoción.'); return; }
+    if (!Number.isInteger(size) || size < 1 || size > 10 || (size > 1 && stock === null) || (stock !== null && (!Number.isInteger(Number(stock)) || Number(stock) < 0))) { this.pageState.notify('Revisá las entradas por paquete (1 a 10) y el límite de paquetes de la promoción.'); return; }
     const payload = {
       id_evento: this.idEvento,
       nombre: this.nuevoTier.nombre,
@@ -100,7 +104,7 @@ export class EventoTiers implements OnInit {
         },
         error: (err) => {
           console.error('Error al actualizar tier', err);
-          alert(err?.error?.error || 'Error al actualizar tier');
+          this.pageState.notify(err?.error?.error || 'Error al actualizar tier');
         }
       });
 
@@ -114,7 +118,7 @@ export class EventoTiers implements OnInit {
       },
       error: (err) => {
         console.error('Error al crear tier', err);
-        alert(err?.error?.error || 'Error al crear tier');
+        this.pageState.notify(err?.error?.error || 'Error al crear tier');
       }
     });
   }
@@ -168,7 +172,7 @@ export class EventoTiers implements OnInit {
           next: () => this.cargarTiers(),
           error: (err) => {
             console.error('Error al eliminar tier', err);
-            alert(err?.error?.error || 'Error al eliminar tier');
+            this.pageState.notify(err?.error?.error || 'Error al eliminar tier');
           }
         });
       }

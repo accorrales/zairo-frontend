@@ -18,7 +18,7 @@ describe('event package configuration', () => {
     const c=fixture.componentInstance;c.usarPromoCuatro();
     expect(c.nuevoTier.entradas_por_paquete).toBe(4);expect(c.nuevoTier.precio).toBe(20000);expect(c.nuevoTier.estado).toBe(false);
     const alert=vi.spyOn(window,'alert').mockImplementation(()=>{});
-    c.guardarTier();expect(create).not.toHaveBeenCalled();expect(alert).toHaveBeenCalled();
+    c.guardarTier();expect(create).not.toHaveBeenCalled();expect(c.pageState.notice()).toContain('límite');
     c.nuevoTier.cantidad_disponible=12;c.guardarTier();
     expect(create).toHaveBeenCalledWith(expect.objectContaining({id_evento:71,entradas_por_paquete:4,precio:20000,cantidad_disponible:12,estado:false}));
     expect(list).toHaveBeenCalledWith(71);

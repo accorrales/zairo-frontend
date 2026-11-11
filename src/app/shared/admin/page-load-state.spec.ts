@@ -1,0 +1,7 @@
+import {Subject,of,throwError} from 'rxjs';
+import {PageLoadState} from './page-load-state';
+describe('Read presentation state without financial transformations',()=>{
+ it('passes the exact response through and does not mark initial loading as an empty result',()=>{const s=new PageLoadState(),source=new Subject<any>();const response={bruto:33000,deducciones:2000,neto:31000};let result:any;s.observe(source).subscribe(x=>result=x);expect(s.loading).toBe(true);expect(s.loaded()).toBe(false);source.next(response);expect(result).toBe(response);source.complete();expect(s.loading).toBe(false);expect(s.loaded()).toBe(true);});
+ it('keeps an access failure distinct from zero values and does not replace the failed payload',()=>{const s=new PageLoadState();const next=vi.fn();s.observe(throwError(()=>({status:403}))).subscribe({next,error:()=>{}});expect(next).not.toHaveBeenCalled();expect(s.error()).toContain('no tiene permiso');expect(s.retryable()).toBe(false);expect(s.loaded()).toBe(false);});
+ it('recovers from a network failure without inventing totals or losing previously valid data',()=>{const s=new PageLoadState();s.observe(of([31000])).subscribe();s.observe(throwError(()=>({status:503}))).subscribe({error:()=>{}});expect(s.error()).not.toBe('');expect(s.loaded()).toBe(true);expect(s.retryable()).toBe(true);s.observe(of([31000])).subscribe();expect(s.error()).toBe('');expect(s.loading).toBe(false);});
+});

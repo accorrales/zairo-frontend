@@ -1,3 +1,7 @@
+import {Sidebar} from '../../layout/sidebar/sidebar';
+import {Header} from '../../layout/header/header';
+import {AdminFeedback} from '../../shared/admin/admin-feedback';
+import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -5,12 +9,14 @@ import { ComprasEntradasService } from '../../core/services/compras-entradas.ser
 
 @Component({
   selector: 'app-admin-compras',
+  host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [CommonModule],
+  imports: [AdminFeedback, Sidebar, Header, CommonModule],
   templateUrl: './admin-compras.html',
   styleUrl: './admin-compras.css'
 })
 export class AdminCompras implements OnInit {
+  pageState=new PageLoadState();
   private comprasService = inject(ComprasEntradasService);
 
   compras: any[] = [];
@@ -23,9 +29,10 @@ export class AdminCompras implements OnInit {
   }
 
   cargarPendientes(): void {
+    if(this.mensaje==='Error cargando compras pendientes.')this.mensaje='';
     this.cargando = true;
 
-    this.comprasService.listarPendientes().subscribe({
+    this.pageState.observe(this.comprasService.listarPendientes()).subscribe({
       next: (data) => {
         this.compras = data;
         this.cargando = false;
@@ -39,7 +46,7 @@ export class AdminCompras implements OnInit {
   }
 
   verDetalle(id: number): void {
-    this.comprasService.obtenerCompraPorId(id).subscribe({
+    this.pageState.observe(this.comprasService.obtenerCompraPorId(id)).subscribe({
       next: (data) => {
         this.compraSeleccionada = data;
       },

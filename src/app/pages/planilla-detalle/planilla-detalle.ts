@@ -1,3 +1,5 @@
+import {AdminFeedback} from '../../shared/admin/admin-feedback';
+import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -11,12 +13,14 @@ import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-planilla-detalle',
+  host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [CommonModule, Sidebar, Header, RouterLink],
+  imports: [AdminFeedback, CommonModule, Sidebar, Header, RouterLink],
   templateUrl: './planilla-detalle.html',
   styleUrl: './planilla-detalle.css'
 })
 export class PlanillaDetalle implements OnInit {
+  pageState=new PageLoadState();
   private route = inject(ActivatedRoute);
   private planillasService = inject(PlanillasService);
 
@@ -40,7 +44,8 @@ export class PlanillaDetalle implements OnInit {
   }
 
   cargarDetalle(): void {
-    this.planillasService.obtenerDetallePlanilla(this.idPlanilla).subscribe({
+    this.cargando=true;this.error='';
+    this.pageState.observe(this.planillasService.obtenerDetallePlanilla(this.idPlanilla)).subscribe({
       next: (response) => {
         this.planilla = response.planilla;
         this.detalle = response.detalle;
@@ -72,7 +77,7 @@ export class PlanillaDetalle implements OnInit {
 
   exportarPDF(): void {
     if (!this.planilla || this.detalle.length === 0) {
-      alert('No hay datos para exportar');
+      this.pageState.notify('No hay datos para exportar');
       return;
     }
 

@@ -1,3 +1,5 @@
+import {AdminFeedback} from '../../shared/admin/admin-feedback';
+import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Sidebar } from '../../layout/sidebar/sidebar';
@@ -10,13 +12,15 @@ import { Departamento } from '../../core/models/departamento.model';
 
 @Component({
   selector: 'app-empleados',
+  host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [CommonModule, FormsModule, Sidebar, Header],
+  imports: [AdminFeedback, CommonModule, FormsModule, Sidebar, Header],
   templateUrl: './empleados.html',
   styleUrl: './empleados.css'
   
 })
 export class Empleados implements OnInit {
+  pageState=new PageLoadState();
   private empleadosService = inject(EmpleadosService);
   private departamentosService = inject(DepartamentosService);
 
@@ -33,7 +37,7 @@ export class Empleados implements OnInit {
   }
 
   cargarDepartamentos() {
-    this.departamentosService.getDepartamentos().subscribe({
+    this.pageState.observe(this.departamentosService.getDepartamentos()).subscribe({
       next: (data) => {
         this.departamentos = data;
       },
@@ -47,7 +51,7 @@ export class Empleados implements OnInit {
     this.cargando = true;
     this.error = '';
 
-    this.empleadosService.getEmpleados().subscribe({
+    this.pageState.observe(this.empleadosService.getEmpleados()).subscribe({
       next: (data) => {
         this.empleados = data;
         this.cargando = false;
@@ -122,7 +126,7 @@ export class Empleados implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          alert('Error al actualizar empleado');
+          this.pageState.notify('Error al actualizar empleado');
         }
       });
     } else {
@@ -133,7 +137,7 @@ export class Empleados implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          alert('Error al crear empleado');
+          this.pageState.notify('Error al crear empleado');
         }
       });
     }
@@ -170,7 +174,7 @@ export class Empleados implements OnInit {
       },
       error: (err) => {
         console.error('Error al eliminar empleado:', err);
-        alert('Error al eliminar empleado');
+        this.pageState.notify('Error al eliminar empleado');
       }
     });
   }

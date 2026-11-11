@@ -6,6 +6,8 @@
       [title]="'Reportes'"
       [subtitle]="'Análisis general de planillas'">
     </app-header>
+    <app-admin-feedback [state]="pageState" (retry)="cargarDatos()"></app-admin-feedback>
+    <div class="admin-data" *ngIf="!pageState.error() && (pageState.loaded() || !pageState.loading)">
 
     <!-- 🔥 FILTRO -->
     <div class="panel">
@@ -13,12 +15,12 @@
         <h2>Filtros</h2>
       </div>
 
-      <select [(ngModel)]="filtroEstado" (change)="aplicarFiltro()">
+      <label class="z-field"><span>Estado del reporte</span><select aria-label="Estado del reporte" [(ngModel)]="filtroEstado" (change)="aplicarFiltro()">
         <option value="">Todos</option>
         <option value="PENDIENTE">Pendiente</option>
         <option value="PROCESADA">Procesada</option>
         <option value="CONFIRMADA">Confirmada</option>
-      </select>
+      </select></label>
     </div>
 
     <!-- 📊 CARDS -->
@@ -45,17 +47,17 @@
         <h2>Reporte de planillas</h2>
       </div>
 
-      <div class="table-wrapper">
+      <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Reportes">
         <table *ngIf="planillasFiltradas.length > 0; else sinDatos">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Período</th>
-              <th>Estado</th>
-              <th>Total bruto</th>
-              <th>Deducciones</th>
-              <th>Neto</th>
-              <th>Acción</th>
+              <th scope="col">ID</th>
+              <th scope="col">Período</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Total bruto</th>
+              <th scope="col">Deducciones</th>
+              <th scope="col">Neto</th>
+              <th scope="col">Acción</th>
             </tr>
           </thead>
 
@@ -99,4 +101,5 @@
       </div>
     </div>
   </div>
+</div>
 </div>

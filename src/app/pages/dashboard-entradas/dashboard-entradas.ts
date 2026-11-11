@@ -1,3 +1,5 @@
+import {AdminFeedback} from '../../shared/admin/admin-feedback';
+import {PageLoadState} from '../../shared/admin/page-load-state';
 import { analizarEdades } from './analisis-edades';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -12,12 +14,14 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-dashboard-entradas',
+  host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [CommonModule, FormsModule, Sidebar, Header, ConfirmDialog],
+  imports: [AdminFeedback, CommonModule, FormsModule, Sidebar, Header, ConfirmDialog],
   templateUrl: './dashboard-entradas.html',
   styleUrl: './dashboard-entradas.css'
 })
 export class DashboardEntradas implements OnInit {
+  pageState=new PageLoadState();
   private eventosService = inject(EventosService);
   private entradasService = inject(EntradasConfirmadasService);
 
@@ -58,7 +62,7 @@ export class DashboardEntradas implements OnInit {
   }
 
   cargarEventos(): void {
-    this.eventosService.obtenerEventos().subscribe({
+    this.pageState.observe(this.eventosService.obtenerEventos()).subscribe({
       next: (data) => (this.eventos = data || []),
       error: (err) => {
         console.error('Error al cargar eventos', err);
@@ -83,7 +87,7 @@ export class DashboardEntradas implements OnInit {
     this.cargando = true;
     this.mensaje = '';
 
-    this.entradasService.obtenerPorEvento(this.eventoSeleccionado).subscribe({
+    this.pageState.observe(this.entradasService.obtenerPorEvento(this.eventoSeleccionado)).subscribe({
       next: (data) => {
         if (this.eventoSeleccionado !== solicitado) return;
         this.paquetes = data.paquetes || [];
@@ -116,7 +120,7 @@ export class DashboardEntradas implements OnInit {
           next: () => this.cargarEntradas(),
           error: (err) => {
             console.error('Error al invalidar', err);
-            alert(err?.error?.error || 'Error al invalidar la entrada');
+            this.pageState.notify(err?.error?.error || 'Error al invalidar la entrada');
           }
         });
       }
@@ -133,7 +137,7 @@ export class DashboardEntradas implements OnInit {
           next: () => this.cargarEntradas(),
           error: (err) => {
             console.error('Error al reactivar', err);
-            alert(err?.error?.error || 'Error al reactivar la entrada');
+            this.pageState.notify(err?.error?.error || 'Error al reactivar la entrada');
           }
         });
       }

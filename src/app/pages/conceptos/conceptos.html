@@ -6,6 +6,8 @@
       [title]="'Conceptos'"
       [subtitle]="'Gestión de conceptos de pago y deducción'">
     </app-header>
+    <app-admin-feedback [state]="pageState" (retry)="cargarConceptos()"></app-admin-feedback>
+    <div class="admin-data" *ngIf="!pageState.error() && (pageState.loaded() || !pageState.loading)">
 
     <div class="panel">
       <div class="panel-top">
@@ -13,30 +15,30 @@
       </div>
 
       <div class="form-grid">
-        <input
+        <label class="z-field"><span>Nombre</span><input
           type="text"
           placeholder="Nombre"
-          [(ngModel)]="nuevoConcepto.nombre">
+          [(ngModel)]="nuevoConcepto.nombre"></label>
 
-        <select [(ngModel)]="nuevoConcepto.tipo">
+        <label class="z-field"><span>Tipo</span><select aria-label="Tipo" [(ngModel)]="nuevoConcepto.tipo">
           <option value="PAGO">PAGO</option>
           <option value="DEDUCCION">DEDUCCIÓN</option>
-        </select>
+        </select></label>
 
-        <input
+        <label class="z-field"><span>Descripción</span><input
           type="text"
           placeholder="Descripción"
-          [(ngModel)]="nuevoConcepto.descripcion">
+          [(ngModel)]="nuevoConcepto.descripcion"></label>
 
-        <input
+        <label class="z-field"><span>Porcentaje</span><input
           type="number"
           placeholder="Porcentaje"
-          [(ngModel)]="nuevoConcepto.porcentaje">
+          [(ngModel)]="nuevoConcepto.porcentaje"></label>
 
-        <input
+        <label class="z-field"><span>Monto fijo</span><input
           type="number"
           placeholder="Monto fijo"
-          [(ngModel)]="nuevoConcepto.monto_fijo">
+          [(ngModel)]="nuevoConcepto.monto_fijo"></label>
 
         <div class="acciones-form">
           <button class="btn-primary" (click)="guardarConcepto()">
@@ -58,18 +60,18 @@
         <h2>Listado de conceptos</h2>
       </div>
 
-      <div class="table-wrapper">
+      <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Conceptos">
         <table *ngIf="conceptos.length > 0; else sinConceptos">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Tipo</th>
-              <th>Descripción</th>
-              <th>Porcentaje</th>
-              <th>Monto fijo</th>
-              <th>Estado</th>
-              <th>Acciones</th>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Porcentaje</th>
+              <th scope="col">Monto fijo</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Acciones</th>
             </tr>
           </thead>
 
@@ -103,4 +105,5 @@
       </div>
     </div>
   </div>
+</div>
 </div>

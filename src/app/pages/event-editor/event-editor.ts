@@ -9,7 +9,7 @@ import { PublicVideo } from '../../shared/public-event/public-media';
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector:'app-event-editor', standalone:true, host:{class:'zairo-screen'},
+  selector:'app-event-editor', standalone:true, host:{class:'zairo-screen z-admin zairo-ui'},
   imports:[CommonModule,FormsModule,RouterLink,Sidebar,Header,PublicVideo],
   templateUrl:'./event-editor.html', styleUrls:['../eventos/eventos.css','./event-editor.css']
 })

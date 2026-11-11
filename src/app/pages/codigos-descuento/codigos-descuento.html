@@ -6,6 +6,8 @@
       [title]="'Códigos de descuento'"
       [subtitle]="'Promociones aplicables a las entradas'">
     </app-header>
+    <app-admin-feedback [state]="pageState" (retry)="cargarCodigos()"></app-admin-feedback>
+    <div class="admin-data" *ngIf="!pageState.error() && (pageState.loaded() || !pageState.loading)">
 
     <div class="panel ranking-panel">
       <div class="panel-top ranking-panel-top">
@@ -70,52 +72,52 @@
       </div>
 
       <div class="form-grid">
-        <input
+        <label class="z-field"><span>Código (ej. VERANO2026)</span><input
           type="text"
           placeholder="Código (ej. VERANO2026)"
-          [(ngModel)]="nuevoCodigo.codigo">
+          [(ngModel)]="nuevoCodigo.codigo"></label>
 
-        <input
+        <label class="z-field"><span>Descripción</span><input
           type="text"
           placeholder="Descripción"
-          [(ngModel)]="nuevoCodigo.descripcion">
+          [(ngModel)]="nuevoCodigo.descripcion"></label>
 
-        <select [(ngModel)]="nuevoCodigo.tipo_descuento">
+        <label class="z-field"><span>tipo descuento</span><select aria-label="tipo descuento" [(ngModel)]="nuevoCodigo.tipo_descuento">
           <option value="PORCENTAJE">Porcentaje (%)</option>
           <option value="MONTO">Monto fijo (CRC)</option>
-        </select>
+        </select></label>
 
-        <input
+        <label class="z-field"><span>valor</span><input
           type="number"
           [placeholder]="nuevoCodigo.tipo_descuento === 'PORCENTAJE' ? 'Porcentaje (0-100)' : 'Monto en CRC'"
-          [(ngModel)]="nuevoCodigo.valor">
+          [(ngModel)]="nuevoCodigo.valor"></label>
 
-        <select [(ngModel)]="nuevoCodigo.id_evento">
+        <label class="z-field"><span>Evento</span><select aria-label="Evento" [(ngModel)]="nuevoCodigo.id_evento">
           <option [ngValue]="null">Todos los eventos</option>
           <option *ngFor="let e of eventos" [ngValue]="e.id_evento">
             {{ e.nombre }}
           </option>
-        </select>
+        </select></label>
 
-        <input
+        <label class="z-field"><span>Fecha de inicio</span><input
           type="datetime-local"
           title="Válido desde"
-          [(ngModel)]="nuevoCodigo.fecha_inicio">
+          [(ngModel)]="nuevoCodigo.fecha_inicio"></label>
 
-        <input
+        <label class="z-field"><span>Fecha de fin</span><input
           type="datetime-local"
           title="Válido hasta"
-          [(ngModel)]="nuevoCodigo.fecha_fin">
+          [(ngModel)]="nuevoCodigo.fecha_fin"></label>
 
-        <input
+        <label class="z-field"><span>Usos máximos (vacío = ilimitado)</span><input
           type="number"
           placeholder="Usos máximos (vacío = ilimitado)"
-          [(ngModel)]="nuevoCodigo.usos_maximos">
+          [(ngModel)]="nuevoCodigo.usos_maximos"></label>
 
-        <select [(ngModel)]="nuevoCodigo.estado">
+        <label class="z-field"><span>Estado</span><select aria-label="Estado" [(ngModel)]="nuevoCodigo.estado">
           <option [ngValue]="true">Activo</option>
           <option [ngValue]="false">Inactivo</option>
-        </select>
+        </select></label>
 
         <div class="acciones-form">
           <button class="btn-primary" (click)="guardarCodigo()">
@@ -152,18 +154,18 @@
         </div>
       </div>
 
-      <div class="table-wrapper">
+      <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Códigos">
         <table *ngIf="codigosFiltrados.length > 0; else sinCodigos">
           <thead>
             <tr>
-              <th>Código</th>
-              <th>Descuento</th>
-              <th>Evento</th>
-              <th>Vigencia</th>
-              <th>Usos válidos</th>
-              <th>Ventas válidas</th>
-              <th>Estado</th>
-              <th>Acciones</th>
+              <th scope="col">Código</th>
+              <th scope="col">Descuento</th>
+              <th scope="col">Evento</th>
+              <th scope="col">Vigencia</th>
+              <th scope="col">Usos válidos</th>
+              <th scope="col">Ventas válidas</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Acciones</th>
             </tr>
           </thead>
 
@@ -238,6 +240,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <app-confirm-dialog

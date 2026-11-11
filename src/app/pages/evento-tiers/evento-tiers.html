@@ -6,6 +6,8 @@
       [title]="'Tiers de Entrada'"
       [subtitle]="'Administración de precios por evento'">
     </app-header>
+    <app-admin-feedback [state]="pageState" (retry)="cargarTiers()"></app-admin-feedback>
+    <div class="admin-data" *ngIf="!pageState.error() && (pageState.loaded() || !pageState.loading)">
 
     <div class="panel">
       <div class="panel-top">
@@ -26,38 +28,38 @@
         <label>Entradas por paquete
           <input type="number" min="1" max="10" step="1" [(ngModel)]="nuevoTier.entradas_por_paquete">
         </label>
-        <input
+        <label class="z-field"><span>Nombre del tier</span><input
           type="text"
           placeholder="Nombre del tier"
-          [(ngModel)]="nuevoTier.nombre">
+          [(ngModel)]="nuevoTier.nombre"></label>
 
-        <input
+        <label class="z-field"><span>Descripción</span><input
           type="text"
           placeholder="Descripción"
-          [(ngModel)]="nuevoTier.descripcion">
+          [(ngModel)]="nuevoTier.descripcion"></label>
 
         <input
           type="number"
           placeholder="Precio total del paquete" aria-label="Precio total del paquete"
           [(ngModel)]="nuevoTier.precio">
 
-        <input
+        <label class="z-field"><span>Fecha de inicio</span><input
           type="datetime-local"
-          [(ngModel)]="nuevoTier.fecha_inicio">
+          [(ngModel)]="nuevoTier.fecha_inicio"></label>
 
-        <input
+        <label class="z-field"><span>Fecha de fin</span><input
           type="datetime-local"
-          [(ngModel)]="nuevoTier.fecha_fin">
+          [(ngModel)]="nuevoTier.fecha_fin"></label>
 
         <input
           type="number"
           placeholder="Paquetes disponibles (entradas si es individual)" aria-label="Paquetes disponibles" min="0" step="1"
           [(ngModel)]="nuevoTier.cantidad_disponible">
 
-        <select [(ngModel)]="nuevoTier.estado">
+        <label class="z-field"><span>Estado</span><select aria-label="Estado" [(ngModel)]="nuevoTier.estado">
           <option [ngValue]="true">Activo</option>
           <option [ngValue]="false">Inactivo</option>
-        </select>
+        </select></label>
 
         <div class="acciones-form">
           <button class="btn-primary" (click)="guardarTier()">
@@ -79,20 +81,20 @@
         <h2>Listado de tiers</h2>
       </div>
 
-      <div class="table-wrapper">
+      <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Tarifas y paquetes">
         <table *ngIf="tiers.length > 0; else sinTiers">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Precio por paquete</th>
-              <th>Entradas por paquete</th>
-              <th>Inicio</th>
-              <th>Fin</th>
-              <th>Cupo</th>
-              <th>Disponibilidad</th>
-              <th>Estado</th>
-              <th>Acciones</th>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Precio por paquete</th>
+              <th scope="col">Entradas por paquete</th>
+              <th scope="col">Inicio</th>
+              <th scope="col">Fin</th>
+              <th scope="col">Cupo</th>
+              <th scope="col">Disponibilidad</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Acciones</th>
             </tr>
           </thead>
 
@@ -155,6 +157,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <app-confirm-dialog

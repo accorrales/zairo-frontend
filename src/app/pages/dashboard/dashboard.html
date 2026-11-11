@@ -3,9 +3,11 @@
 
   <main class="content">
     <app-header
-      [title]="'Dashboard'"
+      [title]="'Resumen'"
       [subtitle]="'Resumen general del sistema ZAIRO'">
     </app-header>
+    <app-admin-feedback [state]="pageState" (retry)="cargarDashboard()"></app-admin-feedback>
+    <div class="admin-data" *ngIf="!pageState.error() && (pageState.loaded() || !pageState.loading)">
 
     <div *ngIf="cargando" class="estado-box">
       Cargando dashboard...
@@ -16,6 +18,7 @@
     </div>
 
     <ng-container *ngIf="!cargando && !error">
+      <nav class="admin-shortcuts" aria-label="Tareas de tu rol"><a class="z-button" *ngFor="let link of shortcuts" [routerLink]="link.url">{{link.text}}</a></nav>
       <div class="cards">
         <div class="card">
           <span class="card-label">01</span>
@@ -51,14 +54,14 @@
             </div>
           </div>
 
-          <div class="table-wrapper">
+          <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Resumen">
             <table *ngIf="ultimosEmpleados.length > 0; else sinUltimos">
               <thead>
                 <tr>
-                  <th>Nombre</th>
-                  <th>Puesto</th>
-                  <th>Departamento</th>
-                  <th>Fecha ingreso</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Puesto</th>
+                  <th scope="col">Departamento</th>
+                  <th scope="col">Fecha ingreso</th>
                 </tr>
               </thead>
 
@@ -100,5 +103,6 @@
         </section>
       </div>
     </ng-container>
-  </main>
+  </div>
+</main>
 </div>

@@ -6,6 +6,8 @@
       [title]="'Detalle de Planilla'"
       [subtitle]="'Resumen por empleado'">
     </app-header>
+    <app-admin-feedback [state]="pageState" (retry)="cargarDetalle()"></app-admin-feedback>
+    <div class="admin-data" *ngIf="!pageState.error() && (pageState.loaded() || !pageState.loading)">
 
     <div *ngIf="cargando" class="estado-box">
       Cargando detalle...
@@ -65,20 +67,20 @@
           <h2>Detalle por empleado</h2>
         </div>
 
-        <div class="table-wrapper">
+        <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Detalle de planilla">
           <table *ngIf="detalle.length > 0; else sinDetalle">
             <thead>
               <tr>
-                <th>Cédula</th>
-                <th>Empleado</th>
-                <th>Puesto</th>
-                <th>Departamento</th>
-                <th>Salario base</th>
-                <th>Ingresos</th>
-                <th>Deducciones</th>
-                <th>Neto</th>
-                <th>Estado</th>
-                <th>Fecha cálculo</th>
+                <th scope="col">Cédula</th>
+                <th scope="col">Empleado</th>
+                <th scope="col">Puesto</th>
+                <th scope="col">Departamento</th>
+                <th scope="col">Salario base</th>
+                <th scope="col">Ingresos</th>
+                <th scope="col">Deducciones</th>
+                <th scope="col">Neto</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Fecha cálculo</th>
               </tr>
             </thead>
 
@@ -109,4 +111,5 @@
       <a routerLink="/planillas" class="btn-volver">← Volver a planillas</a>
     </ng-container>
   </div>
+</div>
 </div>

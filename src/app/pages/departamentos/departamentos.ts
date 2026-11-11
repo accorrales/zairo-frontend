@@ -1,3 +1,5 @@
+import {AdminFeedback} from '../../shared/admin/admin-feedback';
+import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,12 +11,14 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-departamentos',
+  host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [CommonModule, FormsModule, Sidebar, Header, ConfirmDialog],
+  imports: [AdminFeedback, CommonModule, FormsModule, Sidebar, Header, ConfirmDialog],
   templateUrl: './departamentos.html',
   styleUrl: './departamentos.css'
 })
 export class Departamentos implements OnInit {
+  pageState=new PageLoadState();
   private departamentosService = inject(DepartamentosService);
 
   departamentos: any[] = [];
@@ -37,7 +41,7 @@ export class Departamentos implements OnInit {
   }
 
   cargarDepartamentos(): void {
-    this.departamentosService.getDepartamentos().subscribe({
+    this.pageState.observe(this.departamentosService.getDepartamentos()).subscribe({
       next: (data) => {
         this.departamentos = data;
       },
@@ -49,7 +53,7 @@ export class Departamentos implements OnInit {
 
   guardarDepartamento(): void {
     if (!this.nuevoDepartamento.nombre.trim()) {
-      alert('El nombre del departamento es obligatorio');
+      this.pageState.notify('El nombre del departamento es obligatorio');
       return;
     }
 
@@ -102,7 +106,7 @@ export class Departamentos implements OnInit {
           },
           error: (err) => {
             console.error('Error al eliminar departamento', err);
-            alert(err?.error?.error || 'Error al eliminar departamento');
+            this.pageState.notify(err?.error?.error || 'Error al eliminar departamento');
           }
         });
       }

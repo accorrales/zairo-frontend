@@ -10,7 +10,7 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-eventos',
-  host: { class: 'zairo-screen' },
+  host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, Sidebar, Header, ConfirmDialog],
   templateUrl: './eventos.html',
