@@ -81,6 +81,12 @@ export const routes: Routes = [
     data: { roles: ['admin'] }
   },
   {
+    path: 'eventos/:id/editor',
+    loadComponent: () => import('./pages/event-editor/event-editor').then(m => m.EventEditor),
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin'] }
+  },
+  {
     path: 'eventos/:id/tiers',
     loadComponent: () => import('./pages/evento-tiers/evento-tiers').then((m) => m.EventoTiers),
     canActivate: [authGuard, roleGuard],

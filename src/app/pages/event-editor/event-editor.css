@@ -1,0 +1,13 @@
+.editor-fields{border:0;margin:0;padding:0;min-width:0}
+.editor-toolbar,.section-actions,.editor-save {display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.editor-toolbar .z-muted {margin-left:auto}
+.editor-item {padding:20px 0;border-top:1px solid var(--z-line);margin-bottom:16px}
+.editor-item .z-button{margin-top:14px}
+.z-field textarea {width:100%;min-height:110px;resize:vertical;padding:12px;background:var(--z-bg);color:var(--z-text);border:1px solid var(--z-control-line);border-radius:9px;font-size:16px;line-height:1.6}
+.color-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.color-grid input{width:100%;height:48px;background:var(--z-bg);border:1px solid var(--z-control-line)}
+.section-row{display:grid;grid-template-columns:minmax(160px,1fr) 110px auto;gap:16px;align-items:center;padding:18px 0;border-top:1px solid var(--z-line)}
+.section-row input:not([type=checkbox]){width:100%;min-height:44px;padding:10px;background:var(--z-bg);color:var(--z-text);border:1px solid var(--z-control-line);border-radius:8px}
+.section-row .section-actions{margin:0}.editor-save{position:sticky;bottom:12px;z-index:4;padding:14px 20px;background:var(--z-surface);border:1px solid var(--z-line);border-radius:12px;box-shadow:0 8px 40px #0008;justify-content:space-between;font-size:14px}
+.publication-panel .check-linea{font-size:14px;line-height:1.5}.publication-panel .z-button{margin-top:20px}.check-linea input{width:20px;height:20px;accent-color:var(--z-accent)}
+.event-preview{border:1px solid var(--z-line);border-radius:20px;overflow:hidden;margin:20px 0}.preview-hero,.preview-section{padding:clamp(20px,4vw,44px);border-bottom:1px solid #ffffff30}.preview-hero h1{font-size:clamp(36px,6vw,80px);line-height:1.05;overflow-wrap:anywhere;margin:22px 0}.event-preview p{line-height:1.8;overflow-wrap:anywhere}.event-preview img{display:block;width:100%;height:auto;max-height:420px;object-fit:cover;border-radius:12px}.preview-hero>span:first-child{font-size:12px;letter-spacing:3px}.preview-tag{display:inline-block;padding:12px;margin-top:20px;border:1px solid currentColor;border-radius:8px;font-size:13px}.preview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.preview-grid figure{margin:0}.preview-grid figcaption{font-size:13px;margin-top:10px}.story{white-space:pre-wrap}
+@media(max-width:900px){.section-row{grid-template-columns:1fr}.editor-toolbar .z-muted{width:100%;margin:0}.preview-grid{grid-template-columns:1fr}.color-grid{gap:10px}.editor-save{bottom:8px}.editor-save .z-button{flex:1}}

@@ -43,16 +43,7 @@
           placeholder="URL de la imagen"
           [(ngModel)]="nuevoEvento.imagen"></label>
 
-        <label class="z-field"><span>Estado de venta</span><select [(ngModel)]="nuevoEvento.estado">
-          <option [ngValue]="true">Venta activa</option>
-          <option [ngValue]="false">Venta inactiva</option>
-        </select></label>
-
-        <label class="z-field"><span>Visibilidad en portada</span><select [(ngModel)]="nuevoEvento.mostrar_en_home">
-          <option [ngValue]="true">Mostrar en Home como “Próximamente”</option>
-          <option [ngValue]="false">Ocultar del Home</option>
-        </select></label>
-
+        <p class="z-muted">Los eventos nuevos se crean como borrador privado. Configurá el contenido y la publicación desde el editor.</p>
         <div class="acciones-form">
           <button class="btn-primary" (click)="guardarEvento()">
             {{ editando ? 'Actualizar evento' : 'Crear evento' }}
@@ -84,7 +75,7 @@
               <th>Fecha</th>
               <th>Ubicación</th>
               <th>Precio base</th>
-              <th>Venta</th>
+              <th>Publicación / Venta</th>
               <th>Home</th>
               <th>Acciones</th>
             </tr>
@@ -118,7 +109,7 @@
                     'activo': e.estado === true,
                     'inactivo': e.estado === false
                   }">
-                  {{ e.estado ? 'Activa' : 'Inactiva' }}
+                  {{ e.publicacion || 'BORRADOR' }} · {{ e.ventas_abiertas ? 'Abierta' : 'Cerrada' }}
                 </span>
               </td>
 
@@ -134,32 +125,16 @@
               </td>
 
               <td class="acciones">
+                <a class="btn-info" [routerLink]="['/eventos', e.id_evento, 'editor']">Contenido y publicación</a>
                 <a
                   class="btn-info"
                   [routerLink]="['/eventos', e.id_evento, 'tiers']">
                   Tiers
                 </a>
 
-                <button class="btn-warning" (click)="editarEvento(e)">
-                  Editar
-                </button>
 
                 <button class="btn-ubicacion" (click)="abrirUbicacion(e)">
                   📍 Ubicación
-                </button>
-
-                <button
-                  *ngIf="e.estado"
-                  class="btn-danger"
-                  (click)="desactivarEvento(e)">
-                  Desactivar
-                </button>
-
-                <button
-                  *ngIf="!e.estado"
-                  class="btn-success"
-                  (click)="reactivarEvento(e)">
-                  Reactivar
                 </button>
 
                 <button

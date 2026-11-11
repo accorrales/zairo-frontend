@@ -1,0 +1,76 @@
+<div class="layout zairo-ui">
+  <app-sidebar></app-sidebar>
+  <main class="content">
+    <app-header title="Contenido del evento" subtitle="Borrador, identidad y publicación independiente"></app-header>
+    <div class="editor-toolbar">
+      <a class="z-button" routerLink="/eventos">Volver a eventos</a>
+      <button class="z-button" type="button" [disabled]="busy" (click)="preview=!preview" [attr.aria-pressed]="preview">{{preview ? 'Volver a editar' : 'Vista previa privada'}}</button>
+      <span class="z-muted" *ngIf="!loading">Actual: {{currentPublication}} · {{currentSales ? 'Ventas abiertas' : 'Ventas cerradas'}}</span>
+    </div>
+    <div *ngIf="loading" class="z-status" role="status">Cargando borrador…</div>
+    <div *ngIf="error" class="z-status z-status-error" role="alert">{{error}} <button *ngIf="!content" class="z-button" (click)="load()">Reintentar</button></div>
+    <p *ngIf="message" class="z-status" role="status">{{message}}</p>
+    <ng-container *ngIf="content">
+      <form *ngIf="!preview" #editorForm="ngForm" (ngSubmit)="save()" (input)="changed()" (change)="changed()">
+        <fieldset class="editor-fields" [disabled]="busy">
+        <section class="panel">
+          <span class="z-eyebrow">01 / IDENTIDAD</span><h2>La próxima experiencia</h2>
+          <p class="z-muted">Editá el borrador con tranquilidad. Guardar no publica los cambios.</p>
+          <div class="form-grid">
+            <label class="z-field">Nombre del evento<input name="nombre" [(ngModel)]="content.nombre" required maxlength="180"></label>
+            <label class="z-field">Fecha y hora (Costa Rica)<input name="fecha" type="datetime-local" [(ngModel)]="content.fecha" required></label>
+            <label class="z-field">Descripción breve<textarea name="descripcion" [(ngModel)]="content.descripcion" maxlength="2000"></textarea></label>
+            <label class="z-field">Imagen de portada (HTTPS o /assets/)<input name="imagen" [(ngModel)]="content.imagen" maxlength="2000"></label>
+            <label class="z-field">Ubicación pública<input name="ubicacion" [(ngModel)]="content.ubicacion" maxlength="500"><small>No incluyás aquí la dirección secreta. Se gestiona por separado.</small></label>
+            <label class="z-field">Precio de referencia (₡)<input name="precio" type="number" min="0" max="100000000" [(ngModel)]="content.precio" required><small>Los precios de compra siguen definidos en los tiers.</small></label>
+          </div>
+        </section>
+        <section class="panel"><span class="z-eyebrow">02 / RELATO</span><h2>Historia y concepto</h2>
+          <div class="form-grid"><label class="z-field">Concepto<textarea name="concepto" [(ngModel)]="content.concepto" maxlength="2000"></textarea></label><label class="z-field">Historia<textarea name="historia" [(ngModel)]="content.historia" maxlength="12000" rows="6"></textarea></label></div>
+        </section>
+        <section class="panel"><span class="z-eyebrow">03 / LINEUP</span><h2>Artistas</h2>
+          <p class="z-muted">Hasta 30 artistas, en el orden en que aparecen aquí.</p>
+          <div class="editor-item" *ngFor="let artist of content.artistas; let i=index">
+            <div class="form-grid"><label class="z-field">Nombre del artista<input [name]="'artista'+i" [(ngModel)]="artist.nombre" required maxlength="100"></label><label class="z-field">Imagen del artista<input [name]="'artistaImagen'+i" [(ngModel)]="artist.imagen"></label><label class="z-field">Descripción del artista<textarea [name]="'artistaDescripcion'+i" [(ngModel)]="artist.descripcion" maxlength="1000"></textarea></label></div>
+            <button type="button" class="z-button" (click)="content.artistas.splice(i,1);changed()" [attr.aria-label]="'Quitar artista '+(i+1)">Quitar artista</button>
+          </div>
+          <button class="z-button" type="button" (click)="addArtist()" [disabled]="content.artistas.length>=30">Agregar artista</button>
+        </section>
+        <section class="panel"><span class="z-eyebrow">04 / IMÁGENES</span><h2>Galería del evento</h2>
+          <div class="editor-item" *ngFor="let img of content.imagenes;let i=index"><div class="form-grid"><label class="z-field">URL de imagen<input [name]="'imagen'+i" [(ngModel)]="img.url" required></label><label class="z-field">Descripción de la imagen<input [name]="'alt'+i" [(ngModel)]="img.alt" maxlength="200" required></label></div><button class="z-button" type="button" (click)="content.imagenes.splice(i,1);changed()">Quitar imagen {{i+1}}</button></div>
+          <button class="z-button" type="button" (click)="addImage()" [disabled]="content.imagenes.length>=20">Agregar imagen</button>
+        </section>
+        <section class="panel"><span class="z-eyebrow">05 / PERSONALIDAD</span><h2>Colores propios</h2><p class="z-muted">El panel siempre conserva la identidad Zairo. El contenido del evento usa estos colores; validamos su contraste al guardar.</p>
+          <div class="color-grid"><label class="z-field">Fondo<input name="fondo" type="color" [(ngModel)]="content.colores.fondo"></label><label class="z-field">Texto<input name="texto" type="color" [(ngModel)]="content.colores.texto"></label><label class="z-field">Acento<input name="acento" type="color" [(ngModel)]="content.colores.acento"></label></div>
+        </section>
+        <section class="panel"><span class="z-eyebrow">06 / ESTRUCTURA</span><h2>Secciones prediseñadas</h2><p class="z-muted">Editá el título, cambiá el orden u ocultá secciones. No se admite HTML ni bloques libres.</p>
+          <div class="section-row" *ngFor="let section of content.secciones;let i=index"><label class="z-field">{{section.tipo}}<input [name]="'seccion'+i" [(ngModel)]="section.titulo" required maxlength="100"></label><label class="check-linea"><input type="checkbox" [name]="'visible'+i" [(ngModel)]="section.visible"> Visible</label><div class="section-actions"><button class="z-button" type="button" (click)="move(i,-1)" [disabled]="i===0" [attr.aria-label]="'Subir sección '+section.tipo">Subir</button><button class="z-button" type="button" (click)="move(i,1)" [disabled]="i===content.secciones.length-1" [attr.aria-label]="'Bajar sección '+section.tipo">Bajar</button></div></div>
+        </section>
+        <div class="editor-save"><span>{{dirty ? 'Cambios sin guardar' : 'Borrador guardado'}}</span><button class="z-button z-button-primary" [disabled]="busy||editorForm.invalid">{{busy ? 'Guardando…' : 'Guardar borrador'}}</button></div>
+        </fieldset>
+      </form>
+      <section *ngIf="preview" class="preview-shell">
+        <p class="z-status">Vista previa privada · {{dirty ? 'Incluye cambios sin guardar' : 'Borrador guardado'}} · Compras deshabilitadas en esta vista.</p>
+        <article class="event-preview" [style.background]="content.colores.fondo" [style.color]="content.colores.texto">
+          <header class="preview-hero"><span [style.color]="content.colores.acento">ZAIRO PRESENTA</span><h1>{{content.nombre}}</h1><p>{{content.descripcion}}</p><img *ngIf="content.imagen" [src]="content.imagen" [alt]="content.nombre"><span class="preview-tag">{{publication==='PROXIMAMENTE'?'Anuncio Próximamente':publication==='BORRADOR'?'Borrador privado':'Página pública'}} · {{sales?'Venta abierta al publicar':'Venta cerrada'}}</span></header>
+          <ng-container *ngFor="let section of content.secciones"><section class="preview-section" *ngIf="section.visible"><h2 [style.color]="content.colores.acento">{{section.titulo}}</h2>
+            <ng-container [ngSwitch]="section.tipo">
+              <div *ngSwitchCase="'historia'"><h3>{{content.concepto}}</h3><p class="story">{{content.historia||'Agregá la historia del evento.'}}</p></div>
+              <div *ngSwitchCase="'artistas'" class="preview-grid"><div *ngFor="let a of content.artistas"><img *ngIf="a.imagen" [src]="a.imagen" [alt]="a.nombre"><h3>{{a.nombre}}</h3><p>{{a.descripcion}}</p></div><p *ngIf="!content.artistas.length">Todavía no agregaste artistas.</p></div>
+              <div *ngSwitchCase="'galeria'" class="preview-grid"><figure *ngFor="let img of content.imagenes"><img [src]="img.url" [alt]="img.alt"><figcaption>{{img.alt}}</figcaption></figure><p *ngIf="!content.imagenes.length">Todavía no agregaste imágenes.</p></div>
+              <div *ngSwitchCase="'informacion'"><p>{{formatDate(content.fecha)}}</p><p>{{content.ubicacion||'Ubicación por anunciar'}}</p><p>No se muestran ubicaciones secretas en esta vista.</p></div>
+            </ng-container>
+          </section></ng-container>
+        </article>
+        <p class="z-muted">Esta vista editorial es privada, incluso para borradores y anuncios. El anuncio Próximamente muestra solo nombre, fecha e imagen; el contenido completo se reserva para la página publicada.</p>
+      </section>
+      <section class="panel publication-panel"><fieldset class="editor-fields" [disabled]="busy"><span class="z-eyebrow">PUBLICACIÓN / CONTROL DE ACCESO</span><h2>Decidí cuándo sale a la luz</h2><p class="z-muted">Primero guardá el borrador. Aplicar publica esa versión o retira el evento; abrir ventas es una decisión separada.</p>
+        <div class="form-grid"><label class="z-field">Visibilidad<select aria-label="Visibilidad" [(ngModel)]="publication" (ngModelChange)="publicationChanged()"><option value="BORRADOR">Borrador privado</option><option value="PROXIMAMENTE">Anuncio: Próximamente</option><option value="PUBLICADO">Página pública</option></select></label>
+          <label class="check-linea"><input type="checkbox" [(ngModel)]="sales" [disabled]="publication!=='PUBLICADO'"> Abrir ventas</label>
+          <label class="check-linea"><input type="checkbox" [(ngModel)]="home" [disabled]="publication==='BORRADOR'" (ngModelChange)="publicationChanged()"> Visible en portada</label>
+          <label class="check-linea"><input type="checkbox" [(ngModel)]="featured" [disabled]="!home||publication==='BORRADOR'"> Evento destacado en portada (reemplaza al anterior)</label>
+        </div><p class="z-muted" *ngIf="dirty">Guardá los cambios antes de aplicar la publicación.</p><button type="button" class="z-button z-button-primary" [disabled]="busy||dirty" (click)="publish()">{{busy ? 'Aplicando…' : 'Aplicar publicación'}}</button></fieldset>
+      </section>
+    </ng-container>
+  </main>
+</div>

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { Sidebar } from '../../layout/sidebar/sidebar';
 import { Header } from '../../layout/header/header';
@@ -18,6 +18,7 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 })
 export class Eventos implements OnInit {
   private eventosService = inject(EventosService);
+  private router = inject(Router);
 
   eventos: any[] = [];
   cargando = false;
@@ -114,9 +115,8 @@ export class Eventos implements OnInit {
     }
 
     this.eventosService.crearEvento(payload).subscribe({
-      next: () => {
-        this.cargarEventos();
-        this.resetFormulario();
+      next: (event: any) => {
+        this.router.navigate(['/eventos', event.id_evento, 'editor']);
       },
       error: (err) => {
         console.error('Error al crear evento', err);
