@@ -105,7 +105,7 @@
                 </span>
               </td>
               <td>{{ n.cantidad }}</td>
-              <td>{{ n.monto | crcMoney }}</td>
+              <td class="money-amount">{{ n.monto | crcMoney }}</td>
               <td>{{ n.observacion || '-' }}</td>
               <td>{{ n.fecha_registro | date:'dd/MM/yyyy HH:mm' }}</td>
               <td class="acciones">

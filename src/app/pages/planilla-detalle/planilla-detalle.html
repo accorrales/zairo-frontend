@@ -90,10 +90,10 @@
                 <td>{{ d.nombre }} {{ d.apellido }}</td>
                 <td>{{ d.puesto }}</td>
                 <td>{{ d.departamento }}</td>
-                <td>{{ d.salario_base | crcMoney }}</td>
-                <td>{{ d.total_ingresos | crcMoney }}</td>
-                <td>{{ d.total_deducciones | crcMoney }}</td>
-                <td>{{ d.salario_neto | crcMoney }}</td>
+                <td class="money-amount">{{ d.salario_base | crcMoney }}</td>
+                <td class="money-amount">{{ d.total_ingresos | crcMoney }}</td>
+                <td class="money-amount">{{ d.total_deducciones | crcMoney }}</td>
+                <td class="money-amount">{{ d.salario_neto | crcMoney }}</td>
                 <td>{{ d.estado }}</td>
                 <td>{{ d.fecha_calculo | date:'dd/MM/yyyy HH:mm' }}</td>
               </tr>

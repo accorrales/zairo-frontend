@@ -82,7 +82,7 @@
               <td>{{ c.tipo }}</td>
               <td>{{ c.descripcion || '-' }}</td>
               <td>{{ c.porcentaje || 0 }}%</td>
-              <td>{{ c.monto_fijo || 0 | crcMoney }}</td>
+              <td class="money-amount">{{ c.monto_fijo || 0 | crcMoney }}</td>
               <td>{{ c.estado === false ? 'Inactivo' : 'Activo' }}</td>
               <td class="acciones">
                 <button class="btn-warning" (click)="editarConcepto(c)">

@@ -92,7 +92,7 @@
         <h2>Paquetes pagados y beneficios compartidos</h2>
         <p>Se cuenta cada paquete una vez. Los beneficios no son entradas ni reservas adicionales. Incluye compras pagadas aunque luego se invalide una entrada.</p>
         <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Ventas"><table><thead><tr><th scope="col">Zona</th><th scope="col">Paquetes</th><th scope="col">Entradas</th><th scope="col">Beneficios por paquete</th><th scope="col">Total cobrado</th></tr></thead>
-        <tbody><tr *ngFor="let p of paquetes"><td>{{ p.zona }}</td><td>{{ p.paquetes }}</td><td>{{ p.entradas }}</td><td>{{ p.beneficios_paquete }}</td><td>{{ formatearMoneda(p.total) }}</td></tr></tbody></table></div>
+        <tbody><tr *ngFor="let p of paquetes"><td>{{ p.zona }}</td><td>{{ p.paquetes }}</td><td>{{ p.entradas }}</td><td>{{ p.beneficios_paquete }}</td><td class="money-amount">{{ formatearMoneda(p.total) }}</td></tr></tbody></table></div>
       </section>
       <!-- Desglose por tier -->
       <div class="panel" *ngIf="porTier.length > 0">
@@ -113,7 +113,7 @@
               <tr *ngFor="let t of porTier">
                 <td>{{ t.tier }}</td>
                 <td>{{ t.cantidad }}</td>
-                <td>{{ formatearMoneda(t.total) }}</td>
+                <td class="money-amount">{{ formatearMoneda(t.total) }}</td>
               </tr>
             </tbody>
           </table>
@@ -148,7 +148,7 @@
                 <td>{{ e.telefono_comprador }}</td>
                 <td><small>{{ e.uuid_entrada || '-' }}</small></td>
                 <td>{{ e.tier }} · {{ e.zona || 'GENERAL' }}</td>
-                <td>{{ formatearMoneda(e.precio) }}</td>
+                <td class="money-amount">{{ formatearMoneda(e.precio) }}</td>
                 <td>
                   <span
                     class="badge"

@@ -100,7 +100,7 @@
 
               <td>{{ e.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
               <td>{{ e.ubicacion || '-' }}</td>
-              <td>{{ formatearMoneda(e.precio) }}</td>
+              <td class="money-amount">{{ formatearMoneda(e.precio) }}</td>
 
               <td>
                 <span

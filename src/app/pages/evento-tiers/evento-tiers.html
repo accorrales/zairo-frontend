@@ -105,7 +105,7 @@
                 <strong>{{ t.nombre }} · {{ t.zona || 'GENERAL' }}</strong><br>
                 <small>{{ t.descripcion || '-' }} {{ t.beneficios_paquete }}</small>
               </td>
-              <td>{{ formatearMoneda(t.precio) }}</td>
+              <td class="money-amount">{{ formatearMoneda(t.precio) }}</td>
               <td>{{ t.entradas_por_paquete || 1 }}</td>
               <td>{{ t.fecha_inicio ? (t.fecha_inicio | date:'dd/MM/yyyy HH:mm') : 'Sin inicio' }}</td>
               <td>{{ t.fecha_fin ? (t.fecha_fin | date:'dd/MM/yyyy HH:mm') : 'Sin fin' }}</td>

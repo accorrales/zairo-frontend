@@ -101,4 +101,11 @@
  .z-admin.zairo-screen .employee-dialog .form-grid{gap:12px}
 }
 
-@media(max-width:900px){.z-admin.zairo-screen .card .money-amount{font-size:clamp(16px,4.1vw,20px);white-space:nowrap;overflow-wrap:normal;overflow-x:auto}}
+@media(max-width:900px){.z-admin.zairo-screen .card .money-amount{font-size:clamp(16px,4.1vw,20px);white-space:nowrap;overflow-wrap:normal}}
+
+/* Keep currency intact; cards reflow to fit the amount, tables scroll as a whole. */
+.z-admin.zairo-screen .money-amount{white-space:nowrap!important;overflow-wrap:normal;word-break:normal}
+.z-admin.zairo-screen .cards:has(.money-amount){display:flex;flex-wrap:wrap}
+.z-admin.zairo-screen .cards:has(.money-amount)>.card{flex:1 1 170px}
+.z-admin.zairo-screen .cards:has(.money-amount)>.card:has(.money-amount){min-width:max-content!important}
+@media(max-width:900px){.z-admin.zairo-screen .cards:has(.money-amount)>.card{flex-basis:140px}}
