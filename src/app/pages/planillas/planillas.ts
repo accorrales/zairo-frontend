@@ -1,3 +1,4 @@
+import { CrcMoneyPipe } from '../../shared/admin/crc-money';
 import {AdminFeedback} from '../../shared/admin/admin-feedback';
 import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
@@ -15,7 +16,7 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
   selector: 'app-planillas',
   host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [AdminFeedback, CommonModule, FormsModule, RouterLink, Sidebar, Header, ConfirmDialog],
+  imports: [CrcMoneyPipe, AdminFeedback, CommonModule, FormsModule, RouterLink, Sidebar, Header, ConfirmDialog],
   templateUrl: './planillas.html',
   styleUrl: './planillas.css'
 })

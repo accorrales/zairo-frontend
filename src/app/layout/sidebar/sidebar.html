@@ -32,6 +32,7 @@
 
   <div class="theme-badge"><span aria-hidden="true">◈</span><strong>{{roleLabel}}</strong></div>
   <nav id="admin-menu" class="menu" [class.open]="menuAbierto" aria-label="Navegación del sistema" (click)="cerrarMenuMovil()" (keydown.escape)="cerrarMenuMovil(true)">
+    <a *ngIf="tienePermiso(['visor'])" routerLink="/mi-acceso" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">IN</span>Mi acceso</a>
     <div class="menu-group" *ngIf="tienePermiso(['admin','contabilidad'])"><p class="menu-group-title">OPERACIÓN DE EVENTOS</p>
       <a *ngIf="tienePermiso(['admin'])" routerLink="/eventos" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">EV</span>Eventos</a>
       <a *ngIf="tienePermiso(['admin'])" routerLink="/admin/compras" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">CO</span>Compras pendientes</a>
@@ -39,10 +40,10 @@
       <a *ngIf="tienePermiso(['admin'])" routerLink="/codigos-descuento" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">CD</span>Códigos de descuento</a>
       <a *ngIf="tienePermiso(['admin'])" routerLink="/whatsapp-comprobantes" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">CP</span>Comprobantes</a>
     </div>
-    <div class="menu-group" *ngIf="tienePermiso(['admin','rrhh','contabilidad','visor'])"><p class="menu-group-title">EQUIPO Y CONTABILIDAD</p>
+    <div class="menu-group" *ngIf="tienePermiso(['admin','rrhh','contabilidad'])"><p class="menu-group-title">EQUIPO Y CONTABILIDAD</p>
       <a *ngIf="tienePermiso(['admin','rrhh','contabilidad'])" routerLink="/dashboard" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">RE</span>Resumen</a>
       <a *ngIf="tienePermiso(['admin','rrhh','contabilidad'])" routerLink="/planillas" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">PL</span>Planillas</a>
-      <a *ngIf="tienePermiso(['admin','rrhh','contabilidad','visor'])" routerLink="/reportes" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">RP</span>Reportes</a>
+      <a *ngIf="tienePermiso(['admin','rrhh','contabilidad'])" routerLink="/reportes" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">RP</span>Reportes</a>
       <a *ngIf="tienePermiso(['admin','rrhh','contabilidad'])" routerLink="/empleados" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">EM</span>Empleados</a>
       <a *ngIf="tienePermiso(['admin','rrhh','contabilidad'])" routerLink="/novedades" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">NO</span>Novedades</a>
       <a *ngIf="tienePermiso(['admin','rrhh','contabilidad'])" routerLink="/conceptos" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">CN</span>Conceptos</a>

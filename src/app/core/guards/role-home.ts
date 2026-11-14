@@ -4,7 +4,7 @@ export function roleHome(role: string | null | undefined): string {
     case 'rrhh':
     case 'contabilidad': return '/dashboard';
     case 'entrada': return '/admin/kiosk';
-    case 'visor': return '/reportes';
+    case 'visor': return '/mi-acceso';
     default: return '/home';
   }
 }

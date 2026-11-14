@@ -76,9 +76,9 @@
                 </span>
               </td>
 
-              <td>{{ (p.total_bruto || 0) | number:'1.2-2' }}</td>
-              <td>{{ (p.total_deducciones || 0) | number:'1.2-2' }}</td>
-              <td>{{ (p.total_neto || 0) | number:'1.2-2' }}</td>
+              <td>{{ (p.total_bruto || 0) | crcMoney }}</td>
+              <td>{{ (p.total_deducciones || 0) | crcMoney }}</td>
+              <td>{{ (p.total_neto || 0) | crcMoney }}</td>
 
               <td class="acciones">
                 <button

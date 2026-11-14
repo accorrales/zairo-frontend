@@ -1,3 +1,4 @@
+import { CrcMoneyPipe } from '../../shared/admin/crc-money';
 import {AdminFeedback} from '../../shared/admin/admin-feedback';
 import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
@@ -14,7 +15,7 @@ import { ConceptosService } from '../../core/services/conceptos.service';
   selector: 'app-novedades',
   host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [AdminFeedback, CommonModule, FormsModule, Sidebar, Header],
+  imports: [CrcMoneyPipe, AdminFeedback, CommonModule, FormsModule, Sidebar, Header],
   templateUrl: './novedades.html',
   styleUrl: './novedades.css'
 })

@@ -55,7 +55,7 @@
 .z-admin.zairo-screen :is(.compras-grid,.wa-layout){min-width:0}.z-admin.zairo-screen .compras-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}.z-admin.zairo-screen .compra-info{line-height:1.7}.z-admin.zairo-screen .compra-info p{overflow-wrap:anywhere}
 @media(min-width:901px){.z-admin.zairo-screen app-sidebar .menu-toggle{display:none!important}}
 @media(max-width:900px){
- .z-admin.zairo-screen .layout{flex-direction:column!important}.z-admin.zairo-screen app-sidebar{flex:auto!important;width:100%!important;min-width:0!important;max-width:100%!important}
+ .z-admin.zairo-screen .layout{flex-direction:column!important}.z-admin.zairo-screen app-sidebar{flex:0 0 auto!important;width:100%!important;min-width:0!important;max-width:100%!important}
  .z-admin.zairo-screen app-sidebar .sidebar{height:auto;min-height:0;width:100%!important;position:static;padding:12px 16px;border-right:0;border-bottom:1px solid var(--z-line)}
  .z-admin.zairo-screen .content{width:100%!important;max-width:100%!important;padding:16px!important;overflow-x:clip}
  .z-admin.zairo-screen .menu{max-height:70dvh;overflow:auto}.z-admin.zairo-screen .menu-group-title{margin-top:14px}.z-admin.zairo-screen .sidebar-top{gap:12px}
@@ -72,3 +72,33 @@
 .zairo-login.zairo-ui .login-btn{background:var(--z-accent);color:var(--z-ink);box-shadow:none;min-height:48px}.zairo-login.zairo-ui .error{color:var(--z-danger);background:#341c21;border:1px solid #a0646b}.zairo-login.zairo-ui :is(.login-subtitle,.login-footer small){color:var(--z-muted)}
 .zairo-login.zairo-ui :is(a,button,input):focus-visible{outline:3px solid var(--z-accent);outline-offset:4px}
 @media(prefers-reduced-motion:reduce){.z-admin.zairo-screen *,.zairo-login *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+/* Final stage 5 review: dense summaries, complete scrollable rows, shared refresh. */
+.z-admin.zairo-screen .admin-header .refresh-button{background:var(--z-raised);color:var(--z-text);border-color:var(--z-control-line);box-shadow:none}
+.z-admin.zairo-screen .admin-header .refresh-button:hover:not(:disabled){background:#243126;border-color:var(--z-accent)}
+.z-admin.zairo-screen .admin-header .refresh-button:disabled{background:var(--z-raised);opacity:.6;cursor:wait}
+.z-admin.zairo-screen .confirmed-entries :is(th,td,td small){white-space:nowrap;overflow-wrap:normal;word-break:normal}
+.z-admin.zairo-screen .employee-dialog{height:100dvh;padding:12px;align-items:center;overflow:hidden}
+.z-admin.zairo-screen .employee-dialog .modal{display:flex;flex-direction:column;max-height:100%;overflow:hidden;padding:0;min-height:0}
+.z-admin.zairo-screen .employee-dialog .dialog-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--z-line);flex-shrink:0}
+.z-admin.zairo-screen .employee-dialog h2{margin:0;font-size:22px}
+.z-admin.zairo-screen .employee-dialog .dialog-fields{overflow:auto;min-height:0;padding:4px 20px 20px;scroll-padding-block:16px;overscroll-behavior:contain}
+.z-admin.zairo-screen .employee-dialog .modal-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;padding:12px 20px;padding-bottom:max(12px,env(safe-area-inset-bottom));background:var(--z-surface);border-top:1px solid var(--z-line);flex-shrink:0}
+@media(max-width:900px){
+ .z-admin.zairo-screen .cards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px;margin-bottom:16px}
+ .z-admin.zairo-screen .card{padding:14px;min-height:0}
+ .z-admin.zairo-screen .card :is(p,.card-value){font-size:20px;line-height:1.3;margin-top:8px;letter-spacing:0}
+ .z-admin.zairo-screen .card :is(h3,.card-label){font-size:12px}
+ .z-admin.zairo-screen .card .card-icon{display:none}
+ .z-admin.zairo-screen .cards.payroll-metadata{grid-template-columns:1fr!important;gap:0;border:1px solid var(--z-line);border-radius:12px;overflow:hidden}
+ .z-admin.zairo-screen .payroll-metadata .card{display:flex;align-items:baseline;justify-content:space-between;gap:16px;border:0;border-bottom:1px solid var(--z-line);border-radius:0;padding:10px 14px;box-shadow:none}
+ .z-admin.zairo-screen .payroll-metadata .card:last-child{border-bottom:0}
+ .z-admin.zairo-screen .payroll-metadata .card p{font-size:14px;text-align:right;margin:0;letter-spacing:0}
+ .z-admin.zairo-screen .confirmed-entries :is(th,td){padding:10px 12px!important}
+ .z-admin.zairo-screen .employee-dialog{padding:8px}
+ .z-admin.zairo-screen .employee-dialog .dialog-heading{padding:12px 16px}
+ .z-admin.zairo-screen .employee-dialog .dialog-fields{padding:0 16px 16px}
+ .z-admin.zairo-screen .employee-dialog .form-grid{gap:12px}
+}
+
+@media(max-width:900px){.z-admin.zairo-screen .card .money-amount{font-size:clamp(16px,4.1vw,20px);white-space:nowrap;overflow-wrap:normal;overflow-x:auto}}

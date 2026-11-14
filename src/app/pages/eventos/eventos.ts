@@ -1,3 +1,4 @@
+import { formatCRC } from '../../shared/admin/crc-money';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -242,9 +243,7 @@ export class Eventos implements OnInit {
   }
 
   formatearMoneda(valor: number): string {
-    return `CRC ${Number(valor || 0).toLocaleString('es-CR', {
-      minimumFractionDigits: 2
-    })}`;
+    return formatCRC(valor);
   }
 
   // ===========================================================

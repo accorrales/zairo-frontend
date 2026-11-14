@@ -48,7 +48,7 @@
               <td>{{ empleado.telefono }}</td>
               <td>{{ empleado.puesto }}</td>
               <td>{{ empleado.departamento }}</td>
-              <td>₡{{ empleado.salario_base }}</td>
+              <td>{{ empleado.salario_base | crcMoney }}</td>
               <td>
                 <span
                   class="badge"
@@ -78,9 +78,11 @@
       </div>
     </div>
 
-    <div class="modal-backdrop" *ngIf="mostrarModal">
-        <div class="modal">
-            <h2>Nuevo Empleado</h2>
+    <div class="modal-backdrop employee-dialog" *ngIf="mostrarModal" zairoDialog (dialogClose)="cerrarModal()">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="employee-dialog-title">
+            <div class="dialog-heading"><h2 id="employee-dialog-title">{{ modoEdicion ? 'Editar empleado' : 'Nuevo empleado' }}</h2><button type="button" aria-label="Cerrar formulario de empleado" (click)="cerrarModal()">Cerrar</button></div>
+            <div class="dialog-fields">
+            <p class="z-status z-status-error" role="alert" tabindex="-1" *ngIf="modalError">{{ modalError }}</p>
 
             <div class="form-grid">
             <label class="z-field"><span>Cédula</span><input type="text" placeholder="Cédula" [(ngModel)]="nuevoEmpleado.cedula" /></label>
@@ -105,6 +107,7 @@
             <label class="z-field"><span>Fecha de ingreso</span><input type="date" [(ngModel)]="nuevoEmpleado.fecha_ingreso" /></label>
             </div>
 
+            </div>
             <div class="modal-actions">
             <button class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
             <button class="btn-primary" (click)="guardarEmpleado()">

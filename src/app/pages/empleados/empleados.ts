@@ -1,6 +1,8 @@
+import { DialogAccessibility } from '../../shared/admin/dialog-accessibility';
+import { CrcMoneyPipe } from '../../shared/admin/crc-money';
 import {AdminFeedback} from '../../shared/admin/admin-feedback';
 import {PageLoadState} from '../../shared/admin/page-load-state';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ElementRef, Injector, afterNextRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Sidebar } from '../../layout/sidebar/sidebar';
 import { Header } from '../../layout/header/header';
@@ -14,13 +16,15 @@ import { Departamento } from '../../core/models/departamento.model';
   selector: 'app-empleados',
   host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [AdminFeedback, CommonModule, FormsModule, Sidebar, Header],
+  imports: [DialogAccessibility, CrcMoneyPipe, AdminFeedback, CommonModule, FormsModule, Sidebar, Header],
   templateUrl: './empleados.html',
   styleUrl: './empleados.css'
   
 })
 export class Empleados implements OnInit {
   pageState=new PageLoadState();
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private injector = inject(Injector);
   private empleadosService = inject(EmpleadosService);
   private departamentosService = inject(DepartamentosService);
 
@@ -63,6 +67,7 @@ export class Empleados implements OnInit {
       }
     });
   }
+  modalError = '';
   mostrarModal = false;
 
  nuevoEmpleado: any = {
@@ -79,6 +84,7 @@ export class Empleados implements OnInit {
 };
 
   abrirModal() {
+    this.modalError = '';
     this.mostrarModal = true;
   }
 
@@ -103,6 +109,11 @@ export class Empleados implements OnInit {
       id_departamento: null
     };
   }
+  private showModalError(message: string): void {
+    this.modalError = message;
+    afterNextRender(() => this.host.nativeElement.querySelector<HTMLElement>('.employee-dialog [role=alert]')?.focus(), { injector: this.injector });
+  }
+
   guardarEmpleado() {
     const payload = {
       cedula: this.nuevoEmpleado.cedula?.trim(),
@@ -126,7 +137,7 @@ export class Empleados implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this.pageState.notify('Error al actualizar empleado');
+          this.showModalError('Error al actualizar empleado. Revisá los campos e intentá nuevamente.');
         }
       });
     } else {
@@ -137,7 +148,7 @@ export class Empleados implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this.pageState.notify('Error al crear empleado');
+          this.showModalError('Error al crear empleado. Revisá los campos e intentá nuevamente.');
         }
       });
     }
@@ -160,6 +171,7 @@ export class Empleados implements OnInit {
       id_departamento: emp.id_departamento
     };
 
+    this.modalError = '';
     this.mostrarModal = true;
   }
 

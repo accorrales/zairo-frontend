@@ -1,3 +1,4 @@
+import { formatCRC, CrcMoneyPipe } from '../../shared/admin/crc-money';
 import {AdminFeedback} from '../../shared/admin/admin-feedback';
 import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
@@ -15,7 +16,7 @@ import autoTable from 'jspdf-autotable';
   selector: 'app-planilla-detalle',
   host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [AdminFeedback, CommonModule, Sidebar, Header, RouterLink],
+  imports: [CrcMoneyPipe, AdminFeedback, CommonModule, Sidebar, Header, RouterLink],
   templateUrl: './planilla-detalle.html',
   styleUrl: './planilla-detalle.css'
 })
@@ -72,7 +73,7 @@ export class PlanillaDetalle implements OnInit {
   }
 
   formatearMoneda(valor: number): string {
-    return `CRC ${Number(valor || 0).toLocaleString('es-CR', { minimumFractionDigits: 2 })}`;
+    return formatCRC(valor);
   }
 
   exportarPDF(): void {
@@ -93,9 +94,9 @@ export class PlanillaDetalle implements OnInit {
     doc.text(`Fecha inicio: ${this.formatearFecha(this.planilla.fecha_inicio)}`, 14, 46);
     doc.text(`Fecha fin: ${this.formatearFecha(this.planilla.fecha_fin)}`, 14, 53);
 
-    doc.text(`Total bruto: CRC ${this.getTotalBruto().toFixed(2)}`, 120, 25);
-    doc.text(`Total deducciones: CRC ${this.getTotalDeducciones().toFixed(2)}`, 120, 32);
-    doc.text(`Total neto: CRC ${this.getTotalNeto().toFixed(2)}`, 120, 39);
+    doc.text(`Total bruto: ${formatCRC(this.getTotalBruto())}`, 120, 25);
+    doc.text(`Total deducciones: ${formatCRC(this.getTotalDeducciones())}`, 120, 32);
+    doc.text(`Total neto: ${formatCRC(this.getTotalNeto())}`, 120, 39);
 
    const filas = this.detalle.map((d) => [
       d.cedula,

@@ -27,17 +27,17 @@
     <div class="cards">
       <div class="card">
         <h3>Total bruto</h3>
-        <p>{{ getTotalBruto() | number:'1.2-2' }}</p>
+        <p class="money-amount">{{ getTotalBruto() | crcMoney }}</p>
       </div>
 
       <div class="card">
         <h3>Total deducciones</h3>
-        <p>{{ getTotalDeducciones() | number:'1.2-2' }}</p>
+        <p class="money-amount">{{ getTotalDeducciones() | crcMoney }}</p>
       </div>
 
       <div class="card">
         <h3>Total neto</h3>
-        <p>{{ getTotalNeto() | number:'1.2-2' }}</p>
+        <p class="money-amount">{{ getTotalNeto() | crcMoney }}</p>
       </div>
     </div>
 
@@ -78,9 +78,9 @@
                 </span>
               </td>
 
-              <td>{{ p.total_bruto | number:'1.2-2' }}</td>
-              <td>{{ p.total_deducciones | number:'1.2-2' }}</td>
-              <td>{{ p.total_neto | number:'1.2-2' }}</td>
+              <td>{{ p.total_bruto | crcMoney }}</td>
+              <td>{{ p.total_deducciones | crcMoney }}</td>
+              <td>{{ p.total_neto | crcMoney }}</td>
 
               <td>
                 <a

@@ -1,3 +1,4 @@
+import { formatCRC } from '../../shared/admin/crc-money';
 import {Sidebar} from '../../layout/sidebar/sidebar';
 import {Header} from '../../layout/header/header';
 import {AdminFeedback} from '../../shared/admin/admin-feedback';
@@ -181,7 +182,7 @@ export class WhatsappComprobantes implements OnInit {
   }
 
   money(v: number | null): string {
-    return `₡${Number(v || 0).toLocaleString('es-CR')}`;
+    return formatCRC(v);
   }
 
   fecha(f: string): string {

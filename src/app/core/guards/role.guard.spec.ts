@@ -25,8 +25,9 @@ describe('role navigation', () => {
   });
   it('does not loop for viewers or unknown roles', () => {
     role = 'visor';
-    expect(TestBed.inject(Router).serializeUrl(check('dashboard') as UrlTree)).toBe('/reportes');
-    expect(check('reportes')).toBe(true);
+    expect(TestBed.inject(Router).serializeUrl(check('dashboard') as UrlTree)).toBe('/mi-acceso');
+    expect(check('mi-acceso')).toBe(true);
+    expect(TestBed.inject(Router).serializeUrl(check('reportes') as UrlTree)).toBe('/mi-acceso');
     role = 'unknown';
     expect(TestBed.inject(Router).serializeUrl(check('dashboard') as UrlTree)).toBe('/home');
   });

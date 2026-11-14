@@ -10,6 +10,13 @@ export const routes: Routes = [
   },
 
   {
+    path: 'mi-acceso',
+    loadComponent: () => import('./pages/access-home/access-home').then(m => m.AccessHome),
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['visor'] }
+  },
+
+  {
     path: 'dashboard',
     loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
     canActivate: [authGuard, roleGuard],
@@ -56,7 +63,7 @@ export const routes: Routes = [
     path: 'reportes',
     loadComponent: () => import('./pages/reportes/reportes').then((m) => m.Reportes),
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'rrhh', 'contabilidad', 'visor'] }
+    data: { roles: ['admin', 'rrhh', 'contabilidad'] }
   },
 
   {

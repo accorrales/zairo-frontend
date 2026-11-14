@@ -1,3 +1,4 @@
+import { formatCRC } from '../../shared/admin/crc-money';
 import {AdminFeedback} from '../../shared/admin/admin-feedback';
 import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
@@ -361,8 +362,6 @@ export class CodigosDescuento implements OnInit {
   }
 
   formatearMoneda(valor: number): string {
-    return `CRC ${Number(valor || 0).toLocaleString('es-CR', {
-      minimumFractionDigits: 2
-    })}`;
+    return formatCRC(valor);
   }
 }

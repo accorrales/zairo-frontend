@@ -1,3 +1,4 @@
+import { formatCRC } from '../../shared/admin/crc-money';
 import {Sidebar} from '../../layout/sidebar/sidebar';
 import {Header} from '../../layout/header/header';
 import {AdminFeedback} from '../../shared/admin/admin-feedback';
@@ -21,7 +22,7 @@ export class AdminCompras implements OnInit {
 
   compras: any[] = [];
   compraSeleccionada: any = null;
-  cargando = true;
+  cargando = false;
   mensaje = '';
 
   ngOnInit(): void {
@@ -29,6 +30,7 @@ export class AdminCompras implements OnInit {
   }
 
   cargarPendientes(): void {
+    if (this.cargando) return;
     if(this.mensaje==='Error cargando compras pendientes.')this.mensaje='';
     this.cargando = true;
 
@@ -106,7 +108,7 @@ export class AdminCompras implements OnInit {
   }
 
   formatearMoneda(valor: number): string {
-    return `CRC ${Number(valor || 0).toLocaleString('es-CR')}`;
+    return formatCRC(valor);
   }
 
   formatearFecha(fecha: string): string {

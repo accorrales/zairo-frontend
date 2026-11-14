@@ -1,3 +1,4 @@
+import { CrcMoneyPipe } from '../../shared/admin/crc-money';
 import {AdminFeedback} from '../../shared/admin/admin-feedback';
 import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
@@ -15,7 +16,7 @@ import { PlanillasService } from '../../core/services/planillas.service';
   selector: 'app-reportes',
   host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [AdminFeedback, CommonModule, FormsModule, RouterLink, Sidebar, Header],
+  imports: [CrcMoneyPipe, AdminFeedback, CommonModule, FormsModule, RouterLink, Sidebar, Header],
   templateUrl: './reportes.html',
   styleUrl: './reportes.css'
 })

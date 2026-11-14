@@ -127,7 +127,7 @@
         </div>
 
         <p class="table-hint">Deslizá la tabla para consultar todas las columnas y acciones.</p><div class="table-wrapper" tabindex="0" role="region" aria-label="Tabla de Ventas">
-          <table *ngIf="entradas.length > 0; else sinEntradas">
+          <table class="confirmed-entries" *ngIf="entradas.length > 0; else sinEntradas">
             <thead>
               <tr>
                 <th scope="col">Persona</th>

@@ -41,7 +41,7 @@
         <div class="card">
           <span class="card-label">04</span>
           <h3>Promedio salarial</h3>
-          <p>₡{{ resumen.promedioSalario | number:'1.0-2' }}</p>
+          <p class="money-amount">{{ resumen.promedioSalario | crcMoney }}</p>
         </div>
       </div>
 

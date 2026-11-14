@@ -1,3 +1,4 @@
+import { CrcMoneyPipe } from '../../shared/admin/crc-money';
 import {AdminFeedback} from '../../shared/admin/admin-feedback';
 import {PageLoadState} from '../../shared/admin/page-load-state';
 import { Component, OnInit, inject } from '@angular/core';
@@ -12,7 +13,7 @@ import { DashboardService } from '../../core/services/dashboard.service';
   selector: 'app-dashboard',
   host: { class: 'zairo-screen z-admin zairo-ui' },
   standalone: true,
-  imports: [RouterLink, AdminFeedback, CommonModule, Sidebar, Header],
+  imports: [CrcMoneyPipe, RouterLink, AdminFeedback, CommonModule, Sidebar, Header],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })

@@ -10,8 +10,8 @@
       <p>Revisá los pagos recibidos por WhatsApp y confirmá las entradas.</p>
     </div>
 
-    <button (click)="cargarPendientes()">
-      Refrescar
+    <button class="z-button refresh-button" type="button" [disabled]="cargando" [attr.aria-busy]="cargando" (click)="cargarPendientes()">
+      {{ cargando ? 'Actualizando…' : 'Refrescar' }}
     </button>
   </div>
 
