@@ -28,8 +28,8 @@
 .z-admin.zairo-screen :is(small,.subtitulo,.subtitle,.stat-label){color:var(--z-muted);line-height:1.6}
 .z-admin.zairo-screen :is(button,a[class^=btn],a[class*=' btn-']){display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:11px 15px;border:1px solid var(--z-control-line);border-radius:9px;background:var(--z-raised);color:var(--z-text);font:600 14px/1.35 var(--z-font);text-decoration:none;cursor:pointer;box-shadow:none;transform:none}
 .z-admin.zairo-screen :is(button,a[class^=btn]):hover{border-color:var(--z-accent);transform:none;background:#243126;box-shadow:none}
-.z-admin.zairo-screen :is(.btn-primary,.btn-confirm,.btn-confirmar){background:var(--z-accent);border-color:var(--z-accent);color:var(--z-ink)}
-.z-admin.zairo-screen :is(.btn-primary,.btn-confirm,.btn-confirmar):hover{background:#dbff9a;color:var(--z-ink)}
+.z-admin.zairo-screen button:is(.btn-primary,.btn-confirm,.btn-confirmar){background:var(--z-accent);border-color:var(--z-accent);color:var(--z-ink)}
+.z-admin.zairo-screen button:is(.btn-primary,.btn-confirm,.btn-confirmar):hover{background:#dbff9a;color:var(--z-ink)}
 .z-admin.zairo-screen :is(.btn-delete,.btn-danger,.btn-rechazar){background:#341c21;color:var(--z-danger);border-color:#a0646b}
 .z-admin.zairo-screen button:disabled{opacity:.5;cursor:not-allowed;transform:none}.z-admin.zairo-screen :is(a,button,input,select,textarea,[tabindex]):focus-visible{outline:3px solid var(--z-accent);outline-offset:4px}
 .z-admin.zairo-screen .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}.z-admin.zairo-screen .acciones-form{grid-column:1/-1}
