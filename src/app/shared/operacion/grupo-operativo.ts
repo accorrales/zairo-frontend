@@ -1,44 +1,41 @@
-import { ChangeDetectorRef } from '@angular/core';
-import { Component, Input, OnChanges, inject, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, OnDestroy, inject, ChangeDetectorRef, Injector, ViewChild, ElementRef, afterNextRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { OperacionService } from '../../core/services/operacion.service';
+import { OperacionService, OperationResult, PendingOperation, uncertainMessage } from '../../core/services/operacion.service';
 import { AuthService } from '../../core/services/auth.service';
-@Component({ selector: 'app-grupo-operativo', standalone: true, imports: [CommonModule, FormsModule], template: `
-<section class="panel group-panel" *ngIf="grupo">
- <div class="panel-top"><div><span class="zone-tag" [class.vip]="grupo.zona==='VIP'">{{grupo.zona==='VIP'?'VIP':'GENERAL'}}</span><h2>{{grupo.promocion}}</h2></div><button type="button" [disabled]="busy" (click)="refresh()">Actualizar grupo</button></div>
- <p>Paquete <strong>#{{grupo.id_paquete}}</strong> · {{grupo.numero}} de la compra #{{grupo.id_compra}}</p>
- <p class="group-count"><strong>{{grupo.ingresados}} / {{grupo.integrantes}}</strong> integrantes ingresados</p>
- <p><strong>Mesa: {{grupo.mesa || (grupo.requiere_revision ? 'Requiere revisión' : grupo.mesa_tipo ? 'Pendiente de asignación':'No incluida')}}</strong></p>
- <p *ngIf="grupo.mesa">Reserva registrada · ocupación física no verificada</p>
- <p *ngIf="grupo.beneficios_descripcion">Incluido al comprar: {{grupo.beneficios_descripcion}}</p>
- <p class="z-status" role="status" *ngIf="notice">{{notice}}</p>
- <div class="z-status z-status-error" role="alert" *ngIf="error">{{error}}</div>
- <div class="z-status" *ngIf="pending"><strong>Resultado sin confirmar</strong><button [disabled]="busy" (click)="resolve(false)">Recuperar resultado</button><button [disabled]="busy" (click)="resolve(true)">Reintentar misma operación</button></div>
- <div class="z-status" *ngIf="grupo.requiere_revision">Beneficios descriptivos sin cantidades verificadas. Requiere revisión; no se inventan entregas ni derechos de mesa.</div><h3>Beneficios compartidos</h3><p>El escaneo no entrega beneficios. Confirmá cada entrega física explícitamente.</p>
- <p *ngIf="!grupo.beneficios.length && !grupo.requiere_revision">Sin beneficios compartidos incluidos.</p>
- <article class="benefit-row" *ngFor="let b of grupo.beneficios">
-   <strong>{{b.nombre}}</strong><p>{{b.entregada}} entregados · {{b.pendiente}} pendientes de {{b.cantidad}}</p>
-   <label class="z-field">Cantidad a entregar<input type="number" min="1" [max]="b.pendiente" step="1" [(ngModel)]="amounts[b.id_beneficio]" [disabled]="busy || pending || !b.pendiente"></label>
-   <button type="button" [disabled]="busy || pending || !b.pendiente" (click)="deliver(b,false)">Confirmar entrega de {{b.nombre}}</button>
-   <div *ngIf="admin && b.entregada>0"><label class="z-field">Cantidad a corregir<input type="number" min="1" [max]="b.entregada" [(ngModel)]="corrections[b.id_beneficio]"></label><label class="z-field">Motivo de corrección<input maxlength="500" [(ngModel)]="reasons[b.id_beneficio]"></label><button [disabled]="busy || pending" (click)="deliver(b,true)">Registrar corrección</button></div>
- </article>
- <section *ngIf="admin && grupo.mesa_tipo"><h3>Asignar reserva · tipo {{grupo.mesa_tipo}}</h3><label class="z-field">Mesa<select aria-label="Mesa" [(ngModel)]="mesa"><option [ngValue]="null">Sin asignación</option><option *ngFor="let t of tables" [ngValue]="t.id_mesa">{{t.identificador}} · {{t.zona}} · {{t.tipo}} · {{t.capacidad}} personas</option></select></label><label class="z-field">Motivo de asignación o cambio<input maxlength="500" [(ngModel)]="tableReason"></label><button [disabled]="busy || pending" (click)="assign()">Confirmar reserva</button></section>
- <details><summary>Integrantes del paquete</summary><ul><li *ngFor="let m of grupo.miembros">{{m.nombre_completo}} · {{m.fecha_ingreso?'Ingresó':'Sin ingreso'}} · {{m.estado}}</li></ul></details>
- <details><summary>Historial de reservas y entregas</summary><ul><li *ngFor="let h of grupo.historial_mesas">{{h.fecha | date:'short'}} · {{h.responsable}} · {{h.anterior || 'Sin mesa'}} → {{h.nueva || 'Sin mesa'}} · {{h.motivo}}</li><li *ngFor="let h of grupo.entregas">{{h.fecha | date:'short'}} · {{h.responsable}} · Beneficio #{{h.id_beneficio}} · {{h.cantidad}} · {{h.motivo}}</li></ul></details>
-</section>` })
-export class GrupoOperativo implements OnChanges {
-    @Output()
-    grupoChange = new EventEmitter<any>();
+import { PendingOperations, ResolvedOperation } from './pending-operations';
+import { RequestEpoch, tableLabel, memberStatus, acknowledgeVisible } from './operation-context';
+interface Confirmation {
+    label: string;
+    path: string;
+    body: any;
+}
+@Component({ selector: 'app-grupo-operativo', standalone: true, imports: [CommonModule, FormsModule, PendingOperations], templateUrl: './grupo-operativo.html' })
+export class GrupoOperativo implements OnChanges, OnDestroy {
+    @ViewChild('pendingFeedback', { read: ElementRef })
+    pendingFeedback?: ElementRef<HTMLElement>;
+    @ViewChild('confirmArea')
+    confirmArea?: ElementRef<HTMLElement>;
     @Input()
     grupo: any;
     @Input()
     tables: any[] = [];
     @Input()
     event!: number;
-    private cdr = inject(ChangeDetectorRef);
-    private api = inject(OperacionService);
+    @Input()
+    admissionConfirmed = false;
+    @Output()
+    grupoChange = new EventEmitter<any>();
+    @Output()
+    busyChange = new EventEmitter<boolean>();
+    api = inject(OperacionService);
     private auth = inject(AuthService);
+    private cdr = inject(ChangeDetectorRef);
+    private injector = inject(Injector);
+    private previousFocus: HTMLElement | null = null;
+    private alive = true;
+    private reads = new RequestEpoch();
+    private identity = '';
     amounts: Record<number, number> = {};
     corrections: Record<number, number> = {};
     reasons: Record<number, string> = {};
@@ -47,57 +44,140 @@ export class GrupoOperativo implements OnChanges {
     notice = '';
     error = '';
     busy = false;
-    get admin() { return this.auth.getRole() === 'admin'; }
+    fresh = true;
+    confirmation: Confirmation | null = null;
+    tableLabel = tableLabel;
+    memberStatus = memberStatus;
+    get admin() { return this.auth.getRole()?.trim().toLowerCase() === 'admin'; }
     get scope() { return 'grupo-' + this.grupo?.id_paquete; }
     get pending() { return !!this.api.pending(this.scope); }
-    ngOnChanges() { this.mesa = this.grupo?.id_mesa || null; }
-    async refresh() { this.busy = true; this.error = ''; try {
-        this.grupo = await this.api.get('/paquetes/' + this.grupo.id_paquete + '?id_evento=' + this.event);
-        this.grupoChange.emit(this.grupo);
+    get blocked() { return this.busy || this.api.hasPending() || !this.fresh; }
+    ngOnChanges() { const key = this.event + ':' + this.grupo?.id_paquete; if (key !== this.identity) {
+        this.reads.next();
+        this.identity = key;
+        this.amounts = {};
+        this.corrections = {};
+        this.reasons = {};
+        this.tableReason = '';
+        this.notice = '';
+        this.error = '';
+        this.fresh = true;
+        this.confirmation = null;
+    } this.mesa = this.grupo?.id_mesa ?? null; }
+    ngOnDestroy() { this.alive = false; this.reads.next(); }
+    private setBusy(value: boolean) { this.busy = value; this.busyChange.emit(value); this.cdr.markForCheck(); }
+    private current(key: string, token: number) { return this.alive && key === this.identity && this.reads.current(token); }
+    async refresh() { if (this.busy)
+        return; this.setBusy(true); try {
+        await this.readFresh();
+    }
+    finally {
+        if (this.alive)
+            this.setBusy(false);
+    } }
+    private async readFresh() { const key = this.identity, token = this.reads.next(), id = this.grupo.id_paquete, event = this.event; try {
+        const group = await this.api.get('/paquetes/' + id + '?id_evento=' + event);
+        if (!this.current(key, token))
+            return;
+        this.grupo = group;
+        this.mesa = group.id_mesa ?? null;
+        this.fresh = true;
+        this.grupoChange.emit(group);
     }
     catch {
-        this.error = 'No se pudo consultar el grupo. Reintentá; no se registró otro ingreso.';
+        if (this.current(key, token)) {
+            this.fresh = false;
+            this.error = 'No se pudieron actualizar los saldos. Actualizá el grupo antes de registrar otra operación.';
+        }
+    } }
+    prepareDelivery(b: any, correction = false) {
+        if (this.blocked || this.confirmation)
+            return;
+        this.error = '';
+        const quantity = Number(correction ? this.corrections[b.id_beneficio] : this.amounts[b.id_beneficio]);
+        const limit = correction ? b.entregada : b.pendiente;
+        if (!Number.isSafeInteger(quantity) || quantity < 1 || quantity > limit) {
+            this.error = 'Ingresá una cantidad entera entre 1 y ' + limit + '.';
+            return;
+        }
+        const motive = (this.reasons[b.id_beneficio] || '').trim();
+        if (correction && (!this.admin || motive.length < 3)) {
+            this.error = 'La corrección requiere permiso de administración y un motivo de al menos tres caracteres.';
+            return;
+        }
+        this.confirmation = { label: correction ? `Corregir ${quantity} de ${b.nombre}` : `Registrar entrega: ${quantity} × ${b.nombre}`, path: '/paquetes/' + this.grupo.id_paquete + '/entrega', body: { id_evento: this.event, id_beneficio: b.id_beneficio, cantidad: correction ? -quantity : quantity, motivo: motive } };
+        this.focusConfirmation();
+    }
+    prepareAssignment() {
+        if (this.blocked || this.confirmation)
+            return;
+        if (this.tableReason.trim().length < 3) {
+            this.error = 'Escribí el motivo del cambio de reserva.';
+            return;
+        }
+        const table = this.tables.find(t => t.id_mesa === this.mesa);
+        this.confirmation = { label: this.mesa ? `Reservar mesa ${table?.identificador || ''}` : 'Quitar la reserva de mesa', path: '/paquetes/' + this.grupo.id_paquete + '/mesa', body: { id_evento: this.event, id_mesa: this.mesa, motivo: this.tableReason.trim() } };
+        this.focusConfirmation();
+    }
+    private focusConfirmation() { this.previousFocus = document.activeElement as HTMLElement; afterNextRender(() => { this.confirmArea?.nativeElement.focus(); this.confirmArea?.nativeElement.scrollIntoView({ block: 'nearest' }); }, { injector: this.injector }); }
+    cancel() { this.confirmation = null; afterNextRender(() => { if (this.previousFocus?.isConnected)
+        this.previousFocus.focus(); }, { injector: this.injector }); }
+    async confirm() {
+        const action = this.confirmation;
+        if (!action || this.blocked)
+            return;
+        const key = this.identity, scope = this.scope;
+        this.setBusy(true);
+        this.error = '';
+        this.notice = '';
+        this.confirmation = null;
+        try {
+            const result = await this.api.perform(scope, action.path, action.body);
+            if (!this.alive || key !== this.identity)
+                return;
+            await this.consume(result, { path: action.path, body: action.body });
+            if (this.alive && key === this.identity)
+                acknowledgeVisible(this.api, scope, result, this.injector, () => this.alive && key === this.identity);
+        }
+        catch (e: any) {
+            if (this.alive && key === this.identity) {
+                this.error = this.pending ? uncertainMessage(this.api.pending(scope)!, this.admissionConfirmed) : e.message;
+                if (this.pending) {
+                    this.fresh = false;
+                    afterNextRender(() => { this.pendingFeedback?.nativeElement.focus(); this.pendingFeedback?.nativeElement.scrollIntoView({ block: 'start' }); }, { injector: this.injector });
+                }
+            }
+        }
+        finally {
+            if (this.alive && key === this.identity)
+                this.setBusy(false);
+        }
+    }
+    async recovered(e: ResolvedOperation) { if (this.busy)
+        return; const key = this.identity; this.setBusy(true); try {
+        await this.consume(e.result, e.pending);
+        if (this.alive && key === this.identity)
+            acknowledgeVisible(this.api, e.pending.scope, e.result, this.injector, () => this.alive && key === this.identity);
     }
     finally {
-        this.busy = false;
-        this.cdr.markForCheck();
+        if (this.alive && key === this.identity)
+            this.setBusy(false);
     } }
-    async act(path: string, body: any) { if (this.busy || this.pending)
-        return; this.busy = true; this.error = ''; try {
-        await this.handle(await this.api.perform(this.scope, path, body));
+    private async consume(result: OperationResult, op: PendingOperation) {
+        if (result.status === 200) {
+            this.notice = result.body.message;
+            this.error = '';
+            if (op.path.endsWith('/entrega')) {
+                delete this.amounts[op.body.id_beneficio];
+                delete this.corrections[op.body.id_beneficio];
+                delete this.reasons[op.body.id_beneficio];
+            }
+            else
+                this.tableReason = '';
+        }
+        else
+            this.error = result.body?.message || 'La operación fue rechazada.';
+        this.fresh = false;
+        await this.readFresh();
     }
-    catch (e: any) {
-        this.error = e.message;
-    }
-    finally {
-        this.busy = false;
-        this.cdr.markForCheck();
-    } }
-    private async handle(r: any) { if (r.status !== 200) {
-        this.error = r.body?.message || 'Operación rechazada';
-        return;
-    } this.notice = r.body.message; await this.refresh(); }
-    deliver(b: any, correction: boolean) { const quantity = Number(correction ? this.corrections[b.id_beneficio] : this.amounts[b.id_beneficio]); const max = correction ? b.entregada : b.pendiente; if (!Number.isInteger(quantity) || quantity < 1 || quantity > max) {
-        this.error = 'Revisá la cantidad disponible';
-        return;
-    } const reason = this.reasons[b.id_beneficio] || ''; if (correction && reason.trim().length < 3) {
-        this.error = 'Escribí un motivo para la corrección';
-        return;
-    } if (!window.confirm(correction ? '¿Registrar esta corrección con historial?' : `¿Confirmás la entrega física de ${quantity} × ${b.nombre}?`))
-        return; this.act('/paquetes/' + this.grupo.id_paquete + '/entrega', { id_evento: this.event, id_beneficio: b.id_beneficio, cantidad: correction ? -quantity : quantity, motivo: reason }); }
-    assign() { if (this.tableReason.trim().length < 3) {
-        this.error = 'Escribí un motivo';
-        return;
-    } this.act('/paquetes/' + this.grupo.id_paquete + '/mesa', { id_evento: this.event, id_mesa: this.mesa, motivo: this.tableReason }); }
-    async resolve(retry: boolean) { if (this.busy)
-        return; this.busy = true; this.error = ''; try {
-        await this.handle(await (retry ? this.api.retry(this.scope) : this.api.recover(this.scope)));
-    }
-    catch (e: any) {
-        this.error = e.message;
-    }
-    finally {
-        this.busy = false;
-        this.cdr.markForCheck();
-    } }
 }

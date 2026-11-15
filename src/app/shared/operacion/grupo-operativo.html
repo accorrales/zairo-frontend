@@ -1,0 +1,119 @@
+<section *ngIf="grupo" class="group-detail" [attr.aria-busy]="busy">
+<header class="group-detail-summary">
+<span class="zone-tag" [class.vip]="grupo.zona==='VIP'">{{grupo.zona==='VIP'?'VIP':'GENERAL'}}</span>
+<h3>{{grupo.promocion}}</h3>
+<p>Paquete #{{grupo.id_paquete}} · {{grupo.numero}} de la compra #{{grupo.id_compra}}</p>
+<p>
+<strong>{{grupo.ingresados}} de {{grupo.integrantes}}</strong> integrantes ingresados</p>
+<p>
+<strong>{{tableLabel(grupo)}}</strong>
+</p>
+<p *ngIf="grupo.mesa">Reserva registrada. Ocupación física no verificada.</p>
+<button type="button" [disabled]="busy || confirmation!==null" (click)="refresh()">Actualizar grupo</button>
+</header>
+<div class="operation-feedback" aria-live="polite">
+<p *ngIf="busy">Procesando con el servidor…</p>
+<p *ngIf="notice" role="status">{{notice}}</p>
+<p *ngIf="error && !pending" role="alert" class="operation-error">{{error}}</p>
+</div>
+<app-pending-operations #pendingFeedback tabindex="-1" [scope]="scope" [admissionGroup]="admissionConfirmed?grupo.id_paquete:null" (resolved)="recovered($event)">
+</app-pending-operations>
+<p class="pending-operation" *ngIf="api.hasPending() && !pending">Hay otra operación por recuperar. Cerrá este detalle y revisá «Pendientes» antes de registrar otra acción.</p>
+<p class="pending-operation" *ngIf="grupo.requiere_revision">Requiere revisión: no se deducen beneficios ni reservas a partir del texto antiguo.</p>
+<section *ngIf="grupo.beneficios.length || grupo.requiere_revision" aria-labelledby="benefits-title">
+<h3 id="benefits-title">Beneficios compartidos</h3>
+<p *ngIf="grupo.beneficios.length">Consultar o escanear no entrega beneficios. Cada entrega necesita confirmación del servidor.</p>
+<p *ngIf="!grupo.beneficios.length && !grupo.requiere_revision">Sin beneficios compartidos.</p>
+<article class="benefit-card" *ngFor="let b of grupo.beneficios">
+<h4>{{b.nombre}}</h4>
+<dl class="benefit-balances" *ngIf="fresh">
+<div>
+<dt>Incluidos</dt>
+<dd>{{b.cantidad}}</dd>
+</div>
+<div>
+<dt>Entregados</dt>
+<dd>{{b.entregada}}</dd>
+</div>
+<div>
+<dt>Pendientes</dt>
+<dd>{{b.pendiente}}</dd>
+</div>
+</dl>
+<p *ngIf="!fresh">Saldo por actualizar. No registres otra entrega hasta consultar el resultado actual.</p>
+<p class="delivery-complete" *ngIf="fresh && b.pendiente===0">Entrega completa: {{b.entregada}} de {{b.cantidad}}</p>
+<div class="benefit-delivery-form" *ngIf="fresh && b.pendiente>0">
+<label class="z-field">Cantidad a entregar · {{b.nombre}}<input type="number" min="1" [max]="b.pendiente" step="1" inputmode="numeric" [(ngModel)]="amounts[b.id_beneficio]" [disabled]="blocked || confirmation!==null">
+</label>
+<button type="button" [disabled]="blocked || confirmation!==null" (click)="prepareDelivery(b)">Revisar entrega de {{b.nombre}}</button>
+</div>
+<details *ngIf="admin && fresh && b.entregada>0">
+<summary>Corregir registro de {{b.nombre}}</summary>
+<label class="z-field">Cantidad a corregir · {{b.nombre}}<input type="number" min="1" [max]="b.entregada" step="1" inputmode="numeric" [(ngModel)]="corrections[b.id_beneficio]" [disabled]="blocked || confirmation!==null">
+</label>
+<label class="z-field">Motivo de corrección · {{b.nombre}}<input maxlength="500" [(ngModel)]="reasons[b.id_beneficio]" [disabled]="blocked || confirmation!==null">
+</label>
+<button type="button" [disabled]="blocked || confirmation!==null" (click)="prepareDelivery(b,true)">Revisar corrección de {{b.nombre}}</button>
+</details>
+<ng-container *ngIf="confirmation?.body.id_beneficio===b.id_beneficio" [ngTemplateOutlet]="confirmBlock">
+</ng-container>
+</article>
+</section>
+<details *ngIf="admin && grupo.mesa_tipo">
+<summary>Cambiar o quitar reserva de mesa</summary>
+<p>Tipo comprado: {{grupo.mesa_tipo}}. La compatibilidad y exclusividad se comprueban en el servidor.</p>
+<label class="z-field">Mesa<select aria-label="Mesa" [(ngModel)]="mesa" [disabled]="blocked || confirmation!==null">
+<option [ngValue]="null">Sin reserva</option>
+<option *ngFor="let t of tables" [ngValue]="t.id_mesa">{{t.identificador}} · {{t.zona}} · {{t.tipo}} · {{t.capacidad}} personas</option>
+</select>
+</label>
+<label class="z-field">Motivo del cambio de reserva<input maxlength="500" [(ngModel)]="tableReason" [disabled]="blocked || confirmation!==null">
+</label>
+<button type="button" [disabled]="blocked || confirmation!==null" (click)="prepareAssignment()">Revisar cambio de mesa</button>
+<ng-container *ngIf="confirmation && !confirmation.body.id_beneficio" [ngTemplateOutlet]="confirmBlock">
+</ng-container>
+</details>
+<details>
+<summary>Integrantes del paquete</summary>
+<ul class="member-list">
+<li *ngFor="let m of grupo.miembros">
+<strong>{{m.nombre_completo}}</strong>
+<span>{{memberStatus(m)}}</span>
+<time *ngIf="m.fecha_ingreso">{{m.fecha_ingreso | date:'dd/MM/yyyy HH:mm:ss'}}</time>
+</li>
+</ul>
+</details>
+<details class="operation-history" *ngIf="grupo.historial_mesas.length || grupo.entregas.length">
+<summary>Historial de reservas, entregas y correcciones</summary>
+<h4>Reservas</h4>
+<p *ngIf="!grupo.historial_mesas.length">Sin cambios de reserva.</p>
+<ol>
+<li *ngFor="let h of grupo.historial_mesas">
+<strong>{{h.nueva?'Reserva de mesa':'Reserva retirada'}}: {{h.anterior || 'Sin reserva'}} → {{h.nueva || 'Sin reserva'}}</strong>
+<p>Responsable: {{h.responsable_nombre || 'Personal autorizado'}}</p>
+<time>{{h.fecha | date:'dd/MM/yyyy HH:mm:ss'}}</time>
+<p>Motivo: {{h.motivo}}</p>
+</li>
+</ol>
+<h4>Entregas y correcciones</h4>
+<p *ngIf="!grupo.entregas.length">Sin entregas registradas.</p>
+<ol>
+<li *ngFor="let h of grupo.entregas">
+<strong>{{h.cantidad<0?'Corrección':'Entrega'}} · {{h.beneficio_nombre || 'Beneficio del paquete'}} · {{h.cantidad<0?-h.cantidad:h.cantidad}} unidades</strong>
+<p>Responsable: {{h.responsable_nombre || 'Personal autorizado'}}</p>
+<time>{{h.fecha | date:'dd/MM/yyyy HH:mm:ss'}}</time>
+<p>Motivo: {{h.motivo}}</p>
+</li>
+</ol>
+</details>
+</section>
+<ng-template #confirmBlock>
+<section class="operation-confirmation" #confirmArea tabindex="-1" *ngIf="confirmation" role="group" aria-label="Confirmar operación">
+<h3>{{confirmation.label}}</h3>
+<p *ngIf="confirmation.body.motivo">Motivo: {{confirmation.body.motivo}}</p>
+<p>Se registrará únicamente esta operación. Esperá la respuesta antes de repetirla.</p>
+<button type="button" class="btn-primary" [disabled]="busy" (click)="confirm()">Confirmar {{confirmation.label}}</button>
+<button type="button" [disabled]="busy" (click)="cancel()">Cancelar operación</button>
+</section>
+</ng-template>
+

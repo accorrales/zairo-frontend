@@ -1,8 +1,126 @@
-<div class="layout"><app-sidebar></app-sidebar><main class="content"><app-header title="Recepción y mesas" subtitle="Reservas por paquete · el ingreso no confirma ocupación física"></app-header>
- <div class="z-status" role="status" *ngIf="busy">Consultando o confirmando con el servidor…</div><div class="z-status z-status-error" role="alert" *ngIf="error">{{error}}<button (click)="event ? load() : ngOnInit()">Reintentar consulta</button></div><p class="z-status" role="status" *ngIf="notice">{{notice}}</p>
- <section class="panel"><label class="z-field">Evento de recepción<select aria-label="Evento de recepción" [(ngModel)]="event" (ngModelChange)="grupo=null;load()" [disabled]="busy || pending"><option [ngValue]="null">Seleccioná evento</option><option *ngFor="let e of events" [ngValue]="e.id_evento">{{e.nombre}}</option></select></label><p *ngIf="!events.length && !error">No hay eventos disponibles.</p><button [disabled]="busy || !event" (click)="load()">Actualizar recepción</button></section>
- <ng-container *ngIf="event"><section class="panel"><h2>Mesas y reservas</h2><p>Reservada indica asignación al paquete; no significa que esté físicamente ocupada.</p><p *ngIf="!data.mesas.length">No hay mesas configuradas.</p><p class="table-hint">Deslizá para consultar todas las columnas.</p><div class="table-wrapper" role="region" tabindex="0" aria-label="Mesas del evento"><table><thead><tr><th>Mesa</th><th>Zona / tipo</th><th>Capacidad</th><th>Reserva</th><th *ngIf="admin">Gestión</th></tr></thead><tbody><tr *ngFor="let t of data.mesas"><td>{{t.identificador}}</td><td>{{t.zona}} · {{t.tipo}}</td><td>{{t.capacidad}}</td><td>{{t.reserva ? 'Reservada · paquete #'+t.reserva : 'Sin reserva'}}</td><td *ngIf="admin"><button (click)="edit(t)">Editar {{t.identificador}}</button></td></tr></tbody></table></div></section>
- <section class="panel" *ngIf="admin"><h2>{{editId?'Editar mesa':'Configurar mesa'}}</h2><div class="form-grid"><label class="z-field">Identificador visible<input maxlength="40" [(ngModel)]="table.identificador"></label><label class="z-field">Zona<select aria-label="Zona" [(ngModel)]="table.zona"><option>VIP</option><option>GENERAL</option></select></label><label class="z-field">Tipo de mesa<input maxlength="60" [(ngModel)]="table.tipo"></label><label class="z-field">Capacidad<input type="number" min="1" max="100" [(ngModel)]="table.capacidad"></label></div><button [disabled]="busy || pending" (click)="save()">Guardar mesa</button><button *ngIf="editId" (click)="editId=null">Cancelar edición</button><div class="z-status" *ngIf="pending">Resultado sin confirmar<button [disabled]="busy" (click)="resolve(false)">Recuperar resultado</button><button [disabled]="busy" (click)="resolve(true)">Reintentar misma operación</button></div></section>
- <section class="panel"><h2>Paquetes y llegadas</h2><label class="z-field">Buscar mesa, promoción, compra o paquete<input [(ngModel)]="search"></label><p *ngIf="!packages.length">No hay paquetes pagados para esta consulta.</p><p class="z-status" *ngIf="data.entradas_revision">{{data.entradas_revision}} entradas antiguas requieren revisión de distribución; no tienen asignaciones deducidas.</p><p class="table-hint">Deslizá para consultar todas las columnas.</p><div class="table-wrapper" role="region" tabindex="0" aria-label="Reservas por paquete"><table><thead><tr><th>Paquete / compra</th><th>Promoción / zona</th><th>Mesa reservada</th><th>Ingresaron</th><th>Consultar</th></tr></thead><tbody><tr *ngFor="let p of packages"><td>#{{p.id_paquete}} · {{p.numero}} de compra #{{p.id_compra}}</td><td>{{p.promocion}} · {{p.zona}}</td><td>{{p.mesa || (p.mesa_tipo?'Pendiente de asignación':'No incluida')}}</td><td>{{p.ingresados}} / {{p.integrantes}}</td><td><button (click)="select(p.id_paquete)">Ver paquete #{{p.id_paquete}}</button></td></tr></tbody></table></div></section></ng-container>
- <app-grupo-operativo [grupo]="grupo" (grupoChange)="grupo=$event" [event]="event!" [tables]="data.mesas"></app-grupo-operativo>
-</main></div>
+<div class="layout">
+<app-sidebar>
+</app-sidebar>
+<main class="content">
+<app-header [compact]="true" title="Recepción y mesas" subtitle="La reserva no confirma ocupación física">
+</app-header>
+<p class="z-status" *ngIf="busy" role="status">Consultando o confirmando con el servidor…</p>
+<div class="z-status z-status-error" *ngIf="error" role="alert">{{error}}<button (click)="event?load():ngOnInit()">Reintentar consulta</button>
+</div>
+<p *ngIf="notice" role="status">{{notice}}</p>
+<section class="panel operational-event">
+<label class="z-field">Evento de recepción<select aria-label="Evento de recepción" [(ngModel)]="event" (ngModelChange)="eventChange()" [disabled]="pending">
+<option [ngValue]="null">Seleccioná evento</option>
+<option *ngFor="let e of events" [ngValue]="e.id_evento">{{e.nombre}}</option>
+</select>
+</label>
+<button [disabled]="busy || !event" (click)="load()">Actualizar recepción</button>
+<button *ngIf="pending" (click)="pendingPanel=true">Pendientes · recuperar resultado</button>
+</section>
+<ng-container *ngIf="event">
+<section class="panel">
+<div class="operation-actions">
+<h2>Paquetes y llegadas</h2>
+<button *ngIf="admin" (click)="config=true">Configuración de mesas</button>
+</div>
+<label class="z-field">Buscar mesa, promoción, compra o paquete<input [(ngModel)]="search" (ngModelChange)="remember()">
+</label>
+<p *ngIf="!packages.length && !busy">No hay paquetes pagados para esta consulta.</p>
+<p *ngIf="data.entradas_revision">{{data.entradas_revision}} entradas antiguas requieren revisión de distribución.</p>
+<div class="reception-cards">
+<article *ngFor="let p of packages" class="reception-card">
+<div>
+<h3>Paquete #{{p.id_paquete}}</h3>
+<p>{{p.numero}} de compra #{{p.id_compra}}</p>
+</div>
+<span class="zone-tag" [class.vip]="p.zona==='VIP'">{{p.zona}}</span>
+<p class="package-promo">{{p.promocion}}</p>
+<p class="package-table">
+<strong>{{tableLabel(p)}}</strong>
+</p>
+<p>{{p.ingresados}} de {{p.integrantes}} ingresados</p>
+<button (click)="select(p.id_paquete)">Ver paquete #{{p.id_paquete}}</button>
+</article>
+</div>
+<div class="table-wrapper reception-desktop" role="region" tabindex="0" aria-label="Reservas por paquete">
+<table>
+<thead>
+<tr>
+<th>Paquete / compra</th>
+<th>Promoción / zona</th>
+<th>Mesa</th>
+<th>Ingresaron</th>
+<th>Consultar</th>
+</tr>
+</thead>
+<tbody>
+<tr *ngFor="let p of packages">
+<td>#{{p.id_paquete}} · {{p.numero}} de compra #{{p.id_compra}}</td>
+<td>{{p.promocion}} · {{p.zona}}</td>
+<td>{{tableLabel(p)}}</td>
+<td>{{p.ingresados}} de {{p.integrantes}}</td>
+<td>
+<button (click)="select(p.id_paquete)">Ver paquete #{{p.id_paquete}}</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Una mesa reservada no confirma ocupación física.</p>
+</section>
+</ng-container>
+<app-operational-detail *ngIf="detail" returnLabel="Volver a la lista" [closeDisabled]="groupBusy" (closed)="close()">
+<p *ngIf="detailBusy">Consultando grupo…</p>
+<p *ngIf="detailError" role="alert">{{detailError}}<button (click)="select(selected!)">Reintentar consulta</button>
+</p>
+<app-grupo-operativo *ngIf="grupo" [grupo]="grupo" (grupoChange)="updated($event)" [event]="event!" [tables]="data.mesas" (busyChange)="groupBusy=$event">
+</app-grupo-operativo>
+</app-operational-detail>
+<app-operational-detail *ngIf="config" title="Configuración administrativa de mesas" [closeDisabled]="busy" (closed)="config=false">
+<p>Configurar mesas no registra ocupación física.</p>
+<div class="table-wrapper" tabindex="0">
+<table>
+<thead>
+<tr>
+<th>Mesa</th>
+<th>Zona / tipo / capacidad</th>
+<th>Reserva</th>
+<th>Gestión</th>
+</tr>
+</thead>
+<tbody>
+<tr *ngFor="let t of data.mesas">
+<td>{{t.identificador}}</td>
+<td>{{t.zona}} · {{t.tipo}} · {{t.capacidad}}</td>
+<td>{{t.reserva?'Reservada · paquete #'+t.reserva:'Sin reserva'}}</td>
+<td>
+<button (click)="edit(t)">Editar {{t.identificador}}</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3>{{editId?'Editar mesa':'Configurar mesa'}}</h3>
+<div class="form-grid">
+<label class="z-field">Identificador visible<input maxlength="40" [(ngModel)]="table.identificador">
+</label>
+<label class="z-field">Zona<select aria-label="Zona" [(ngModel)]="table.zona">
+<option>VIP</option>
+<option>GENERAL</option>
+</select>
+</label>
+<label class="z-field">Tipo de mesa<input maxlength="60" [(ngModel)]="table.tipo">
+</label>
+<label class="z-field">Capacidad<input type="number" min="1" max="100" [(ngModel)]="table.capacidad">
+</label>
+</div>
+<button [disabled]="busy || pending" (click)="save()">Guardar mesa</button>
+<button *ngIf="editId" (click)="editId=null">Cancelar edición</button>
+</app-operational-detail>
+<app-operational-detail *ngIf="pendingPanel" title="Operaciones pendientes" (closed)="pendingPanel=false">
+<app-pending-operations (resolved)="resolved($event)">
+</app-pending-operations>
+<p *ngIf="!pending">Resultado recuperado. Podés cerrar este panel.</p>
+</app-operational-detail>
+</main>
+</div>

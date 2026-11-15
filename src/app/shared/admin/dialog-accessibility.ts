@@ -1,8 +1,9 @@
-import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, OnDestroy, Output, inject } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, OnDestroy, Output, Input, inject } from '@angular/core';
 
 /** Focus and visible viewport handling for a scrollable dialog; no form rules. */
 @Directive({ selector: '[zairoDialog]', standalone: true })
 export class DialogAccessibility implements AfterViewInit, OnDestroy {
+  @Input() dialogInitialFocus = 'input';
   @Output() dialogClose = new EventEmitter<void>();
   private host = inject<ElementRef<HTMLElement>>(ElementRef);
   private previous = document.activeElement as HTMLElement | null;
@@ -20,7 +21,7 @@ export class DialogAccessibility implements AfterViewInit, OnDestroy {
     this.resize();
     this.viewport?.addEventListener('resize', this.resize);
     this.viewport?.addEventListener('scroll', this.resize);
-    this.timer = setTimeout(() => this.host.nativeElement.querySelector<HTMLInputElement>('input')?.focus());
+    this.timer = setTimeout(() => this.host.nativeElement.querySelector<HTMLElement>(this.dialogInitialFocus)?.focus());
   }
 
   @HostListener('keydown', ['$event'])
@@ -30,7 +31,7 @@ export class DialogAccessibility implements AfterViewInit, OnDestroy {
       this.dialogClose.emit();
     }
     if (event.key !== 'Tab') return;
-    const items = [...this.host.nativeElement.querySelectorAll<HTMLElement>('button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled])')];
+    const items = [...this.host.nativeElement.querySelectorAll<HTMLElement>('button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),summary,a[href]')].filter(e => e.getClientRects().length > 0);
     const first = items[0], last = items.at(-1);
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }

@@ -234,3 +234,58 @@ app-root {
   left: 87% !important;
   top: 43.5% !important;
 }
+
+/* Stage 6 operational surfaces: shared, compact, and isolated from accounting. */
+.operational-screen .operational-header .header {padding-block:12px;min-height:0}
+.operational-screen .operational-header .user-info {display:none}
+.operational-screen .content {min-width:0}
+.operational-screen .operational-event {padding:12px;display:flex;align-items:end;gap:12px;flex-wrap:wrap}
+.operational-screen .operational-event .z-field {flex:1;min-width:180px;margin:0}
+.operational-screen .access-result {padding:18px;scroll-margin-top:12px;border-width:2px;min-height:180px}
+.operational-screen .access-result h2 {font-size:clamp(1.25rem,3vw,1.75rem);line-height:1.2;margin:0 0 12px}
+.operational-screen .access-result h3 {font-size:1.3rem;margin:8px 0}
+.operational-screen .access-result p {margin:8px 0;line-height:1.4}
+.operational-screen [hidden] {display:none!important}
+.operational-screen .operation-actions {display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.operational-screen .operation-actions h2 {margin:0;flex:1}
+.operational-screen button,.operational-screen summary {min-height:44px}
+.operational-screen summary {cursor:pointer;padding-block:12px;font-weight:600}
+.operational-screen .uncertain,.pending-operation {border:2px solid #e5b85d!important;background:#292318!important}
+.operational-overlay {position:fixed;inset:0;z-index:2000;background:#000b;display:flex;align-items:center;justify-content:center;padding:20px}
+.operational-dialog {width:min(850px,100%);max-height:calc(100dvh - 40px);display:flex;flex-direction:column;background:var(--z-surface,#171a20);border:1px solid #4b5260;border-radius:16px;color:#f1f3f6;overflow:hidden}
+.operational-dialog-heading {padding:12px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0;border-bottom:1px solid #41454c}
+.operational-dialog-heading h2 {font-size:1.15rem;margin:0;flex:1}
+.operational-dialog-body {padding:18px;overflow-y:auto;overscroll-behavior:contain;scroll-padding-block:12px;min-height:0}
+.group-detail-summary h3 {font-size:1.3rem;margin:10px 0}
+.group-detail-summary p {margin:7px 0}
+.benefit-card,.pending-operation,.operation-confirmation {padding:14px;border:1px solid #49505b;border-radius:12px;margin:12px 0}
+.benefit-card h4 {font-size:1.1rem;margin:0 0 12px}
+.benefit-balances {display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.benefit-balances dt {color:#c4cad4;font-size:.85rem}.benefit-balances dd {margin:4px 0;font-size:1.3rem;font-weight:700}
+.benefit-delivery-form {display:flex;flex-wrap:wrap;align-items:end;gap:12px}.benefit-delivery-form .z-field {flex:1;min-width:160px;margin:0}
+.delivery-complete {color:#d6fb82;font-weight:700}.operation-error {color:#ffbdc2}.operation-feedback:empty {display:none}
+.operation-confirmation {border:2px solid #d4f77d;scroll-margin:12px}.operation-confirmation h3 {font-size:1.1rem}
+.member-list,.operation-history ol {padding-left:22px}.member-list li,.operation-history li {padding-block:10px;border-bottom:1px solid #353b45}.member-list span,.member-list time {display:block}.operation-history p {margin:5px 0}
+.reception-cards {display:none}
+@media(max-width:640px){
+ .operational-screen .content {padding:12px!important}
+ .operational-screen .panel {margin-bottom:12px}
+ .operational-screen app-header .header {padding:8px!important;gap:8px!important;min-height:0!important}
+ .operational-screen app-header .header-subtitle,.operational-screen app-header .user-details,.operational-screen app-header .user-info {display:none!important}
+ .operational-screen app-header h1 {font-size:1.2rem!important;margin:0!important}
+ .operational-screen .access-result {padding:14px}
+ .operational-screen .access-result .operation-actions button {flex:1 1 130px}
+ .operational-overlay {padding:0;align-items:stretch}
+ .operational-dialog {max-height:100dvh;border-radius:0;border:0}
+ .operational-dialog-heading {padding:10px 12px}.operational-dialog-body {padding:12px;padding-bottom:max(16px,env(safe-area-inset-bottom))}
+ .operational-dialog-heading button {max-width:145px}
+ .reception-desktop {display:none!important}.reception-cards {display:grid;gap:12px}
+ .reception-card {display:grid;grid-template-columns:1fr auto;gap:6px 12px;padding:14px;border:1px solid #49505b;border-radius:12px}
+ .reception-card h3,.reception-card p {margin:0}.reception-card h3 {font-size:1.1rem}.reception-card .package-promo,.reception-card .package-table {grid-column:1/-1}
+ .reception-card button {align-self:end}.reception-card .zone-tag {align-self:start}
+}
+.operational-screen .access-result .result-event {font-size:.9rem;color:#c4cad4}
+@media(max-width:640px){.benefit-delivery-form .z-field {flex:1 1 100%;min-width:0}.benefit-delivery-form input {max-width:140px}.benefit-delivery-form button {width:100%}.operational-screen .access-result h2 {font-size:1.25rem}}
+
+.operational-screen app-pending-operations {display:block;scroll-margin-block:12px}
+@media(max-width:640px){.operational-screen .operational-event .z-field {flex-basis:100%}.operational-screen .operational-event select {width:100%}}

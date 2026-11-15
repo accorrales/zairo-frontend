@@ -1,0 +1,38 @@
+{
+  "conditions": "Chromium local, viewport emulated; no physical phones",
+  "checks": [
+    "Compact result 360/390/desktop, group read has no admission effect",
+    "Partial/full/invalid quantities; one POST on double click; lost delivery recovered by original identity after route/reload; cleared inputs",
+    "Reception mobile related fields together, desktop table, detail returns search/event/scroll",
+    "Late event and group responses ignored",
+    "General, used, malformed, wrong event; 3 then 3 VIP; lost admission after commit recovered on reload with no second POST",
+    "Synthetic camera decoder, Next clears result and resumes same camera, repeated frame ignored",
+    "Lost reservation after commit retained across panel close/reload; same-operation retry creates one history; correction reason and named audit shown",
+    "360×440 emulated short viewport, form confirmation and close reachable",
+    "Five roles retained; unrelated roles denied operational routes",
+    "Existing purchase subtotal, discount and total unchanged by all operational actions"
+  ],
+  "metrics": {
+    "warmInitialMs": 767.3219399999998,
+    "validationToUsableMs": 160.2675260000001,
+    "responseToUsableMs": 31.37049300000035,
+    "validationHttpMs": 24.91220099999964,
+    "nextUsableMs": 56.20364899999913,
+    "syntheticCameraAndDecodeMs": 306.9046610000005,
+    "syntheticCameraReadyMs": 121,
+    "slowColdInitialMs": 4852.245586000001,
+    "slowValidationHttpMs": 235.48461400000087,
+    "slowResponseToUsableMs": 89.56558600000062,
+    "slowNextUsableMs": 73.972515999998
+  },
+  "measurementNotes": {
+    "samplesPerScenario": 1,
+    "slowNetwork": "Cold cache; 400 kbps download/upload; CDP latency 150 ms; CPU throttling 4x; local server and PostgreSQL",
+    "warmInitial": "Cached navigation including networkidle quiet window (500 ms); differs from the cold ready-options criterion",
+    "validationHttp": "Playwright request to response headers, using monotonic Node clock",
+    "responseToUsable": "Response headers to rendered result and enabled Next button; includes body transfer/render and automation observation",
+    "next": "Click to cleared result and visible camera/manual workspace; same camera track retained",
+    "cameraReady": "Application Performance API measure from explicit start through reader start and capability detection; synthetic video only",
+    "physicalPhones": false
+  }
+}

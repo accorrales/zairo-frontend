@@ -1,20 +1,85 @@
-<div class="layout"><app-sidebar></app-sidebar><main class="content">
- <app-header title="Control de acceso" subtitle="Validación online · reservas y beneficios separados del ingreso"></app-header>
- <div role="alert" class="z-status z-status-error" *ngIf="pageError">{{pageError}} <button (click)="load()">Reintentar consulta</button></div>
- <p class="z-status" role="status" *ngIf="notice">{{notice}}</p>
- <section class="panel" #cameraPanel><label class="z-field">Evento de control<select aria-label="Evento de control" [(ngModel)]="event" (ngModelChange)="eventChange()" [disabled]="busy || pending || courtesyPending || estado!=='idle'"><option [ngValue]="null">Seleccioná un evento</option><option *ngFor="let e of events" [ngValue]="e.id_evento">{{e.nombre}}</option></select></label><p *ngIf="!events.length && !pageError">No hay eventos disponibles para control.</p>
- <button [disabled]="!event || cameraBusy || busy || pending || courtesyPending" (click)="startCamera()">{{cameraBusy?'Iniciando cámara…':cameraReady?'Reiniciar cámara':'Iniciar cámara'}}</button><button [disabled]="!cameraReady" (click)="stopCamera()">Detener cámara</button><p role="status" *ngIf="cameraError">{{cameraError}}</p><button [disabled]="!flashDisponible || cameraBusy" (click)="toggleFlash()">{{flashActivo ? 'Apagar linterna' : 'Linterna'}}</button><label><input type="checkbox" [(ngModel)]="sonido"> Sonido de validación</label><div id="qr-reader"></div>
- <details #manualPanel><summary>Ingresar QR manualmente</summary><label class="z-field">Contenido del QR<input #qrInput [(ngModel)]="manual" [disabled]="busy || pending || courtesyPending || estado!=='idle'"></label><button [disabled]="!event || !manual || busy || pending || courtesyPending || estado!=='idle'" (click)="scan()">Validar QR</button></details></section>
- <section class="panel access-result" #resultPanel tabindex="-1" [class.approved]="estado==='success'" [class.rejected]="estado==='rejected'" aria-live="polite">
- <h2>{{estado==='success'?'ACCESO APROBADO':estado==='rejected'?'ACCESO RECHAZADO':estado==='unknown'?'NO SE PUDO VERIFICAR':estado==='validating'?'PENDIENTE DE VALIDACIÓN':'LISTO PARA VALIDAR'}}</h2><p>{{message}}</p>
- <ng-container *ngIf="entrada"><h3>{{entrada.nombre_completo}}</h3><p>{{entrada.evento}}</p><span class="zone-tag" [class.vip]="entrada.zona==='VIP'">{{entrada.zona==='VIP'?'VIP':'GENERAL'}}</span>
- <div *ngIf="grupo" class="scan-summary"><h3>{{grupo.promocion}}</h3><p>Paquete #{{grupo.id_paquete}} · {{grupo.ingresados}} / {{grupo.integrantes}} ingresados</p><p><strong>Mesa: {{grupo.mesa || (grupo.requiere_revision ? 'Requiere revisión' : grupo.mesa_tipo ? 'Pendiente de asignación':'No incluida')}}</strong></p><p *ngIf="!grupo.beneficios.length && !grupo.requiere_revision">Sin beneficios compartidos</p><ul *ngIf="grupo.beneficios.length"><li *ngFor="let b of grupo.beneficios">Incluye {{b.cantidad}} × {{b.nombre}}</li></ul></div>
- <p *ngIf="!grupo && !review">Entrada individual · sin mesa ni beneficios compartidos.</p>
- <section *ngIf="entrada.bebida_cortesia"><h3>Cortesía individual: {{entrada.bebida_cortesia}}</h3><p>{{entrada.cortesia_tiquete_entregado?'Tiquete individual registrado':'Tiquete individual pendiente'}}</p><button [disabled]="busy || courtesyPending || entrada.cortesia_tiquete_entregado" (click)="courtesy()">Registrar entrega de tiquete individual</button></section></ng-container>
- <p *ngIf="review" class="z-status">Distribución antigua pendiente de revisión. No se deducen mesa ni entregas a partir de la promoción actual.</p>
- <div *ngIf="pending"><button [disabled]="busy" (click)="resolve(false)">Recuperar resultado</button><button [disabled]="busy" (click)="resolve(true)">Reintentar misma validación</button></div>
- <div *ngIf="courtesyPending"><button [disabled]="busy" (click)="courtesy(true)">Recuperar tiquete individual</button><button [disabled]="busy" (click)="courtesy(false,true)">Reintentar tiquete individual</button></div>
- <button *ngIf="estado!=='idle' && estado!=='validating'" class="btn-primary" [disabled]="busy || pending || courtesyPending" (click)="next()">Siguiente QR</button><button *ngIf="blockedQr && !pending" [disabled]="busy" (click)="lookup()">Consultar grupo sin registrar ingreso</button>
- </section>
- <app-grupo-operativo [grupo]="grupo" (grupoChange)="grupo=$event" [event]="event!" [tables]="tables"></app-grupo-operativo>
-<details class="panel"><summary>Últimas validaciones de esta sesión ({{historial.length}}/6)</summary><p *ngIf="!historial.length">Todavía no hay validaciones.</p><ul><li *ngFor="let h of historial">{{h.hora | date:'shortTime'}} · {{h.nombre}} · {{h.mensaje}}</li></ul><p>Resumen de sesión; el conteo de ingresos corresponde al registro del servidor.</p></details></main></div>
+<div class="layout">
+<app-sidebar>
+</app-sidebar>
+<main class="content">
+<app-header [compact]="true" title="Control de acceso" subtitle="Validación online">
+</app-header>
+<div role="alert" class="z-status z-status-error" *ngIf="pageError">{{pageError}} <button (click)="load()">Reintentar consulta</button>
+</div>
+<p role="status" *ngIf="notice">{{notice}}</p>
+<section class="panel operational-event">
+<label class="z-field">Evento de control<select aria-label="Evento de control" [(ngModel)]="event" (ngModelChange)="eventChange()" [disabled]="busy || api.hasPending() || estado!=='idle'">
+<option [ngValue]="null">Seleccioná un evento</option>
+<option *ngFor="let e of events" [ngValue]="e.id_evento">{{e.nombre}}</option>
+</select>
+</label>
+<button *ngIf="api.hasPending() && !pending" (click)="pendingPanel=true">Pendientes · recuperar resultado</button>
+</section>
+<section class="panel access-result" #resultPanel tabindex="-1" [hidden]="estado==='idle'" [class.approved]="estado==='success'" [class.rejected]="estado==='rejected'" [class.uncertain]="estado==='unknown'" aria-live="polite">
+<h2>{{estado==='success'?'ACCESO APROBADO':estado==='rejected'?'ACCESO RECHAZADO':estado==='unknown'?'RESULTADO SIN CONFIRMAR':'VALIDANDO CON EL SERVIDOR…'}}</h2>
+<p *ngIf="estado!=='success'">{{message}}</p>
+<p class="result-event">{{eventName}}</p>
+<ng-container *ngIf="entrada">
+<h3>{{entrada.nombre_completo}}</h3>
+<span class="zone-tag" [class.vip]="entrada.zona==='VIP'">{{entrada.zona==='VIP'?'VIP':'GENERAL'}}</span>
+<p>
+<strong>{{grupo ? tableLabel(grupo) : review?'Mesa requiere revisión':'Sin mesa incluida'}}</strong>
+</p>
+<p *ngIf="grupo">{{grupo.promocion}} · <strong>{{grupo.ingresados}} de {{grupo.integrantes}}</strong> ingresados · paquete #{{grupo.id_paquete}}</p>
+<p *ngIf="!grupo && !review">Entrada individual · sin beneficios compartidos.</p>
+<p *ngIf="grupo && !grupo.beneficios.length && !review">Sin beneficios compartidos.</p>
+</ng-container>
+<p *ngIf="review">Distribución antigua pendiente de revisión. No se deducen asignaciones.</p>
+<app-pending-operations *ngIf="!busy" scope="scan" (resolved)="resolved($event)">
+</app-pending-operations>
+<div class="operation-actions">
+<button *ngIf="estado!=='validating'" class="btn-primary" [disabled]="busy || api.hasPending()" (click)="next()">Siguiente QR</button>
+<button *ngIf="entrada && !pending" [disabled]="busy" (click)="lookup()">Ver grupo y beneficios</button>
+</div>
+</section>
+<section class="panel camera-workspace" #cameraPanel [hidden]="estado!=='idle'">
+<p *ngIf="!event">Seleccioná un evento antes de validar.</p>
+<button *ngIf="!cameraReady" [disabled]="!event || cameraBusy || api.hasPending()" (click)="startCamera()">{{cameraBusy?'Iniciando cámara…':'Iniciar cámara'}}</button>
+<p *ngIf="cameraReady">Cámara lista. Acercá el siguiente QR.</p>
+<div id="qr-reader">
+</div>
+<p role="status" *ngIf="cameraError">{{cameraError}}</p>
+<details>
+<summary>Ajustes de cámara y sonido</summary>
+<button [disabled]="!cameraReady" (click)="stopCamera()">Detener cámara</button>
+<button [disabled]="!flashDisponible || cameraBusy" (click)="toggleFlash()">{{flashActivo?'Apagar linterna':'Linterna'}}</button>
+<label>
+<input type="checkbox" [(ngModel)]="sonido"> Sonido de validación</label>
+</details>
+<details #manualPanel>
+<summary>Ingresar QR manualmente</summary>
+<label class="z-field">Contenido del QR<input #qrInput [(ngModel)]="manual" [disabled]="busy || api.hasPending()" (keydown.enter)="scan()">
+</label>
+<button [disabled]="!event || !manual || busy || api.hasPending()" (click)="scan()">Validar QR</button>
+</details>
+</section>
+<details class="panel">
+<summary>Últimas validaciones de esta sesión ({{historial.length}}/6)</summary>
+<ul>
+<li *ngFor="let h of historial">{{h.hora | date:'shortTime'}} · {{h.nombre}} · {{h.mensaje}}</li>
+</ul>
+<p>El conteo corresponde al registro del servidor.</p>
+</details>
+<app-operational-detail *ngIf="detail" [closeDisabled]="groupBusy" (closed)="closeDetail()">
+<p *ngIf="detailBusy">Consultando grupo…</p>
+<app-grupo-operativo *ngIf="grupo && !detailBusy" [grupo]="grupo" (grupoChange)="grupo=$event" [event]="event!" [tables]="tables" [admissionConfirmed]="estado==='success'" (busyChange)="groupBusy=$event">
+</app-grupo-operativo>
+<p *ngIf="!grupo && !detailBusy">Entrada individual, sin grupo ni beneficios compartidos.</p>
+<section *ngIf="entrada?.bebida_cortesia">
+<h3>Cortesía individual · {{entrada.bebida_cortesia}}</h3>
+<p>{{entrada.cortesia_tiquete_entregado?'Tiquete individual registrado':'Tiquete individual pendiente; separado del paquete'}}</p>
+<button [disabled]="busy || api.hasPending() || entrada.cortesia_tiquete_entregado" (click)="courtesy()">Registrar tiquete individual</button>
+</section>
+</app-operational-detail>
+<app-operational-detail *ngIf="pendingPanel" title="Operaciones pendientes" (closed)="pendingPanel=false">
+<app-pending-operations (resolved)="resolved($event)">
+</app-pending-operations>
+<p *ngIf="!api.hasPending()">Resultado recuperado. Podés cerrar este panel.</p>
+</app-operational-detail>
+</main>
+</div>

@@ -5,6 +5,7 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-header',
+  host: { '[class.operational-header]': 'compact' },
   standalone: true,
   imports: [CommonModule, ConfirmDialog],
   templateUrl: './header.html',
@@ -13,6 +14,7 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 export class Header {
   private authService = inject(AuthService);
 
+  @Input() compact = false;
   @Input() title = '';
   @Input() subtitle = '';
 

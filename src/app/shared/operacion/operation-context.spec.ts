@@ -1,0 +1,8 @@
+import { RequestEpoch, tableLabel, memberStatus } from './operation-context';
+import { uncertainMessage } from '../../core/services/operacion.service';
+describe('operational context and clear labels', () => {
+    it('invalidates reads after switching event, package or closing a panel', () => { const reads = new RequestEpoch(); const first = reads.next(); expect(reads.current(first)).toBe(true); const second = reads.next(); expect(reads.current(first)).toBe(false); expect(reads.current(second)).toBe(true); reads.next(); expect(reads.current(second)).toBe(false); });
+    it('distinguishes an entitlement, a reservation and no table', () => { expect(tableLabel({ mesa_tipo: 'COCTEL' })).toBe('Pendiente de asignación'); expect(tableLabel({ mesa: 'A', mesa_tipo: 'COCTEL' })).toBe('Mesa reservada: A'); expect(tableLabel({})).toBe('Sin mesa incluida'); expect(tableLabel({ requiere_revision: true })).toContain('revisión'); });
+    it('never claims an admission from a delivery or reservation alone', () => { const delivery = { path: '/paquetes/1/entrega', body: { cantidad: 1 } }; expect(uncertainMessage(delivery)).not.toContain('El ingreso está confirmado'); expect(uncertainMessage(delivery, true)).toContain('El ingreso está confirmado'); expect(uncertainMessage({ path: '/paquetes/1/mesa', body: {} })).toContain('cambio de mesa'); expect(uncertainMessage({ path: '/escanear', body: {} })).toContain('confirmar el ingreso'); });
+    it('presents readable individual states', () => { expect(memberStatus({ estado: 'CONFIRMADA' })).toBe('Sin ingreso registrado'); expect(memberStatus({ fecha_ingreso: '2026-01-01' })).toBe('Ingresó'); expect(memberStatus({ fecha_invalidacion: '2026-01-01' })).toBe('Entrada invalidada'); });
+});
