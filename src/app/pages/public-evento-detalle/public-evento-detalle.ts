@@ -1,3 +1,4 @@
+import { PackageIncludes } from '../../shared/operacion/package-includes';
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -15,7 +16,7 @@ import { CodigosDescuentoService } from '../../core/services/codigos-descuento.s
 @Component({
   selector: 'app-public-evento-detalle',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, EventZoneSelector, PublicNav],
+  imports: [PackageIncludes, CommonModule, RouterLink, FormsModule, EventZoneSelector, PublicNav],
   templateUrl: './public-evento-detalle.html',
   styleUrl: './public-evento-detalle.css'
 })
@@ -44,7 +45,7 @@ export class PublicEventoDetalle implements OnInit, OnDestroy {
   cantidad = 1;
 
   /** Máximo de entradas que una persona puede comprar en una sola compra. */
-  maxEntradas = 10;
+  maxEntradas = 60;
   /** Opciones del selector de cantidad (1..maxEntradas). */
   get tamanoPaquete(): number { return Number(this.tierSeleccionado?.entradas_por_paquete || 1); }
   get opcionesCantidad(): number[] { return Array.from({ length: Math.floor(this.maxEntradas / this.tamanoPaquete) }, (_, i) => (i + 1) * this.tamanoPaquete); }

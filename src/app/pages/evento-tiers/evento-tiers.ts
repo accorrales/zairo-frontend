@@ -37,6 +37,8 @@ export class EventoTiers implements OnInit {
     cantidad_disponible: null as number | null,
     zona: 'GENERAL',
     beneficios_paquete: '',
+    beneficios_operativos: [] as {nombre:string,cantidad:number}[],
+    mesa_tipo: '',
     entradas_por_paquete: 1,
     estado: true
   };
@@ -131,6 +133,8 @@ export class EventoTiers implements OnInit {
     this.nuevoTier.zona = 'VIP';
     this.nuevoTier.beneficios_paquete = "1 mesa Red Bull tipo cóctel, 1 litro de Jägermeister y 4 Red Bulls";
     this.nuevoTier.entradas_por_paquete = 6;
+    this.nuevoTier.mesa_tipo='COCTEL';
+    this.nuevoTier.beneficios_operativos=[{nombre:'Litro de Jägermeister',cantidad:1},{nombre:'Red Bull',cantidad:4}];
     this.nuevoTier.precio = 75000;
     this.nuevoTier.cantidad_disponible = 5;
     this.nuevoTier.estado = false;
@@ -156,6 +160,8 @@ export class EventoTiers implements OnInit {
       cantidad_disponible: tier.cantidad_disponible,
       zona: tier.zona || 'GENERAL',
       beneficios_paquete: tier.beneficios_paquete || '',
+      beneficios_operativos: (tier.beneficios_operativos || []).map((b:any)=>({...b})),
+      mesa_tipo: tier.mesa_tipo || '',
       entradas_por_paquete: Number(tier.entradas_por_paquete || 1),
       estado: tier.estado
     };
@@ -217,6 +223,8 @@ export class EventoTiers implements OnInit {
       cantidad_disponible: null,
       zona: 'GENERAL',
     beneficios_paquete: '',
+    beneficios_operativos: [] as {nombre:string,cantidad:number}[],
+    mesa_tipo: '',
     entradas_por_paquete: 1,
     estado: true
     };

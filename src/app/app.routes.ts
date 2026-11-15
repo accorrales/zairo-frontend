@@ -16,6 +16,7 @@ export const routes: Routes = [
     data: { roles: ['visor'] }
   },
 
+  {path:'recepcion',loadComponent:()=>import('./pages/recepcion/recepcion').then(m=>m.Recepcion),canActivate:[authGuard,roleGuard],data:{roles:['admin','entrada']}},
   {
     path: 'dashboard',
     loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),

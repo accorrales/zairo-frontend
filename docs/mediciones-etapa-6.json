@@ -1,0 +1,15 @@
+{
+  "timings": {
+    "initialReadyMs": 824.53091,
+    "validationUiMs": 189.62813400000005,
+    "syntheticCameraStartMs": 144.06827599999997,
+    "slowColdInitialReadyMs": 4688.259291000002,
+    "slowValidationUiMs": 396.2165649999988
+  },
+  "camera": "not physical; synthetic frames",
+  "checks": [
+    "Lost delivery + scan response after commit, reload and recovery without duplication",
+    "Synthetic video decoded by html5-qrcode; repeated frame ignored, no extra POST",
+    "Five role logins and operational route denials"
+  ]
+}

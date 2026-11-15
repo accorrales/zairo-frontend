@@ -137,8 +137,17 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
     const fixture=create();const c=fixture.componentInstance;
     const promo={id_tier:25,zona:'VIP',nombre:'VIP Red Bull',beneficios_paquete:'1 mesa, 1 litro de Jägermeister y 4 Red Bulls',precio:75000,entradas_por_paquete:6,estado:true,disponibilidad:'DISPONIBLE'};
     c.tiers.push(promo);c.seleccionarPromocion(promo);fixture.changeDetectorRef.markForCheck();fixture.detectChanges();
-    expect(c.calcularSubtotal()).toBe(75000);expect(c.personas.length).toBe(6);expect(c.opcionesCantidad).toEqual([6]);
+    expect(c.calcularSubtotal()).toBe(75000);expect(c.personas.length).toBe(6);expect(c.opcionesCantidad).toEqual([6,12,18,24,30,36,42,48,54,60]);
     expect(fixture.nativeElement.textContent).toContain(promo.beneficios_paquete);expect(fixture.nativeElement.querySelector('#discount-code')).toBeNull();
+  });
+  it('labels the two concrete groups and displays operational quantities instead of stale benefit prose',()=>{
+    const f=create(),c=f.componentInstance;
+    const tier={id_tier:60,nombre:'VIP ficticio',zona:'VIP',precio:75000,entradas_por_paquete:6,estado:true,disponibilidad:'DISPONIBLE',mesa_tipo:'COCTEL',beneficios_paquete:'Descripción anterior no vigente',beneficios_operativos:[{nombre:'Bebida ficticia',cantidad:4}]};
+    c.tiers.push(tier);c.seleccionarPromocion(tier);c.cantidad=12;c.actualizarPersonas();f.changeDetectorRef.markForCheck();f.detectChanges();
+    expect(c.personas.length).toBe(12);expect(c.calcularSubtotal()).toBe(150000);
+    const labels=[...f.nativeElement.querySelectorAll('.package-membership')].map((e:any)=>e.textContent.trim());
+    expect(labels[0]).toBe('Paquete 1 · integrante 1 de 6');expect(labels[6]).toBe('Paquete 2 · integrante 1 de 6');
+    expect(f.nativeElement.textContent).toContain('4 × Bebida ficticia');expect(f.nativeElement.textContent).not.toContain('Descripción anterior no vigente');
   });
   it('prices a four-person package once, maintains person fields and hides inventory', () => {
     const fixture = create(); const component = fixture.componentInstance;
@@ -148,7 +157,7 @@ describe('PublicEventoDetalle zone and purchase integration', () => {
     component.seleccionarPromocion(promo); fixture.changeDetectorRef.markForCheck(); fixture.detectChanges();
     expect(component.cantidad).toBe(4); expect(component.personas.length).toBe(4);
     expect(component.calcularSubtotal()).toBe(20000);
-    expect(component.opcionesCantidad).toEqual([4,8]);
+    expect(component.opcionesCantidad).toEqual(Array.from({length:15},(_,i)=>(i+1)*4));
     expect(fixture.nativeElement.querySelector('#discount-code')).toBeNull();
     expect(fixture.nativeElement.textContent).not.toContain('123');
     component.cantidad=8;component.actualizarPersonas();

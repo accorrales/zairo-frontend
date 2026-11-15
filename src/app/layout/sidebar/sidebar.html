@@ -51,7 +51,8 @@
     </div>
     <div class="menu-group" *ngIf="tienePermiso(['admin','entrada'])"><p class="menu-group-title">SISTEMA</p>
       <a *ngIf="tienePermiso(['admin'])" routerLink="/usuarios" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">US</span>Usuarios y roles</a>
-      <a *ngIf="tienePermiso(['admin','entrada'])" routerLink="/admin/kiosk" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">QR</span>KIOSK QR</a>
+      <a *ngIf="tienePermiso(['admin','entrada'])" routerLink="/admin/kiosk" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">QR</span>Control de acceso</a>
     </div>
+    <a *ngIf="tienePermiso(['admin','entrada'])" routerLink="/recepcion" routerLinkActive="active" ariaCurrentWhenActive="page"><span aria-hidden="true">ME</span>Recepción y mesas</a>
   </nav>
 </aside>

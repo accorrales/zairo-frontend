@@ -1,173 +1,20 @@
-<div class="kiosk-page" [ngClass]="estado">
-  <div class="kiosk-bg"></div>
-  <div class="kiosk-grid"></div>
-
-  <header class="kiosk-header">
-    <div class="brand">
-      <div class="logo-img">
-        <img
-          src="/assets/zairo-loader-logo.png"
-          alt="ZAIRO">
-      </div>
-
-      <div>
-        <span class="brand-kicker">ZAIRO ACCESS</span>
-        <h1>ZAIRO KIOSK</h1>
-        <p>Control de entrada · Lost Trip</p>
-      </div>
-    </div>
-
-    <div class="status-pill">
-      <span class="status-dot"></span>
-      <strong>{{ mensaje }}</strong>
-    </div>
-  </header>
-
-  <main class="kiosk-content">
-
-    <section class="scanner-panel">
-      <div class="scanner-top">
-        <div>
-          <span class="panel-kicker">QR SCANNER</span>
-          <h2>Escáner de acceso</h2>
-          <p>Apuntá al QR oficial de la entrada.</p>
-        </div>
-
-        <div class="scanner-toolbar">
-          <button class="tool-btn" (click)="reiniciarScanner()">
-            Reiniciar
-          </button>
-
-          <button
-            class="tool-btn"
-            (click)="toggleFlash()"
-            [disabled]="!flashDisponible">
-            {{ flashActivo ? 'Flash ON' : 'Flash' }}
-          </button>
-        </div>
-      </div>
-
-      <div class="scanner-frame">
-        <div id="qr-reader"></div>
-
-        <div class="scan-overlay">
-          <div class="scan-box">
-            <span class="corner top-left"></span>
-            <span class="corner top-right"></span>
-            <span class="corner bottom-left"></span>
-            <span class="corner bottom-right"></span>
-            <div class="scan-line"></div>
-
-            <div class="scan-center">
-              <span>SCAN</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="camera-state" *ngIf="estado === 'validating'">
-          <div class="loader"></div>
-          <strong>Validando entrada...</strong>
-          <small>No movás el QR</small>
-        </div>
-      </div>
-
-      <p class="scanner-hint">
-        Colocá el QR dentro del cuadro. Mantenelo a 20–30 cm del teléfono,
-        con buen brillo y sin moverlo.
-      </p>
-    </section>
-
-    <section class="result-panel">
-      <div class="result-card">
-
-        <div class="result-icon idle-icon" *ngIf="estado === 'idle'">⌁</div>
-        <div class="result-icon validating-icon" *ngIf="estado === 'validating'">🔎</div>
-        <div class="result-icon success-icon" *ngIf="estado === 'success'">✅</div>
-        <div class="result-icon error-icon" *ngIf="estado === 'error'">❌</div>
-
-        <p class="result-label">
-          {{ estado === 'success' ? 'ACCESO APROBADO' :
-             estado === 'error' ? 'ACCESO RECHAZADO' :
-             estado === 'validating' ? 'VERIFICANDO' :
-             'LISTO PARA ESCANEAR' }}
-        </p>
-
-        <h2>{{ mensaje }}</h2>
-
-        <div class="entrada-info" *ngIf="entrada">
-          <div class="info-row principal">
-            <span>Nombre</span>
-            <strong>{{ entrada.nombre_completo }}</strong>
-          </div>
-
-          <div class="info-row">
-            <span>Evento</span>
-            <strong>{{ entrada.evento }}</strong>
-          </div>
-
-          <div class="info-row">
-            <span>Entrada</span>
-            <strong>{{ entrada.entrada }} · {{ entrada.zona || 'GENERAL' }}</strong>
-            <div *ngIf="entrada.beneficios_paquete"><strong>Promoción · Compra de grupo #{{ entrada.id_compra }}</strong><p>{{ entrada.beneficios_paquete }}</p><p>Beneficios compartidos: entregar una sola vez por paquete, no por cada QR. Verificá el registro de entrega de esta compra.</p></div>
-          </div>
-
-          <div class="info-row principal" *ngIf="entrada.bebida_cortesia">
-            <span>🎁 Cortesía · entregar tiquete</span>
-            <strong>
-              {{ entrada.bebida_cortesia === 'PUNCH_CLUB'
-                ? 'PUNCH CLUB · TIQUETE NARANJA'
-                : 'SOLEO · TIQUETE ROJO' }}
-            </strong>
-          </div>
-
-          <div class="info-row">
-            <span>Estado</span>
-            <strong>{{ entrada.estado }}</strong>
-          </div>
-
-          <div class="info-row" *ngIf="entrada.fecha_ingreso">
-            <span>Ingreso</span>
-            <strong>{{ entrada.fecha_ingreso | date:'dd/MM/yyyy HH:mm:ss' }}</strong>
-          </div>
-        </div>
-
-        <div class="idle-copy" *ngIf="!entrada">
-          <p>
-            El sistema valida si la entrada es oficial, está confirmada
-            y no fue utilizada anteriormente.
-          </p>
-        </div>
-
-      </div>
-
-      <div class="historial">
-        <div class="historial-header">
-          <div>
-            <span>LIVE LOG</span>
-            <h3>Últimos escaneos</h3>
-          </div>
-
-          <strong>{{ historial.length }}/6</strong>
-        </div>
-
-        <div
-          class="historial-item"
-          *ngFor="let h of historial"
-          [ngClass]="h.tipo">
-
-          <div>
-            <strong>{{ h.tipo === 'success' ? 'VÁLIDA' : 'RECHAZADA' }}</strong>
-            <span>{{ h.entrada?.nombre_completo || h.mensaje }}</span>
-          </div>
-
-          <small>{{ h.hora | date:'HH:mm:ss' }}</small>
-        </div>
-
-        <p class="empty-history" *ngIf="!historial.length">
-          Todavía no hay escaneos registrados.
-        </p>
-      </div>
-    </section>
-
-  </main>
-</div>
+<div class="layout"><app-sidebar></app-sidebar><main class="content">
+ <app-header title="Control de acceso" subtitle="Validación online · reservas y beneficios separados del ingreso"></app-header>
+ <div role="alert" class="z-status z-status-error" *ngIf="pageError">{{pageError}} <button (click)="load()">Reintentar consulta</button></div>
+ <p class="z-status" role="status" *ngIf="notice">{{notice}}</p>
+ <section class="panel" #cameraPanel><label class="z-field">Evento de control<select aria-label="Evento de control" [(ngModel)]="event" (ngModelChange)="eventChange()" [disabled]="busy || pending || courtesyPending || estado!=='idle'"><option [ngValue]="null">Seleccioná un evento</option><option *ngFor="let e of events" [ngValue]="e.id_evento">{{e.nombre}}</option></select></label><p *ngIf="!events.length && !pageError">No hay eventos disponibles para control.</p>
+ <button [disabled]="!event || cameraBusy || busy || pending || courtesyPending" (click)="startCamera()">{{cameraBusy?'Iniciando cámara…':cameraReady?'Reiniciar cámara':'Iniciar cámara'}}</button><button [disabled]="!cameraReady" (click)="stopCamera()">Detener cámara</button><p role="status" *ngIf="cameraError">{{cameraError}}</p><button [disabled]="!flashDisponible || cameraBusy" (click)="toggleFlash()">{{flashActivo ? 'Apagar linterna' : 'Linterna'}}</button><label><input type="checkbox" [(ngModel)]="sonido"> Sonido de validación</label><div id="qr-reader"></div>
+ <details #manualPanel><summary>Ingresar QR manualmente</summary><label class="z-field">Contenido del QR<input #qrInput [(ngModel)]="manual" [disabled]="busy || pending || courtesyPending || estado!=='idle'"></label><button [disabled]="!event || !manual || busy || pending || courtesyPending || estado!=='idle'" (click)="scan()">Validar QR</button></details></section>
+ <section class="panel access-result" #resultPanel tabindex="-1" [class.approved]="estado==='success'" [class.rejected]="estado==='rejected'" aria-live="polite">
+ <h2>{{estado==='success'?'ACCESO APROBADO':estado==='rejected'?'ACCESO RECHAZADO':estado==='unknown'?'NO SE PUDO VERIFICAR':estado==='validating'?'PENDIENTE DE VALIDACIÓN':'LISTO PARA VALIDAR'}}</h2><p>{{message}}</p>
+ <ng-container *ngIf="entrada"><h3>{{entrada.nombre_completo}}</h3><p>{{entrada.evento}}</p><span class="zone-tag" [class.vip]="entrada.zona==='VIP'">{{entrada.zona==='VIP'?'VIP':'GENERAL'}}</span>
+ <div *ngIf="grupo" class="scan-summary"><h3>{{grupo.promocion}}</h3><p>Paquete #{{grupo.id_paquete}} · {{grupo.ingresados}} / {{grupo.integrantes}} ingresados</p><p><strong>Mesa: {{grupo.mesa || (grupo.requiere_revision ? 'Requiere revisión' : grupo.mesa_tipo ? 'Pendiente de asignación':'No incluida')}}</strong></p><p *ngIf="!grupo.beneficios.length && !grupo.requiere_revision">Sin beneficios compartidos</p><ul *ngIf="grupo.beneficios.length"><li *ngFor="let b of grupo.beneficios">Incluye {{b.cantidad}} × {{b.nombre}}</li></ul></div>
+ <p *ngIf="!grupo && !review">Entrada individual · sin mesa ni beneficios compartidos.</p>
+ <section *ngIf="entrada.bebida_cortesia"><h3>Cortesía individual: {{entrada.bebida_cortesia}}</h3><p>{{entrada.cortesia_tiquete_entregado?'Tiquete individual registrado':'Tiquete individual pendiente'}}</p><button [disabled]="busy || courtesyPending || entrada.cortesia_tiquete_entregado" (click)="courtesy()">Registrar entrega de tiquete individual</button></section></ng-container>
+ <p *ngIf="review" class="z-status">Distribución antigua pendiente de revisión. No se deducen mesa ni entregas a partir de la promoción actual.</p>
+ <div *ngIf="pending"><button [disabled]="busy" (click)="resolve(false)">Recuperar resultado</button><button [disabled]="busy" (click)="resolve(true)">Reintentar misma validación</button></div>
+ <div *ngIf="courtesyPending"><button [disabled]="busy" (click)="courtesy(true)">Recuperar tiquete individual</button><button [disabled]="busy" (click)="courtesy(false,true)">Reintentar tiquete individual</button></div>
+ <button *ngIf="estado!=='idle' && estado!=='validating'" class="btn-primary" [disabled]="busy || pending || courtesyPending" (click)="next()">Siguiente QR</button><button *ngIf="blockedQr && !pending" [disabled]="busy" (click)="lookup()">Consultar grupo sin registrar ingreso</button>
+ </section>
+ <app-grupo-operativo [grupo]="grupo" (grupoChange)="grupo=$event" [event]="event!" [tables]="tables"></app-grupo-operativo>
+<details class="panel"><summary>Últimas validaciones de esta sesión ({{historial.length}}/6)</summary><p *ngIf="!historial.length">Todavía no hay validaciones.</p><ul><li *ngFor="let h of historial">{{h.hora | date:'shortTime'}} · {{h.nombre}} · {{h.mensaje}}</li></ul><p>Resumen de sesión; el conteo de ingresos corresponde al registro del servidor.</p></details></main></div>

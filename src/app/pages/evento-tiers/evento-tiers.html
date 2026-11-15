@@ -61,6 +61,17 @@
           <option [ngValue]="false">Inactivo</option>
         </select></label>
 
+        <section class="operational-config" *ngIf="nuevoTier.entradas_por_paquete > 1">
+          <h3>Reserva y beneficios compartidos por paquete</h3>
+          <p>Estas cantidades se copian al comprar. No son cortesías individuales.</p>
+          <label class="z-field">Tipo de mesa incluida (vacío: sin mesa)<input [(ngModel)]="nuevoTier.mesa_tipo" maxlength="60" placeholder="COCTEL"></label>
+          <div *ngFor="let b of nuevoTier.beneficios_operativos; let i=index" class="form-grid">
+            <label class="z-field">Beneficio<input [(ngModel)]="b.nombre" maxlength="100"></label>
+            <label class="z-field">Cantidad por paquete<input type="number" min="1" max="1000" step="1" [(ngModel)]="b.cantidad"></label>
+            <button type="button" (click)="nuevoTier.beneficios_operativos.splice(i,1)">Quitar beneficio</button>
+          </div>
+          <button type="button" [disabled]="nuevoTier.beneficios_operativos.length>=20" (click)="nuevoTier.beneficios_operativos.push({nombre:'',cantidad:1})">Agregar beneficio</button>
+        </section>
         <div class="acciones-form">
           <button class="btn-primary" (click)="guardarTier()">
             {{ editando ? 'Actualizar' : 'Crear' }}
