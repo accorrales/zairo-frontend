@@ -25,3 +25,15 @@ export function acknowledgeVisible(api: OperacionService, scope: string, result:
     afterNextRender(() => { if (alive())
         api.acknowledge(scope, result); }, { injector });
 }
+
+/** Use the immutable movement only. Never infer old balances from today's balance. */
+export function recordedBalances(h: any): boolean {
+    const fields = [h.entregada_antes, h.entregada_despues, h.pendiente_antes, h.pendiente_despues];
+    return fields.every(n => Number.isSafeInteger(n) && n >= 0)
+        && h.entregada_despues - h.entregada_antes === h.cantidad
+        && h.pendiente_antes - h.pendiente_despues === h.cantidad;
+}
+export function movementEffect(h: any): string {
+    const n = Math.abs(h.cantidad), units = n === 1 ? '1 unidad' : n + ' unidades';
+    return (h.cantidad < 0 ? (n === 1 ? 'Se descontó ' : 'Se descontaron ') : (n === 1 ? 'Se agregó ' : 'Se agregaron ')) + units + (h.cantidad < 0 ? ' del' : ' al') + ' registro de entregas.';
+}

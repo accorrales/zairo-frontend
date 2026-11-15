@@ -6,9 +6,9 @@ export interface ResolvedOperation {
     result: OperationResult;
 }
 @Component({ selector: 'app-pending-operations', standalone: true, imports: [CommonModule], template: `
-<section *ngFor="let op of operations" class="pending-operation" role="status" [attr.aria-busy]="api.isActive(op.scope)">
- <h3>{{api.isActive(op.scope)?'Procesando con el servidor…':'Resultado sin confirmar'}}</h3>
- <p>{{message(op)}}</p><p *ngIf="op.packageId">Paquete #{{op.packageId}}</p>
+<section *ngFor="let op of operations" [class.pending-operation]="!controlsOnly" [attr.role]="controlsOnly?'group':'status'" [attr.aria-busy]="api.isActive(op.scope)">
+ <h3 *ngIf="!controlsOnly">{{api.isActive(op.scope)?'Procesando con el servidor…':'Resultado sin confirmar'}}</h3>
+ <p *ngIf="!controlsOnly">{{message(op)}}</p><p *ngIf="op.packageId && !controlsOnly">Paquete #{{op.packageId}}</p>
  <p class="operation-error" role="alert" *ngIf="errors[op.scope]">{{errors[op.scope]}}</p>
  <div class="operation-actions"><button type="button" [disabled]="api.isActive(op.scope)" (click)="resolve(op,false)">Recuperar resultado</button><button type="button" [disabled]="api.isActive(op.scope)" (click)="resolve(op,true)">Reintentar la misma operación</button></div>
 </section>` })
@@ -16,6 +16,7 @@ export class PendingOperations implements OnDestroy {
     api = inject(OperacionService);
     private cdr = inject(ChangeDetectorRef);
     private alive = true;
+    @Input() controlsOnly = false;
     @Input()
     scope: string | null = null;
     @Input()
@@ -36,7 +37,7 @@ export class PendingOperations implements OnDestroy {
     }
     catch (e: any) {
         if (this.alive)
-            this.errors[op.scope] = e.message;
+            this.errors[op.scope] = this.controlsOnly ? 'El resultado todavía no está disponible. La operación original sigue pendiente.' : e.message;
     }
     finally {
         if (this.alive)

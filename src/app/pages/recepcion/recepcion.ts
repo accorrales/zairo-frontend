@@ -93,7 +93,13 @@ export class Recepcion implements OnInit, OnDestroy {
         }
     } }
     close() { if (this.groupBusy)
-        return; this.details.next(); this.detail = false; this.grupo = null; afterNextRender(() => window.scrollTo(0, this.position), { injector: this.injector }); }
+        return; this.details.next(); this.detail = false; this.grupo = null; afterNextRender(() => {
+            // A confirmed group update can replace its list row, or a viewport change
+            // can hide the original trigger. Restore the logical, visible trigger.
+            const trigger = [...document.querySelectorAll<HTMLElement>('[data-package-id="' + this.selected + '"]')].find(e => e.getClientRects().length > 0);
+            trigger?.focus({preventScroll:true});
+            window.scrollTo(0, this.position);
+        }, { injector: this.injector }); }
     updated(group: any) { this.grupo = group; this.data.paquetes = this.data.paquetes.map((p: any) => p.id_paquete === group.id_paquete ? { ...p, ...group } : p); this.data.mesas = this.data.mesas.map((t: any) => ({ ...t, reserva: t.id_mesa === group.id_mesa ? group.id_paquete : t.reserva === group.id_paquete ? null : t.reserva })); }
     edit(t: any) { this.editId = t.id_mesa; this.table = { identificador: t.identificador, zona: t.zona, tipo: t.tipo, capacidad: t.capacidad }; }
     async save() { if (this.busy || this.pending)

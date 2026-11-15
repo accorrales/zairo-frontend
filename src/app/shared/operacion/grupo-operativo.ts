@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { OperacionService, OperationResult, PendingOperation, uncertainMessage } from '../../core/services/operacion.service';
 import { AuthService } from '../../core/services/auth.service';
 import { PendingOperations, ResolvedOperation } from './pending-operations';
-import { RequestEpoch, tableLabel, memberStatus, acknowledgeVisible } from './operation-context';
+import { RequestEpoch, tableLabel, memberStatus, acknowledgeVisible, recordedBalances, movementEffect } from './operation-context';
 interface Confirmation {
     label: string;
     path: string;
@@ -46,6 +46,8 @@ export class GrupoOperativo implements OnChanges, OnDestroy {
     busy = false;
     fresh = true;
     confirmation: Confirmation | null = null;
+    recordedBalances = recordedBalances;
+    movementEffect = movementEffect;
     tableLabel = tableLabel;
     memberStatus = memberStatus;
     get admin() { return this.auth.getRole()?.trim().toLowerCase() === 'admin'; }

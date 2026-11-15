@@ -17,4 +17,12 @@ describe('explicit benefit actions', () => {
     it('requires an audit reason for a correction', () => { page.corrections[4] = 1; page.reasons[4] = ''; page.prepareDelivery(page.grupo.beneficios[0], true); expect(page.confirmation).toBeNull(); page.reasons[4] = 'Registro equivocado'; page.prepareDelivery(page.grupo.beneficios[0], true); expect(page.confirmation?.body).toMatchObject({ cantidad: -1, motivo: 'Registro equivocado' }); });
     it('clears the affected quantity and refreshes once after a confirmed delivery', async () => { api.perform.mockResolvedValue({ status: 200, body: { message: 'Confirmada' }, operationId: 'key' }); api.get.mockResolvedValue({ ...group(), beneficios: [{ id_beneficio: 4, nombre: 'Bebida', cantidad: 4, entregada: 4, pendiente: 0 }] }); page.amounts[4] = 3; page.prepareDelivery(page.grupo.beneficios[0]); await page.confirm(); expect(page.amounts[4]).toBeUndefined(); expect(page.grupo.beneficios[0].pendiente).toBe(0); expect(api.get).toHaveBeenCalledTimes(1); expect(api.perform).toHaveBeenCalledTimes(1); });
     it('does not replace a new package with a late group response', async () => { let resolve: any; api.get.mockReturnValue(new Promise(r => resolve = r)); const request = page.refresh(); page.grupo = { ...group(), id_paquete: 2 }; page.ngOnChanges(); resolve(group()); await request; expect(page.grupo.id_paquete).toBe(2); });
+    it('renders original correction balances rather than deriving them from a later current balance',()=>{
+        const fixture=TestBed.createComponent(GrupoOperativo);
+        fixture.componentRef.setInput('event',1);fixture.componentRef.setInput('grupo',{...group(),entregas:[{cantidad:-1,beneficio_nombre:'Bebida',entregada_antes:4,entregada_despues:3,pendiente_antes:0,pendiente_despues:1,motivo:'Registro equivocado',responsable_nombre:'Operador ficticio',fecha:'2026-11-15T12:00:00Z'},{cantidad:-2,beneficio_nombre:'Bebida',motivo:'Registro anterior'}]});fixture.detectChanges();
+        const history=fixture.nativeElement.querySelector('.operation-history').textContent;
+        expect(history).toContain('Se descontó 1 unidad del registro de entregas.');expect(history).toContain('Entregados: 4 → 3. Pendientes: 0 → 1.');
+        expect(history).toContain('Se descontaron 2 unidades del registro de entregas.');expect(history).toContain('no conserva saldos anteriores y posteriores suficientes');expect(history).toContain('no confirma devolución física');expect(history).not.toContain('1 unidades');
+    });
+
 });

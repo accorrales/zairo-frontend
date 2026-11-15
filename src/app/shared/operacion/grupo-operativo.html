@@ -99,7 +99,13 @@
 <p *ngIf="!grupo.entregas.length">Sin entregas registradas.</p>
 <ol>
 <li *ngFor="let h of grupo.entregas">
-<strong>{{h.cantidad<0?'Corrección':'Entrega'}} · {{h.beneficio_nombre || 'Beneficio del paquete'}} · {{h.cantidad<0?-h.cantidad:h.cantidad}} unidades</strong>
+<strong>{{h.cantidad<0?'Corrección de registro':'Entrega registrada'}} · {{h.beneficio_nombre || 'Beneficio del paquete'}}</strong>
+<p>{{movementEffect(h)}}</p>
+<ng-container *ngIf="recordedBalances(h); else missingBalances">
+<p>Entregados: {{h.entregada_antes}} → {{h.entregada_despues}}. Pendientes: {{h.pendiente_antes}} → {{h.pendiente_despues}}.</p>
+</ng-container>
+<ng-template #missingBalances><p>Este registro no conserva saldos anteriores y posteriores suficientes. No se reconstruyen a partir del saldo actual.</p></ng-template>
+<p *ngIf="h.cantidad<0">Corrección del registro; no confirma devolución física del producto.</p>
 <p>Responsable: {{h.responsable_nombre || 'Personal autorizado'}}</p>
 <time>{{h.fecha | date:'dd/MM/yyyy HH:mm:ss'}}</time>
 <p>Motivo: {{h.motivo}}</p>

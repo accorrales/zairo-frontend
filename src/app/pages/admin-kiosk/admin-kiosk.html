@@ -17,7 +17,7 @@
 </section>
 <section class="panel access-result" #resultPanel tabindex="-1" [hidden]="estado==='idle'" [class.approved]="estado==='success'" [class.rejected]="estado==='rejected'" [class.uncertain]="estado==='unknown'" aria-live="polite">
 <h2>{{estado==='success'?'ACCESO APROBADO':estado==='rejected'?'ACCESO RECHAZADO':estado==='unknown'?'RESULTADO SIN CONFIRMAR':'VALIDANDO CON EL SERVIDOR…'}}</h2>
-<p *ngIf="estado!=='success'">{{message}}</p>
+<p *ngIf="estado!=='success'">{{estado==='unknown' ? 'No pudimos confirmar el ingreso. Recuperá el resultado antes de permitir el acceso o iniciar otra validación.' : message}}</p>
 <p class="result-event">{{eventName}}</p>
 <ng-container *ngIf="entrada">
 <h3>{{entrada.nombre_completo}}</h3>
@@ -30,7 +30,7 @@
 <p *ngIf="grupo && !grupo.beneficios.length && !review">Sin beneficios compartidos.</p>
 </ng-container>
 <p *ngIf="review">Distribución antigua pendiente de revisión. No se deducen asignaciones.</p>
-<app-pending-operations *ngIf="!busy" scope="scan" (resolved)="resolved($event)">
+<app-pending-operations *ngIf="!busy && estado==='unknown'" [controlsOnly]="true" scope="scan" (resolved)="resolved($event)">
 </app-pending-operations>
 <div class="operation-actions">
 <button *ngIf="estado!=='validating'" class="btn-primary" [disabled]="busy || api.hasPending()" (click)="next()">Siguiente QR</button>
@@ -65,7 +65,7 @@
 </ul>
 <p>El conteo corresponde al registro del servidor.</p>
 </details>
-<app-operational-detail *ngIf="detail" [closeDisabled]="groupBusy" (closed)="closeDetail()">
+<app-operational-detail *ngIf="detail" [grupo]="grupo" [closeDisabled]="groupBusy" (closed)="closeDetail()">
 <p *ngIf="detailBusy">Consultando grupo…</p>
 <app-grupo-operativo *ngIf="grupo && !detailBusy" [grupo]="grupo" (grupoChange)="grupo=$event" [event]="event!" [tables]="tables" [admissionConfirmed]="estado==='success'" (busyChange)="groupBusy=$event">
 </app-grupo-operativo>

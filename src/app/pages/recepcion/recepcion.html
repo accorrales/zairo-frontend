@@ -39,7 +39,7 @@
 <strong>{{tableLabel(p)}}</strong>
 </p>
 <p>{{p.ingresados}} de {{p.integrantes}} ingresados</p>
-<button (click)="select(p.id_paquete)">Ver paquete #{{p.id_paquete}}</button>
+<button [attr.data-package-id]="p.id_paquete" (click)="select(p.id_paquete)">Ver paquete #{{p.id_paquete}}</button>
 </article>
 </div>
 <div class="table-wrapper reception-desktop" role="region" tabindex="0" aria-label="Reservas por paquete">
@@ -60,7 +60,7 @@
 <td>{{tableLabel(p)}}</td>
 <td>{{p.ingresados}} de {{p.integrantes}}</td>
 <td>
-<button (click)="select(p.id_paquete)">Ver paquete #{{p.id_paquete}}</button>
+<button [attr.data-package-id]="p.id_paquete" (click)="select(p.id_paquete)">Ver paquete #{{p.id_paquete}}</button>
 </td>
 </tr>
 </tbody>
@@ -69,7 +69,7 @@
 <p>Una mesa reservada no confirma ocupación física.</p>
 </section>
 </ng-container>
-<app-operational-detail *ngIf="detail" returnLabel="Volver a la lista" [closeDisabled]="groupBusy" (closed)="close()">
+<app-operational-detail *ngIf="detail" [grupo]="grupo" returnLabel="Volver a la lista" [closeDisabled]="groupBusy" (closed)="close()">
 <p *ngIf="detailBusy">Consultando grupo…</p>
 <p *ngIf="detailError" role="alert">{{detailError}}<button (click)="select(selected!)">Reintentar consulta</button>
 </p>
