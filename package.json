@@ -10,7 +10,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build:verification": "node scripts/assemble-lineup-assets.mjs && ng build --configuration production,verification"
+    "build:verification": "node scripts/assemble-lineup-assets.mjs && ng build --configuration production,verification",
+    "build:phone-qa": "node scripts/assemble-lineup-assets.mjs && ng build --configuration production,phone-qa"
   },
   "prettier": {
     "printWidth": 100,

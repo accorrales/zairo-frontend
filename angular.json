@@ -67,6 +67,18 @@
             "verification": {
               "fileReplacements": [],
               "outputPath": "dist/verification"
+            },
+            "phone-qa": {
+              "fileReplacements": [],
+              "outputPath": "dist/phone-qa",
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": false
+              }
             }
           },
           "defaultConfiguration": "production"

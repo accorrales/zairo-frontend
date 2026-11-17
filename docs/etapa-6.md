@@ -115,3 +115,21 @@ Se preservan d056b48, 5894c82 y los commits anteriores. Alcance limitado a estos
 Se usó entrada manual de QR y emulación de viewport; **no se probaron teléfonos, cámara ni teclado móvil físicos en este ajuste**. Las limitaciones del ensayo físico previo permanecen. Sin cambios a cálculos/exportaciones, compras o permisos; sin despliegue, mezcla, mensajes reales ni etapa 7. Servidor QA con emailStub=true y notifications=false; WhatsApp desactivado y tráfico externo de navegador bloqueado.
 
 Limpieza del ajuste: fixtures ficticios eliminados de forma acotada y siete tablas operativas vacías. Se mantienen fuera de Git las once capturas y el ZIP, sin credenciales ni datos de base incluidos en los commits.
+
+## Ensayo guiado con dos teléfonos: preparación, sin validación física
+
+Se conserva 0338708 y toda su historia. Se revisaron ambos informes; no se encontró una URL de pruebas HTTPS verificable desde teléfonos. Los servicios locales y la configuración de producción no sustituyen ese entorno. No se conectó producción ni se publicó un servicio.
+
+Se agregan `docs/ensayo-dos-telefonos-etapa-6.md` (bloques cortos con acción/esperado/respuesta a comunicar) y `docs/ensayo-dos-telefonos-etapa-6-resultados.csv` (equipo, sistema/navegador/modelo, esperado, observado, clasificación y evidencia). El usuario indicó iOS/Safari y Android/Chrome sin modelos; A/B es una asignación propuesta. **Todos los casos físicos están pendientes; ninguno se aprobó por inferencia.**
+
+Preparación técnica en backend ops/phone-qa: base nueva, cuentas/QR ficticios no consumidos por el seed, snapshot 1+4, dos paquetes independientes de una compra, General/otro evento y QR dedicados para cámara/concurrencia/sin red. Roles Entrada preservados; dos Admin separados para ensayar reservas concurrentes. No hay credenciales en Git ni en la hoja QR. El gateway monta solo el subdirectorio de QR y bloquea WhatsApp.
+
+Frontend: compilación adicional **build:phone-qa**, con API relativa del mismo origen, sin descarga de fuentes ni handlers inline para cargar CSS crítico. Mantiene intactos production y verification. El gateway de ensayo tiene CSP para recursos propios, cámara del mismo origen, sin recursos externos y sin caché de datos; permite base href del mismo origen para recargas de rutas profundas. No cambia componentes de negocio, identidad visual, permisos ni cálculos.
+
+Verificación automatizada: **82 pruebas Angular**, una prueba Node del gateway, **33 backend** y build:phone-qa. Se construyeron y ejecutaron las imágenes Docker y el stack local: API/DB sin puertos publicados, gateway únicamente loopback, cuatro inicios de sesión, lectura de grupos/mesas y 22 QR imprimibles comprobados sin consumir entradas en esa comprobación. La construcción del cloud usó CA de proxy montada temporalmente como secreto BuildKit, sin desactivar TLS ni incorporarla al runtime.
+
+Se repitió la simulación controlada de respuestas abortadas **después** de que el servidor registrara ingreso, entrega y reserva: recuperaciones con clave original y un solo efecto. Es Chromium automatizado, no cámara ni teléfono físico; no se interpreta un corte manual de Wi-Fi como prueba de ese punto exacto. Evidencia sin secretos en backend docs/ensayo-telefonos-preparacion.json.
+
+Falta autorizar máquina/cuenta/participantes y costo de un entorno separado con VPN privada y HTTPS; después comprobar acceso real desde ambos equipos y recibir resultados de cada bloque. No se contrató ni activó hosting/VPN ni se expusieron servicios públicamente. Los QR definitivos se generarán en la instancia autorizada; los del preflight local no se entregan como entradas activas remotas. Hasta entonces y hasta los resultados físicos, **no se declara validación operativa completa**. Sin mezcla, mensajes reales, notificaciones automáticas o etapa 7.
+
+Cierre de preflight: datos/credenciales/QR eliminados y stack local retirado después de verificar la limpieza. No hay QR ni URL remotos activos para comenzar el ensayo. La VPN integrada del cloud solo ofrece acceso saliente; se necesita una máquina externa autorizada para el acceso entrante privado de los teléfonos. Los 28 registros físicos de la matriz permanecen pendientes, más dos registros de preparación/simulación separados.
