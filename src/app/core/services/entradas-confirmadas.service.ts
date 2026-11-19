@@ -25,4 +25,7 @@ export class EntradasConfirmadasService {
   descargarReporteCsv(idEvento: number): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/evento/${idEvento}/reporte.csv`, { responseType: 'blob' });
   }
+  descargarReporteExcel(idEvento: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/evento/${idEvento}/reporte.xlsx`, { responseType: 'blob' });
+  }
 }

@@ -13,12 +13,16 @@
       <div class="panel-top">
         <h2>Seleccionar evento</h2>
 
+        <div class="report-downloads" *ngIf="eventoSeleccionado && entradas.length > 0">
         <button
           class="btn-info"
-          *ngIf="eventoSeleccionado && entradas.length > 0"
+          [disabled]="descargandoReporte"
+          [attr.aria-busy]="descargandoReporte"
           (click)="descargarReporte()">
-          ⬇️ Descargar reporte (CSV)
+          {{ descargandoReporte ? 'Preparando reporte…' : '⬇️ Descargar Excel (.xlsx)' }}
         </button>
+        <button class="btn-info" [disabled]="descargandoReporte" (click)="descargarReporte('csv')">Descargar CSV</button>
+        </div>
       </div>
 
       <div class="form-grid">

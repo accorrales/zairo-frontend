@@ -2,6 +2,7 @@ import { formatCRC } from '../../shared/admin/crc-money';
 import {AdminFeedback} from '../../shared/admin/admin-feedback';
 import {PageLoadState} from '../../shared/admin/page-load-state';
 import { analizarEdades } from './analisis-edades';
+import { finalize } from 'rxjs';
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -30,6 +31,7 @@ export class DashboardEntradas implements OnInit {
   get puedeModificarEntradas(): boolean { return this.authService.getRole()?.trim().toLowerCase() === 'admin'; }
 
   eventos: any[] = [];
+  descargandoReporte = false;
   eventoSeleccionado: number | null = null;
 
   entradas: any[] = [];
@@ -145,19 +147,26 @@ export class DashboardEntradas implements OnInit {
     );
   }
 
-  descargarReporte(): void {
-    if (!this.eventoSeleccionado) return;
+  descargarReporte(formato: 'xlsx' | 'csv' = 'xlsx'): void {
+    if (!this.eventoSeleccionado || this.descargandoReporte) return;
     const id = this.eventoSeleccionado;
-    this.entradasService.descargarReporteCsv(id).subscribe({
+    this.descargandoReporte = true;
+    const solicitud = formato === 'xlsx' ? this.entradasService.descargarReporteExcel(id) : this.entradasService.descargarReporteCsv(id);
+    solicitud.pipe(finalize(() => this.descargandoReporte = false)).subscribe({
       next: (blob) => {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `entradas-${id}.csv`;
+        link.download = `entradas-${id}.${formato}`;
         link.click();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       },
-      error: () => { this.mensaje = 'No se pudo descargar el reporte.'; }
+      error: async (error) => {
+        if (error.error instanceof Blob) {
+          try { error = {...error, error: JSON.parse(await error.error.text())}; } catch { /* Keep the safe fallback. */ }
+        }
+        if (this.eventoSeleccionado === id) this.pageState.fail(error, 'No se pudo descargar el reporte de entradas.', false);
+      }
     });
   }
 

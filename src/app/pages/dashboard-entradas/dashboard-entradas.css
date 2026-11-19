@@ -29,7 +29,12 @@ app-sidebar,
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
+
+.report-downloads { display: flex; flex-wrap: wrap; gap: 10px; }
+.report-downloads button { min-height: 44px; }
 
 .form-grid {
   display: flex;
