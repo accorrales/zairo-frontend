@@ -133,3 +133,10 @@ Se repitió la simulación controlada de respuestas abortadas **después** de qu
 Falta autorizar máquina/cuenta/participantes y costo de un entorno separado con VPN privada y HTTPS; después comprobar acceso real desde ambos equipos y recibir resultados de cada bloque. No se contrató ni activó hosting/VPN ni se expusieron servicios públicamente. Los QR definitivos se generarán en la instancia autorizada; los del preflight local no se entregan como entradas activas remotas. Hasta entonces y hasta los resultados físicos, **no se declara validación operativa completa**. Sin mezcla, mensajes reales, notificaciones automáticas o etapa 7.
 
 Cierre de preflight: datos/credenciales/QR eliminados y stack local retirado después de verificar la limpieza. No hay QR ni URL remotos activos para comenzar el ensayo. La VPN integrada del cloud solo ofrece acceso saliente; se necesita una máquina externa autorizada para el acceso entrante privado de los teléfonos. Los 28 registros físicos de la matriz permanecen pendientes, más dos registros de preparación/simulación separados.
+
+
+## Corrección operativa: empleados con historial
+
+La pantalla muestra explicación específica ante409 por planillas u otros registros asociados, sin ocultar filas ni afirmar que hubo borrado. Distingue sesión/permisos,404 y respuesta de red incierta; bloquea doble envío mientras DELETE está pendiente. El formulario de edición expone Activo/Inactivo usando el estado ya soportado por backend; guardar conserva la selección en lugar de forzar siempre activo. Abrir Nuevo empleado limpia el destino de una edición cancelada, evitando actualizar por error al empleado anterior. No se cambian cálculos ni permisos; inactivar requiere acción explícita del operador, nunca ocurre al intentar borrar.
+
+Verificación:88/88 pruebas Angular y build de producción aprobado. Regresiones: conflicto conserva lista y explica historial, doble clic genera una petición, cancelar no elimina, distinción de errores, selector accesible de estado y persistencia de inactivo en payload, alta nueva sin reutilizar destino anterior. No se han realizado borrados de empleados reales para probar.

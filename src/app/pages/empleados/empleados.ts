@@ -11,6 +11,7 @@ import { Empleado } from '../../core/models/empleado.model';
 import { FormsModule } from '@angular/forms';
 import { DepartamentosService } from '../../core/services/departamentos.service';
 import { Departamento } from '../../core/models/departamento.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-empleados',
@@ -34,6 +35,7 @@ export class Empleados implements OnInit {
   empleados: Empleado[] = [];
   cargando = true;
   error = '';
+  eliminandoId: number | null = null;
 
   ngOnInit(): void {
     this.cargarEmpleados();
@@ -84,6 +86,7 @@ export class Empleados implements OnInit {
 };
 
   abrirModal() {
+    this.resetModal();
     this.modalError = '';
     this.mostrarModal = true;
   }
@@ -125,7 +128,7 @@ export class Empleados implements OnInit {
       puesto: this.nuevoEmpleado.puesto?.trim(),
       salario_base: Number(this.nuevoEmpleado.salario_base),
       fecha_ingreso: this.nuevoEmpleado.fecha_ingreso,
-      estado: true,
+      estado: this.modoEdicion ? this.nuevoEmpleado.estado !== false : true,
       id_departamento: Number(this.nuevoEmpleado.id_departamento)
     };
 
@@ -168,6 +171,7 @@ export class Empleados implements OnInit {
       puesto: emp.puesto,
       salario_base: emp.salario_base,
       fecha_ingreso: emp.fecha_ingreso?.split('T')[0],
+      estado: emp.estado !== false,
       id_departamento: emp.id_departamento
     };
 
@@ -176,17 +180,29 @@ export class Empleados implements OnInit {
   }
 
   eliminarEmpleado(id: number) {
+    if (this.eliminandoId !== null) return;
     const confirmado = confirm('¿Seguro que deseas eliminar este empleado?');
 
     if (!confirmado) return;
 
-    this.empleadosService.deleteEmpleado(id).subscribe({
+    this.eliminandoId = id;
+    this.pageState.notice.set('');
+    this.empleadosService.deleteEmpleado(id).pipe(
+      finalize(() => this.eliminandoId = null)
+    ).subscribe({
       next: () => {
         this.cargarEmpleados();
       },
       error: (err) => {
-        console.error('Error al eliminar empleado:', err);
-        this.pageState.notify('Error al eliminar empleado');
+        this.pageState.notify(
+          err.status === 409 && err.error?.codigo === 'EMPLEADO_CON_HISTORIAL'
+            ? 'No se puede eliminar: tiene planillas u otros registros asociados. Editá el empleado y elegí Estado: Inactivo para conservar su historial.'
+            : err.status === 404 ? 'El empleado ya no existe. Actualizá la lista.'
+            : err.status === 403 ? 'Tu rol no tiene permiso para eliminar empleados.'
+            : err.status === 401 ? 'Tu sesión venció. Volvé a iniciar sesión.'
+            : err.status === 0 ? 'No pudimos confirmar la eliminación. Actualizá la lista para consultar el estado antes de reintentar.'
+            : 'No se pudo eliminar el empleado. Intentá nuevamente.'
+        );
       }
     });
   }

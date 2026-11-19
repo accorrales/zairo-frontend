@@ -58,12 +58,12 @@
                 </span>
               </td>
               <td class="acciones">
-                <button class="btn-edit" (click)="editarEmpleado(empleado)">
+                <button class="btn-edit" aria-label="Editar empleado" [disabled]="eliminandoId === empleado.id_empleado" (click)="editarEmpleado(empleado)">
                     ✏️
                 </button>
 
-                <button class="btn-delete" (click)="eliminarEmpleado(empleado.id_empleado)">
-                    🗑️
+                <button class="btn-delete" aria-label="Eliminar empleado" [disabled]="eliminandoId !== null" [attr.aria-busy]="eliminandoId === empleado.id_empleado" (click)="eliminarEmpleado(empleado.id_empleado)">
+                    {{ eliminandoId === empleado.id_empleado ? 'Eliminando…' : '🗑️' }}
                 </button>
             </td>
             </tr>
@@ -105,6 +105,7 @@
 
             <label class="z-field"><span>Salario</span><input type="number" placeholder="Salario" [(ngModel)]="nuevoEmpleado.salario_base" /></label>
             <label class="z-field"><span>Fecha de ingreso</span><input type="date" [(ngModel)]="nuevoEmpleado.fecha_ingreso" /></label>
+            <label class="z-field" *ngIf="modoEdicion"><span>Estado</span><select [(ngModel)]="nuevoEmpleado.estado"><option [ngValue]="true">Activo</option><option [ngValue]="false">Inactivo</option></select><small>Inactivo conserva sus planillas e historial.</small></label>
             </div>
 
             </div>
