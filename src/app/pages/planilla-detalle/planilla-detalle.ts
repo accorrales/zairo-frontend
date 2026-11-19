@@ -46,7 +46,7 @@ export class PlanillaDetalle implements OnInit {
 
   cargarDetalle(): void {
     this.cargando=true;this.error='';
-    this.pageState.observe(this.planillasService.obtenerDetallePlanilla(this.idPlanilla)).subscribe({
+    this.pageState.observe(this.planillasService.obtenerDetallePlanilla(this.idPlanilla), 'No pudimos consultar el detalle de la planilla.').subscribe({
       next: (response) => {
         this.planilla = response.planilla;
         this.detalle = response.detalle;
@@ -54,7 +54,7 @@ export class PlanillaDetalle implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar detalle', err);
-        this.error = err?.error?.error || 'Error al cargar detalle de planilla';
+        this.error = this.pageState.error();
         this.cargando = false;
       }
     });
@@ -82,6 +82,7 @@ export class PlanillaDetalle implements OnInit {
       return;
     }
 
+    try {
     const doc = new jsPDF();
 
     doc.setFontSize(18);
@@ -131,6 +132,9 @@ export class PlanillaDetalle implements OnInit {
     });
 
     doc.save(`planilla_${this.planilla.id_planilla}.pdf`);
+    } catch (error) {
+      this.pageState.fail(error, 'No se pudo generar el PDF. Intentá descargarlo nuevamente.', false);
+    }
   }
 
   formatearFecha(fecha: string): string {

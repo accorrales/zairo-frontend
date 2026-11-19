@@ -55,7 +55,7 @@ export class Novedades implements OnInit {
   }
 
   cargarNovedades(): void {
-    this.pageState.observe(this.novedadesService.obtenerNovedades()).subscribe({
+    this.pageState.observe(this.novedadesService.obtenerNovedades(), 'No pudimos consultar las novedades.').subscribe({
       next: (data) => {
         this.novedades = data;
       },
@@ -66,7 +66,7 @@ export class Novedades implements OnInit {
   }
 
   cargarEmpleados(): void {
-    this.pageState.observe(this.empleadosService.obtenerEmpleados()).subscribe({
+    this.pageState.observe(this.empleadosService.obtenerEmpleados(), 'No pudimos cargar los empleados para seleccionar una novedad.').subscribe({
       next: (data) => {
         this.empleados = data;
       },
@@ -77,7 +77,7 @@ export class Novedades implements OnInit {
   }
 
   cargarPlanillas(): void {
-    this.pageState.observe(this.planillasService.getPlanillas()).subscribe({
+    this.pageState.observe(this.planillasService.getPlanillas(), 'No pudimos cargar las planillas para seleccionar una novedad.').subscribe({
       next: (data) => {
         this.planillas = data;
       },
@@ -88,7 +88,7 @@ export class Novedades implements OnInit {
   }
 
   cargarConceptos(): void {
-    this.pageState.observe(this.conceptosService.obtenerConceptos()).subscribe({
+    this.pageState.observe(this.conceptosService.obtenerConceptos(), 'No pudimos cargar los conceptos para seleccionar una novedad.').subscribe({
       next: (data) => {
         this.conceptos = data;
       },
@@ -104,7 +104,7 @@ export class Novedades implements OnInit {
       !this.nuevaNovedad.id_planilla ||
       !this.nuevaNovedad.id_concepto
     ) {
-      this.pageState.notify('Empleado, planilla y concepto son obligatorios');
+      this.pageState.reject('Empleado, planilla y concepto son obligatorios');
       return;
     }
 
@@ -125,7 +125,7 @@ export class Novedades implements OnInit {
           this.resetFormulario();
         },
         error: (err) => {
-          console.error('Error al actualizar novedad', err);
+          this.pageState.fail(err, 'No se pudo actualizar la novedad.');
         }
       });
     } else {
@@ -135,7 +135,7 @@ export class Novedades implements OnInit {
           this.resetFormulario();
         },
         error: (err) => {
-          console.error('Error al crear novedad', err);
+          this.pageState.fail(err, 'No se pudo crear la novedad.');
         }
       });
     }
@@ -163,7 +163,7 @@ export class Novedades implements OnInit {
         this.cargarNovedades();
       },
       error: (err) => {
-        console.error('Error al eliminar novedad', err);
+        this.pageState.fail(err, 'No se pudo eliminar la novedad.');
       }
     });
   }

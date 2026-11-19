@@ -1,3 +1,4 @@
+import {adminErrorMessage} from '../../shared/admin/admin-error-message';
 import { DialogAccessibility } from '../../shared/admin/dialog-accessibility';
 import { CrcMoneyPipe } from '../../shared/admin/crc-money';
 import {AdminFeedback} from '../../shared/admin/admin-feedback';
@@ -43,7 +44,7 @@ export class Empleados implements OnInit {
   }
 
   cargarDepartamentos() {
-    this.pageState.observe(this.departamentosService.getDepartamentos()).subscribe({
+    this.pageState.observe(this.departamentosService.getDepartamentos(), 'No pudimos cargar los departamentos del formulario.').subscribe({
       next: (data) => {
         this.departamentos = data;
       },
@@ -57,14 +58,14 @@ export class Empleados implements OnInit {
     this.cargando = true;
     this.error = '';
 
-    this.pageState.observe(this.empleadosService.getEmpleados()).subscribe({
+    this.pageState.observe(this.empleadosService.getEmpleados(), 'No pudimos consultar los empleados.').subscribe({
       next: (data) => {
         this.empleados = data;
         this.cargando = false;
       },
       error: (err) => {
         console.error('Error al cargar empleados:', err);
-        this.error = 'No se pudieron cargar los empleados.';
+        this.error = this.pageState.error();
         this.cargando = false;
       }
     });
@@ -140,7 +141,7 @@ export class Empleados implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this.showModalError('Error al actualizar empleado. Revisá los campos e intentá nuevamente.');
+          this.showModalError(adminErrorMessage(err, 'No se pudo actualizar el empleado.', true));
         }
       });
     } else {
@@ -151,7 +152,7 @@ export class Empleados implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this.showModalError('Error al crear empleado. Revisá los campos e intentá nuevamente.');
+          this.showModalError(adminErrorMessage(err, 'No se pudo crear el empleado.', true));
         }
       });
     }
@@ -194,15 +195,7 @@ export class Empleados implements OnInit {
         this.cargarEmpleados();
       },
       error: (err) => {
-        this.pageState.notify(
-          err.status === 409 && err.error?.codigo === 'EMPLEADO_CON_HISTORIAL'
-            ? 'No se puede eliminar: tiene planillas u otros registros asociados. Editá el empleado y elegí Estado: Inactivo para conservar su historial.'
-            : err.status === 404 ? 'El empleado ya no existe. Actualizá la lista.'
-            : err.status === 403 ? 'Tu rol no tiene permiso para eliminar empleados.'
-            : err.status === 401 ? 'Tu sesión venció. Volvé a iniciar sesión.'
-            : err.status === 0 ? 'No pudimos confirmar la eliminación. Actualizá la lista para consultar el estado antes de reintentar.'
-            : 'No se pudo eliminar el empleado. Intentá nuevamente.'
-        );
+        this.pageState.fail(err, 'No se pudo eliminar el empleado.');
       }
     });
   }

@@ -37,7 +37,7 @@ export class Reportes implements OnInit {
 
   cargarDatos(): void {
     if(!this.puedeConsultar){this.pageState.retryable.set(false);this.pageState.error.set('Tu rol no tiene acceso a las planillas de este reporte. Consultá con administración.');return;}
-    this.pageState.observe(this.planillasService.getPlanillas()).subscribe({
+    this.pageState.observe(this.planillasService.getPlanillas(), 'No pudimos cargar las planillas necesarias para generar los reportes.').subscribe({
       next: (data) => {
         this.planillas = data;
         this.aplicarFiltro();

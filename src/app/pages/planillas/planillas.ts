@@ -48,14 +48,14 @@ export class Planillas implements OnInit {
     this.cargando = true;
     this.error = '';
 
-    this.pageState.observe(this.planillasService.getPlanillas()).subscribe({
+    this.pageState.observe(this.planillasService.getPlanillas(), 'No pudimos consultar las planillas.').subscribe({
       next: (data) => {
         this.planillas = data;
         this.cargando = false;
       },
       error: (err) => {
         console.error('Error al cargar planillas', err);
-        this.error = 'No se pudieron cargar las planillas';
+        this.error = this.pageState.error();
         this.cargando = false;
       }
     });
@@ -67,7 +67,7 @@ export class Planillas implements OnInit {
       !this.nuevaPlanilla.fecha_inicio ||
       !this.nuevaPlanilla.fecha_fin
     ) {
-      this.pageState.notify('Todos los campos son obligatorios');
+      this.pageState.reject('Todos los campos son obligatorios');
       return;
     }
 
@@ -78,8 +78,7 @@ export class Planillas implements OnInit {
         this.resetFormulario();
       },
       error: (err) => {
-        console.error('Error al crear planilla', err);
-        this.pageState.notify(err?.error?.error || 'Error al crear planilla');
+                this.pageState.fail(err, 'No se pudo crear la planilla.');
       }
     });
   }
@@ -95,8 +94,7 @@ export class Planillas implements OnInit {
             this.cargarPlanillas();
           },
           error: (err) => {
-            console.error('Error al procesar planilla', err);
-            this.pageState.notify(err?.error?.error || 'Error al procesar planilla');
+                        this.pageState.fail(err, 'No se pudo procesar la planilla.');
           }
         });
       }
@@ -114,8 +112,7 @@ export class Planillas implements OnInit {
             this.cargarPlanillas();
           },
           error: (err) => {
-            console.error('Error al confirmar planilla', err);
-            this.pageState.notify(err?.error?.error || 'Error al confirmar planilla');
+                        this.pageState.fail(err, 'No se pudo confirmar la planilla.');
           }
         });
       }
@@ -133,8 +130,7 @@ export class Planillas implements OnInit {
             this.cargarPlanillas();
           },
           error: (err) => {
-            console.error('Error al eliminar planilla', err);
-            this.pageState.notify(err?.error?.error || 'Error al eliminar planilla');
+                        this.pageState.fail(err, 'No se pudo eliminar la planilla.');
           }
         });
       }

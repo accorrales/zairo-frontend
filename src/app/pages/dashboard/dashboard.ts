@@ -44,7 +44,7 @@ export class Dashboard implements OnInit {
     this.cargando = true;
     this.error = '';
 
-    this.pageState.observe(this.dashboardService.getDashboardData()).subscribe({
+    this.pageState.observe(this.dashboardService.getDashboardData(), 'No pudimos cargar los empleados o departamentos necesarios para el resumen.').subscribe({
       next: (data) => {
         this.resumen = {
           totalEmpleados: data.totalEmpleados,
@@ -59,7 +59,7 @@ export class Dashboard implements OnInit {
       },
       error: (err) => {
         console.error('Error cargando dashboard:', err);
-        this.error = 'No se pudo cargar el dashboard.';
+        this.error = this.pageState.error();
         this.cargando = false;
       }
     });

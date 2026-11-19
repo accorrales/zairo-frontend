@@ -38,7 +38,7 @@ export class Conceptos implements OnInit {
   }
 
   cargarConceptos(): void {
-    this.pageState.observe(this.conceptosService.obtenerConceptos()).subscribe({
+    this.pageState.observe(this.conceptosService.obtenerConceptos(), 'No pudimos consultar los conceptos.').subscribe({
       next: (data) => {
         this.conceptos = data;
       },
@@ -53,7 +53,7 @@ export class Conceptos implements OnInit {
       !this.nuevoConcepto.nombre ||
       !this.nuevoConcepto.tipo
     ) {
-      this.pageState.notify('Nombre y tipo son obligatorios');
+      this.pageState.reject('Nombre y tipo son obligatorios');
       return;
     }
 
@@ -73,7 +73,7 @@ export class Conceptos implements OnInit {
           this.resetFormulario();
         },
         error: (err) => {
-          console.error('Error al actualizar concepto', err);
+          this.pageState.fail(err, 'No se pudo actualizar el concepto.');
         }
       });
     } else {
@@ -83,7 +83,7 @@ export class Conceptos implements OnInit {
           this.resetFormulario();
         },
         error: (err) => {
-          console.error('Error al crear concepto', err);
+          this.pageState.fail(err, 'No se pudo crear el concepto.');
         }
       });
     }
@@ -112,7 +112,7 @@ export class Conceptos implements OnInit {
         this.cargarConceptos();
       },
       error: (err) => {
-        console.error('Error al eliminar concepto', err);
+        this.pageState.fail(err, 'No se pudo eliminar el concepto.');
       }
     });
   }
